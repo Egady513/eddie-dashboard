@@ -1,0 +1,445 @@
+{
+  "meta": {
+    "lastUpdated": "2026-04-25",
+    "brainLastUpdated": "2026-04-25",
+    "sessionCount": 6,
+    "activeProjects": 4
+  },
+  "agents": [
+    {
+      "id": "board-513sips",
+      "name": "513Sips Board",
+      "group": "513Sips",
+      "tier": "Strategic",
+      "purpose": "Four-persona strategic review board — CEO, CFO, Hard Sell, Brand Director. Run before major decisions. Pulls in SME agents for deep-dives.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "finance-tax",
+      "name": "Finance & Tax",
+      "group": "513Sips",
+      "tier": "SME",
+      "purpose": "Tax strategy, complex accounting, multi-year financial planning. Consult for Board reviews and year-end prep.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "pricing",
+      "name": "Pricing",
+      "group": "513Sips",
+      "tier": "SME",
+      "purpose": "Quote generation, package building, margin analysis. Cross-reference Pricing-Strategy note for current rates.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "contract",
+      "name": "Contract",
+      "group": "513Sips",
+      "tier": "SME",
+      "purpose": "Contract generation and management. Legal language for customer and vendor agreements.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "ops-manager",
+      "name": "Operations Manager",
+      "group": "513Sips",
+      "tier": "Domain",
+      "purpose": "Day-to-day ops, scheduling, vendor coordination. Event logistics and supply chain.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "marketing",
+      "name": "Marketing",
+      "group": "513Sips",
+      "tier": "Domain",
+      "purpose": "Brand voice and campaigns. Messaging strategy, positioning, campaign briefs.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "quote",
+      "name": "Quote",
+      "group": "513Sips",
+      "tier": "Domain",
+      "purpose": "Client quote generation. Builds packages from event specs using current pricing model.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "event-recap",
+      "name": "Event Recap",
+      "group": "513Sips",
+      "tier": "Domain",
+      "purpose": "Post-event documentation. Captures event details, notes, and outcomes for the record.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "drink",
+      "name": "Drink / Mixology",
+      "group": "513Sips",
+      "tier": "Domain",
+      "purpose": "Mixology brain: drink recommendations, quantities, batch prep, event drink logs.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "event-postmortem",
+      "name": "Event Post-Mortem",
+      "group": "513Sips",
+      "tier": "Domain",
+      "purpose": "28-question guided debrief after every event. Captures what worked, what didn't, and what to improve.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "customer-acquisition",
+      "name": "Customer Acquisition",
+      "group": "513Sips",
+      "tier": "Domain",
+      "purpose": "Lead channels, venue scouting, Google reviews management, outreach templates. Drives new business pipeline.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "social-media-513",
+      "name": "Social Media",
+      "group": "513Sips",
+      "tier": "Domain",
+      "purpose": "Instagram content from Cloudinary photos + blog posts. Competitive analysis against PoppinBar and CincySips.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "tp-pm",
+      "name": "Travel Planner PM",
+      "group": "Travel Planner",
+      "tier": "Strategic",
+      "purpose": "Feature roadmap, sprint prioritization, and product decisions for the Travel Planner app.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "tp-dev",
+      "name": "Travel Planner Dev",
+      "group": "Travel Planner",
+      "tier": "Technical",
+      "purpose": "Technical architecture and implementation for the Travel Planner app. React + TypeScript + Vercel stack.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "brain-librarian",
+      "name": "Brain Librarian",
+      "group": "Shared",
+      "tier": "Shared",
+      "purpose": "Save protocol enforcement, deduplication, vault maintenance. Keeps the Obsidian Brain clean and current.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "session-summarizer",
+      "name": "Session Summarizer",
+      "group": "Shared",
+      "tier": "Shared",
+      "purpose": "Session handoff generation. Creates the closing summary saved to Brain at the end of every session.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "social-media-shared",
+      "name": "Social Media Manager",
+      "group": "Shared",
+      "tier": "Shared",
+      "purpose": "Cross-project social media principles. Project-specific agents (513Sips) handle execution.",
+      "status": "ready",
+      "currentTask": null
+    }
+  ],
+  "backlog": [
+    {
+      "id": "dash-1",
+      "title": "Create eddie-dashboard GitHub repo",
+      "project": "Dashboard",
+      "priority": "P1",
+      "column": "done",
+      "description": "Repo created at Egady513/eddie-dashboard"
+    },
+    {
+      "id": "dash-2",
+      "title": "Build dashboard Phase 1",
+      "project": "Dashboard",
+      "priority": "P1",
+      "column": "in-progress",
+      "description": "Glass shell, agent fleet, kanban, 513Sips ops panel, automation feed, Claude insights"
+    },
+    {
+      "id": "dash-3",
+      "title": "Update save protocol for dashboard-data.json",
+      "project": "Dashboard",
+      "priority": "P1",
+      "column": "ready",
+      "description": "Claude updates dashboard-data.json at session end as part of save protocol. Vault: 05-Meta/Save-Protocol.md"
+    },
+    {
+      "id": "513-blog2",
+      "title": "Publish blog post 2 — How Much Does a Mobile Bartender Cost?",
+      "project": "513Sips",
+      "priority": "P1",
+      "column": "ready",
+      "description": "Add card to blog/index.html and push to main. Was scheduled Apr 23 — overdue."
+    },
+    {
+      "id": "513-bug3",
+      "title": "Merge BUG-3: Privacy Policy + ToS modals",
+      "project": "513Sips",
+      "priority": "P1",
+      "column": "ready",
+      "description": "Branch: feature/BUG-3-privacy-tos-modals. Footer links go to href='#' in production."
+    },
+    {
+      "id": "513-claude-md",
+      "title": "Confirm 513Sips folder path + create CLAUDE.md",
+      "project": "513Sips",
+      "priority": "P1",
+      "column": "needs-refinement",
+      "description": "Need local path confirmed before CLAUDE.md can be created for session context."
+    },
+    {
+      "id": "513-google-biz",
+      "title": "Get Google Business Profile Place ID",
+      "project": "513Sips",
+      "priority": "P1",
+      "column": "needs-refinement",
+      "description": "Save review link → text past clients with personal testimonials to re-post to Google."
+    },
+    {
+      "id": "tp-vercel",
+      "title": "Complete Vercel deployment for Travel Planner",
+      "project": "Travel Planner",
+      "priority": "P1",
+      "column": "ready",
+      "description": "Import Egady513/TravelPlanner, add 4 env vars from .env.local, get live URL."
+    },
+    {
+      "id": "brain-handoffs",
+      "title": "Pull open session handoffs into Brain",
+      "project": "Brain",
+      "priority": "P1",
+      "column": "needs-refinement",
+      "description": "Import session context from existing Claude sessions into vault."
+    },
+    {
+      "id": "513-books-deploy",
+      "title": "Deploy 513Sips Books to GitHub Pages",
+      "project": "513Sips",
+      "priority": "P2",
+      "column": "ready",
+      "description": "Push dist to gh-pages branch for production deployment."
+    },
+    {
+      "id": "513-books-comms",
+      "title": "Implement Communication Log in Books",
+      "project": "513Sips",
+      "priority": "P2",
+      "column": "needs-refinement",
+      "description": "Track calls/texts/emails per lead. HIGH priority from CEO."
+    },
+    {
+      "id": "513-blog3",
+      "title": "Publish blog post 3 — What Does a Mobile Bartender Do?",
+      "project": "513Sips",
+      "priority": "P2",
+      "column": "ready",
+      "description": "Target: Apr 30"
+    },
+    {
+      "id": "513-blog4",
+      "title": "Publish blog post 4 — Open Bar vs Cash Bar vs Consumption Bar",
+      "project": "513Sips",
+      "priority": "P2",
+      "column": "ready",
+      "description": "Target: May 7"
+    },
+    {
+      "id": "513-blog5",
+      "title": "Publish blog post 5 — What to Expect When You Book 513Sips",
+      "project": "513Sips",
+      "priority": "P2",
+      "column": "ready",
+      "description": "Target: May 14"
+    },
+    {
+      "id": "513-outreach-loop",
+      "title": "Build automated Customer Outreach scouting loop",
+      "project": "513Sips",
+      "priority": "P2",
+      "column": "needs-refinement",
+      "description": "Weekly agent monitors PoppinBar + CincySips, generates content inspiration brief saved to Brain."
+    },
+    {
+      "id": "513-social-pipeline",
+      "title": "Build social content creation pipeline",
+      "project": "513Sips",
+      "priority": "P2",
+      "column": "needs-refinement",
+      "description": "Agent reads Cloudinary-tagged photos + blog posts → ready-to-post Instagram content for Eddie to review."
+    },
+    {
+      "id": "513-venue-outreach",
+      "title": "Venue partnership outreach — 10 Cincinnati venues",
+      "project": "513Sips",
+      "priority": "P2",
+      "column": "needs-refinement",
+      "description": "Swim/tennis clubs, art galleries, yoga studios, BYO-bar event spaces."
+    },
+    {
+      "id": "tp-priorities",
+      "title": "Define Travel Planner feature priorities",
+      "project": "Travel Planner",
+      "priority": "P2",
+      "column": "needs-refinement",
+      "description": "Add to MOC-Travel-Planner. Test Scout AI + Google Maps on mobile after Vercel deploy."
+    },
+    {
+      "id": "dash-phase2",
+      "title": "Dashboard Phase 2 — Automation Feed GitHub API",
+      "project": "Dashboard",
+      "priority": "P2",
+      "column": "needs-refinement",
+      "description": "Wire scheduled outreach agent to write intel cards directly to repo via GitHub API. No session required."
+    }
+  ],
+  "sips513": {
+    "blogPosts": [
+      {
+        "id": "blog-1",
+        "title": "What Is a Dry-Hire Bar Service and Why Is It Perfect for You?",
+        "publishDate": "2026-04-16",
+        "status": "published",
+        "url": "https://www.513sips.com/blog/what-is-dry-hire-bar-service.html"
+      },
+      {
+        "id": "blog-2",
+        "title": "How Much Does a Mobile Bartender Cost in Cincinnati?",
+        "publishDate": "2026-04-23",
+        "status": "overdue",
+        "url": null
+      },
+      {
+        "id": "blog-3",
+        "title": "What Does a Mobile Bartender Do?",
+        "publishDate": "2026-04-30",
+        "status": "queued",
+        "url": null
+      },
+      {
+        "id": "blog-4",
+        "title": "Open Bar vs Cash Bar vs Consumption Bar — Which Is Right for Your Event?",
+        "publishDate": "2026-05-07",
+        "status": "queued",
+        "url": null
+      },
+      {
+        "id": "blog-5",
+        "title": "What to Expect When You Book 513Sips",
+        "publishDate": "2026-05-14",
+        "status": "queued",
+        "url": null
+      }
+    ],
+    "openBugs": [
+      {
+        "id": "BUG-3",
+        "title": "Privacy Policy + ToS modals missing",
+        "branch": "feature/BUG-3-privacy-tos-modals",
+        "description": "Footer links go to href='#' in production. Branch exists, not yet merged.",
+        "severity": "high"
+      }
+    ],
+    "board": {
+      "lastInvoked": "2026-04-24",
+      "lastDecision": "Implement accrual-basis accounting in Books. No double-counting confirmed. Owner reimbursement widget added ($326.92 due to Eddie).",
+      "sessionRef": "2026-04-24-books-financial-logic-board-review"
+    }
+  },
+  "automationFeed": [],
+  "claudeInsights": {
+    "usageSnapshot": {
+      "totalAgents": 17,
+      "activeProjects": 4,
+      "sessionsThisMonth": 6,
+      "brainAge": "3d"
+    },
+    "tips": [
+      {
+        "id": "tip-1",
+        "category": "Board Usage",
+        "tip": "Run the Board before major sessions, not after. Pre-session alignment means you ship with confidence instead of second-guessing mid-build.",
+        "priority": "high"
+      },
+      {
+        "id": "tip-2",
+        "category": "CLAUDE.md Files",
+        "tip": "513Sips and Brain still need CLAUDE.md files. A tight one saves 5+ minutes of context at every session start — it compounds fast across dozens of sessions.",
+        "priority": "high"
+      },
+      {
+        "id": "tip-3",
+        "category": "Session Hygiene",
+        "tip": "Add a 'key decisions made this session' field to your handoffs. Makes future Board reviews faster and preserves reasoning that gets lost otherwise.",
+        "priority": "high"
+      },
+      {
+        "id": "tip-4",
+        "category": "Model Selection",
+        "tip": "Sonnet 4.6 for builds, saves, and blog drafts. Opus 4.7 for Board reviews, pricing strategy, and complex architecture decisions where depth matters.",
+        "priority": "medium"
+      },
+      {
+        "id": "tip-5",
+        "category": "Agent Design",
+        "tip": "17 agents is a lot. Review which ones you actually invoke. Unused agents are noise — archive rarely-used ones to keep the fleet readable and purposeful.",
+        "priority": "medium"
+      },
+      {
+        "id": "tip-6",
+        "category": "Automation",
+        "tip": "Your Automation Feed is empty. The Customer Outreach loop is in the backlog — once it runs, you'll have weekly competitive intel without lifting a finger.",
+        "priority": "medium"
+      },
+      {
+        "id": "tip-7",
+        "category": "Prompt Craft",
+        "tip": "Strong session openers eliminate back-and-forth. Try: 'Working on [X], last session we did [Y], today I need [Z].' First pass gets sharper immediately.",
+        "priority": "low"
+      }
+    ],
+    "bestPractices": [
+      {
+        "title": "Opus 4.7 vs Sonnet 4.6",
+        "body": "Opus: Board reviews, pricing strategy, legal review, complex architecture. Sonnet: builds, saves, blog work, routine tasks. Haiku: quick lookups, formatting, data transformation."
+      },
+      {
+        "title": "Agent Prompt Structure",
+        "body": "Best agents have: (1) Role + persona, (2) Scope boundaries — what they do AND don't, (3) Output format, (4) 2–3 example invocations. Skip any and outputs get inconsistent."
+      },
+      {
+        "title": "CLAUDE.md Anatomy",
+        "body": "Every CLAUDE.md needs: project purpose, local folder paths, active branch conventions, key files not to touch, and the build/deploy command. 20 focused lines beats 200 generic ones."
+      },
+      {
+        "title": "Session Handoff Value",
+        "body": "Write handoffs as if a stranger is picking up tomorrow with no context. What do they absolutely need to know? Everything else is noise. The handoff is the session's entire lasting value."
+      },
+      {
+        "title": "Scheduled Agents",
+        "body": "Scheduled agents are only valuable if you review their output. Build the review habit first (check the Automation Feed weekly), then scale up scheduled agents. Output without review is waste."
+      }
+    ]
+  }
+}

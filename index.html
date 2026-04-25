@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eddie's Command Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #060609;
+      --glass: rgba(255,255,255,0.04);
+      --glass-border: rgba(255,255,255,0.07);
+      --glass-hover: rgba(255,255,255,0.06);
+      --text: rgba(255,255,255,0.9);
+      --text-muted: rgba(255,255,255,0.48);
+      --text-dim: rgba(255,255,255,0.24);
+      --gold: #C9A264;
+      --gold-dim: rgba(201,162,100,0.14);
+      --gold-glow: rgba(201,162,100,0.07);
+      --blue: #5B9BD5;
+      --blue-dim: rgba(91,155,213,0.14);
+      --purple: #A78BFA;
+      --purple-dim: rgba(167,139,250,0.14);
+      --teal: #64B5A0;
+      --teal-dim: rgba(100,181,160,0.14);
+      --red: #E57373;
+      --red-dim: rgba(229,115,115,0.14);
+      --green: #81C784;
+      --blue-status: #64B5F6;
+      --yellow: #FFC107;
+      --radius: 14px;
+      --radius-sm: 8px;
+      --ease: all 0.25s ease;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body { width: 100%; min-height: 100vh; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Montserrat', sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      overflow-x: hidden;
+    }
+
+    /* ─── Ambient background ─── */
+    #bg-layer {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .orb {
+      position: absolute; border-radius: 50%; filter: blur(90px); opacity: 0.1;
+    }
+    .orb-1 { width: 700px; height: 700px; background: var(--gold); top: -220px; right: -150px; }
+    .orb-2 { width: 450px; height: 450px; background: var(--blue); bottom: 50px; left: -180px; }
+    .orb-3 { width: 350px; height: 350px; background: var(--purple); top: 45%; left: 48%; transform: translate(-50%,-50%); }
+
+    /* ─── Cursor spotlight ─── */
+    #spotlight {
+      position: fixed; inset: 0; pointer-events: none; z-index: 1;
+      background: radial-gradient(650px circle at var(--cx,50%) var(--cy,50%), rgba(201,162,100,0.05), transparent 55%);
+    }
+
+    /* ─── Dashboard shell ─── */
+    #dashboard {
+      position: relative; z-index: 2;
+      padding: 18px 20px 28px;
+      display: flex; flex-direction: column; gap: 14px;
+      max-width: 1840px; margin: 0 auto;
+    }
+
+    /* ─── Glass card ─── */
+    .glass {
+      background: var(--glass);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      transition: var(--ease);
+      will-change: transform;
+    }
+    .glass:hover {
+      border-color: rgba(255,255,255,0.1);
+      background: var(--glass-hover);
+    }
+
+    /* ─── Header ─── */
+    #header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 24px;
+    }
+    .header-l { display: flex; align-items: baseline; gap: 18px; }
+    #greeting {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 26px; font-weight: 400; letter-spacing: 0.02em;
+    }
+    #greeting em { color: var(--gold); font-style: normal; }
+    #live-time { font-size: 11px; color: var(--text-muted); letter-spacing: 0.04em; }
+    .header-r { display: flex; align-items: center; gap: 20px; }
+    .brain-badge {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 11px; color: var(--text-muted);
+    }
+    .pulse-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--green); box-shadow: 0 0 7px var(--green);
+      animation: pulse 2.8s ease infinite;
+    }
+
+    /* ─── Main row ─── */
+    #main-row {
+      display: grid;
+      grid-template-columns: 256px 1fr 296px;
+      gap: 14px;
+      align-items: start;
+    }
+
+    /* ─── Bottom row ─── */
+    #bottom-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      align-items: start;
+    }
+
+    /* ─── Panel base ─── */
+    .panel { padding: 18px 20px; }
+
+    .panel-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 11px; font-weight: 500;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--text-dim); margin-bottom: 14px;
+    }
+    .panel-title .gold { color: var(--gold); }
+
+    /* ─── Agent Fleet ─── */
+    .agent-group { margin-bottom: 16px; }
+    .agent-group:last-child { margin-bottom: 0; }
+
+    .group-label {
+      font-size: 8px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--text-dim); margin-bottom: 6px; padding-left: 2px;
+    }
+
+    .agent-card {
+      display: flex; align-items: center; gap: 9px;
+      padding: 8px 10px; border-radius: var(--radius-sm);
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.04);
+      margin-bottom: 4px; cursor: default;
+      position: relative; transition: var(--ease);
+    }
+    .agent-card:hover {
+      background: rgba(255,255,255,0.05);
+      border-color: rgba(255,255,255,0.08);
+      z-index: 10;
+    }
+    .agent-card:last-child { margin-bottom: 0; }
+
+    .sdot {
+      width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+    }
+    .sdot.ready  { background: var(--green);       box-shadow: 0 0 5px rgba(129,199,132,0.5); }
+    .sdot.working{ background: var(--blue-status);  box-shadow: 0 0 5px rgba(100,181,246,0.5); animation: pulse 1.4s ease infinite; }
+    .sdot.blocked{ background: var(--red);          box-shadow: 0 0 5px rgba(229,115,115,0.5); }
+
+    .agent-info { flex: 1; min-width: 0; }
+    .agent-name {
+      font-size: 11px; font-weight: 500; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .agent-task {
+      font-size: 9px; color: var(--text-muted); margin-top: 1px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .tooltip {
+      position: absolute; left: calc(100% + 10px); top: 50%;
+      transform: translateY(-50%);
+      background: rgba(12,12,18,0.97);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-sm);
+      padding: 10px 13px; font-size: 11px;
+      color: var(--text); width: 210px; line-height: 1.55;
+      pointer-events: none; opacity: 0;
+      transition: opacity 0.18s ease; z-index: 100;
+    }
+    .agent-card:hover .tooltip { opacity: 1; }
+
+    /* ─── Kanban ─── */
+    .kanban-header { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+
+    .filter-pills { display: flex; flex-wrap: wrap; gap: 5px; }
+
+    .pill {
+      font-size: 10px; font-weight: 500; letter-spacing: 0.04em;
+      padding: 3px 11px; border-radius: 20px;
+      border: 1px solid rgba(255,255,255,0.09);
+      background: transparent; color: var(--text-muted);
+      cursor: pointer; transition: var(--ease); font-family: 'Montserrat', sans-serif;
+    }
+    .pill:hover { color: var(--text); border-color: rgba(255,255,255,0.18); }
+    .pill.active-all        { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); }
+    .pill.active-513Sips    { background: var(--gold-dim); border-color: var(--gold); color: var(--gold); }
+    .pill.active-Travel     { background: var(--blue-dim); border-color: var(--blue); color: var(--blue); }
+    .pill.active-Dashboard  { background: var(--purple-dim); border-color: var(--purple); color: var(--purple); }
+    .pill.active-Brain      { background: var(--teal-dim); border-color: var(--teal); color: var(--teal); }
+
+    .kanban-board { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; align-items: start; }
+
+    .kcol { display: flex; flex-direction: column; gap: 5px; }
+
+    .kcol-header {
+      font-size: 8px; font-weight: 600; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-dim);
+      padding: 0 2px 7px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 2px;
+    }
+    .kcol-count {
+      font-size: 9px; background: rgba(255,255,255,0.05);
+      border-radius: 8px; padding: 1px 5px; color: var(--text-dim);
+    }
+
+    .kcard {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: var(--radius-sm);
+      padding: 9px 10px; transition: var(--ease);
+    }
+    .kcard:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.09); }
+    .kcard.hidden { display: none; }
+
+    .kcard-project {
+      font-size: 8px; font-weight: 700;
+      letter-spacing: 0.09em; text-transform: uppercase; margin-bottom: 4px;
+    }
+    .kcard-project.c-513Sips     { color: var(--gold); }
+    .kcard-project.c-Travel      { color: var(--blue); }
+    .kcard-project.c-Dashboard   { color: var(--purple); }
+    .kcard-project.c-Brain       { color: var(--teal); }
+
+    .kcard-title {
+      font-size: 11px; font-weight: 500; color: var(--text);
+      line-height: 1.4; margin-bottom: 6px;
+    }
+    .kcard-pri {
+      display: inline-block; font-size: 8px; font-weight: 700;
+      padding: 2px 5px; border-radius: 4px;
+    }
+    .kcard-pri.P1 { background: var(--red-dim); color: var(--red); }
+    .kcard-pri.P2 { background: rgba(255,193,7,0.12); color: var(--yellow); }
+    .kcard-pri.P3 { background: rgba(255,255,255,0.04); color: var(--text-dim); }
+
+    /* ─── 513Sips Ops ─── */
+    .ops-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    }
+    .ops-q {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: var(--radius-sm); padding: 13px;
+    }
+    .ops-q-title {
+      font-size: 8px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-dim); margin-bottom: 9px;
+    }
+
+    .blog-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+    .blog-row:last-child { border-bottom: none; }
+
+    .bdot {
+      width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+    }
+    .bdot.published { background: var(--green); }
+    .bdot.overdue   { background: var(--red); animation: pulse 1.4s ease infinite; }
+    .bdot.queued    { background: rgba(255,255,255,0.18); }
+
+    .blog-info { flex: 1; min-width: 0; }
+    .blog-title {
+      font-size: 11px; color: var(--text); text-decoration: none;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block;
+    }
+    a.blog-title:hover { color: var(--gold); }
+    .blog-date { font-size: 9px; color: var(--text-muted); margin-top: 1px; }
+
+    .blog-cd {
+      font-size: 9px; font-weight: 600; white-space: nowrap; flex-shrink: 0;
+    }
+    .blog-cd.overdue { color: var(--red); }
+    .blog-cd.soon    { color: var(--yellow); }
+    .blog-cd.ok      { color: var(--text-dim); }
+
+    .bug-item {
+      display: flex; align-items: flex-start; gap: 8px;
+      padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+    .bug-item:last-child { border-bottom: none; }
+    .bug-badge {
+      font-size: 8px; font-weight: 700; padding: 2px 5px;
+      border-radius: 4px; background: var(--red-dim); color: var(--red); flex-shrink: 0;
+    }
+    .bug-title { font-size: 11px; font-weight: 500; color: var(--text); }
+    .bug-branch { font-size: 9px; color: var(--text-dim); font-family: monospace; margin-top: 2px; }
+
+    .board-date { font-size: 9px; color: var(--text-dim); margin-bottom: 5px; }
+    .board-decision { font-size: 11px; color: var(--text-muted); line-height: 1.55; }
+
+    .invoke-btn {
+      display: block; width: 100%; padding: 8px;
+      background: var(--gold-dim);
+      border: 1px solid rgba(201,162,100,0.22);
+      border-radius: var(--radius-sm);
+      color: var(--gold); font-family: 'Montserrat', sans-serif;
+      font-size: 11px; font-weight: 600; letter-spacing: 0.06em;
+      cursor: pointer; transition: var(--ease); text-align: center; margin-top: 10px;
+    }
+    .invoke-btn:hover {
+      background: rgba(201,162,100,0.22);
+      border-color: rgba(201,162,100,0.4);
+    }
+
+    /* ─── Automation Feed ─── */
+    .feed-empty {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; padding: 44px 24px; text-align: center;
+    }
+    .feed-empty-ring {
+      width: 52px; height: 52px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 16px; color: var(--text-dim); font-size: 20px;
+    }
+    .feed-empty-text { font-size: 11px; color: var(--text-dim); line-height: 1.65; }
+    .feed-empty-sub { font-size: 10px; color: var(--text-dim); margin-top: 8px; opacity: 0.6; }
+
+    .feed-card {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: var(--radius-sm); padding: 12px; margin-bottom: 8px;
+    }
+    .feed-head {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;
+    }
+    .feed-source {
+      font-size: 8px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold);
+    }
+    .feed-date-label { font-size: 9px; color: var(--text-dim); }
+    .feed-insight { font-size: 11px; color: var(--text-muted); line-height: 1.55; margin-bottom: 10px; }
+    .feed-actions { display: flex; gap: 5px; }
+    .feed-btn {
+      font-size: 9px; font-weight: 600; letter-spacing: 0.05em;
+      padding: 3px 9px; border-radius: 4px;
+      border: 1px solid rgba(255,255,255,0.09);
+      background: transparent; color: var(--text-muted);
+      cursor: pointer; transition: var(--ease); font-family: 'Montserrat', sans-serif;
+    }
+    .feed-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+
+    /* ─── Claude Insights ─── */
+    .ins-section { margin-bottom: 18px; }
+    .ins-section:last-child { margin-bottom: 0; }
+
+    .ins-title {
+      font-size: 8px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--text-dim); margin-bottom: 9px;
+    }
+
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+
+    .stat-box {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: var(--radius-sm);
+      padding: 10px; text-align: center;
+    }
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 24px; font-weight: 400; color: var(--gold); display: block;
+    }
+    .stat-lbl { font-size: 8px; color: var(--text-dim); margin-top: 2px; }
+
+    .tip-card {
+      background: rgba(255,255,255,0.025);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: var(--radius-sm);
+      padding: 11px; margin-bottom: 7px; transition: var(--ease);
+    }
+    .tip-card:last-child { margin-bottom: 0; }
+    .tip-cat {
+      font-size: 8px; font-weight: 700;
+      letter-spacing: 0.09em; text-transform: uppercase;
+      color: var(--gold); margin-bottom: 5px;
+    }
+    .tip-text { font-size: 11px; color: var(--text-muted); line-height: 1.55; }
+
+    .bp-item {
+      padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+    .bp-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .bp-title { font-size: 11px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+    .bp-body { font-size: 10px; color: var(--text-muted); line-height: 1.5; }
+
+    /* ─── Animations ─── */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.35; }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .panel { animation: fadeUp 0.35s ease both; }
+    #main-row > *:nth-child(1) { animation-delay: 0.05s; }
+    #main-row > *:nth-child(2) { animation-delay: 0.10s; }
+    #main-row > *:nth-child(3) { animation-delay: 0.15s; }
+    #bottom-row > *:nth-child(1) { animation-delay: 0.20s; }
+    #bottom-row > *:nth-child(2) { animation-delay: 0.25s; }
+
+    /* ─── Scrollbar ─── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.16); }
+  </style>
+</head>
+<body>
+
+<div id="bg-layer">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+<div id="spotlight"></div>
+
+<div id="dashboard">
+
+  <!-- Header -->
+  <header class="glass panel" id="header">
+    <div class="header-l">
+      <h1 id="greeting">Good <em id="tod"></em>, Eddie</h1>
+      <span id="live-time"></span>
+    </div>
+    <div class="header-r">
+      <div class="brain-badge">
+        <div class="pulse-dot"></div>
+        <span>Brain updated <span id="brain-date">—</span></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main row -->
+  <div id="main-row">
+
+    <!-- Agent Fleet -->
+    <section class="glass panel">
+      <div class="panel-title">Agent Fleet</div>
+      <div id="agent-fleet"></div>
+    </section>
+
+    <!-- Kanban -->
+    <section class="glass panel">
+      <div class="kanban-header">
+        <div class="panel-title" style="margin-bottom:0">Backlog</div>
+        <div class="filter-pills" id="filter-pills"></div>
+      </div>
+      <div class="kanban-board" id="kanban-board"></div>
+    </section>
+
+    <!-- Claude Insights -->
+    <section class="glass panel">
+      <div class="panel-title">Claude Insights</div>
+      <div id="claude-insights"></div>
+    </section>
+
+  </div>
+
+  <!-- Bottom row -->
+  <div id="bottom-row">
+
+    <!-- 513Sips Ops -->
+    <section class="glass panel">
+      <div class="panel-title"><span class="gold">513Sips</span> Ops</div>
+      <div class="ops-grid" id="sips-ops"></div>
+    </section>
+
+    <!-- Automation Feed -->
+    <section class="glass panel">
+      <div class="panel-title">Automation Feed</div>
+      <div id="automation-feed"></div>
+    </section>
+
+  </div>
+</div>
+
+<script>
+  /* ─── Spotlight ─── */
+  document.addEventListener('mousemove', e => {
+    document.documentElement.style.setProperty('--cx', e.clientX + 'px');
+    document.documentElement.style.setProperty('--cy', e.clientY + 'px');
+  });
+
+  /* ─── Card tilt ─── */
+  function applyTilt(els) {
+    els.forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const r = card.getBoundingClientRect();
+        const rx = ((e.clientY - r.top  - r.height/2) / r.height) * 2.5;
+        const ry = ((r.width/2  - (e.clientX - r.left)) / r.width)  * 2.5;
+        card.style.transform = `perspective(1200px) rotateX(${rx}deg) rotateY(${ry}deg) translateZ(3px)`;
+      });
+      card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+    });
+  }
+
+  /* ─── Clock ─── */
+  function tick() {
+    const n = new Date();
+    const h = n.getHours();
+    document.getElementById('tod').textContent = h < 12 ? 'morning' : h < 17 ? 'afternoon' : 'evening';
+    document.getElementById('live-time').textContent =
+      n.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' }) +
+      '  ·  ' +
+      n.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' });
+  }
+
+  /* ─── Date helpers ─── */
+  function daysUntil(ds) {
+    const t = new Date(); t.setHours(0,0,0,0);
+    const d = new Date(ds); d.setHours(0,0,0,0);
+    return Math.round((d - t) / 86400000);
+  }
+  function countdown(ds) {
+    const d = daysUntil(ds);
+    if (d < 0)  return { txt: Math.abs(d) + 'd overdue', cls: 'overdue' };
+    if (d === 0) return { txt: 'Today',                   cls: 'soon' };
+    if (d <= 4)  return { txt: d + 'd',                   cls: 'soon' };
+    return            { txt: d + 'd',                   cls: 'ok' };
+  }
+
+  /* ─── Render: Agent Fleet ─── */
+  function renderAgents(agents) {
+    const groupOrder = ['513Sips', 'Travel Planner', 'Shared'];
+    const groupColors = { '513Sips': 'var(--gold)', 'Travel Planner': 'var(--blue)', 'Shared': 'var(--teal)' };
+    const groups = {};
+    agents.forEach(a => { (groups[a.group] = groups[a.group] || []).push(a); });
+
+    document.getElementById('agent-fleet').innerHTML =
+      groupOrder.filter(g => groups[g]).map(g => `
+        <div class="agent-group">
+          <div class="group-label" style="color:${groupColors[g]}">${g}</div>
+          ${groups[g].map(a => `
+            <div class="agent-card">
+              <div class="sdot ${a.status}"></div>
+              <div class="agent-info">
+                <div class="agent-name">${a.name}</div>
+                ${a.currentTask ? `<div class="agent-task">${a.currentTask}</div>` : ''}
+              </div>
+              <div class="tooltip">${a.purpose}</div>
+            </div>`).join('')}
+        </div>`).join('');
+  }
+
+  /* ─── Render: Kanban ─── */
+  let _backlog = [];
+  let _activeFilter = 'All';
+  const COLS = [
+    { id: 'needs-refinement', label: 'Needs Refinement' },
+    { id: 'ready',            label: 'Ready' },
+    { id: 'in-progress',      label: 'In Progress' },
+    { id: 'testing',          label: 'Testing' },
+    { id: 'done',             label: 'Ready for Release' }
+  ];
+
+  function renderKanban() {
+    const projects = ['All', ...[...new Set(_backlog.map(i => i.project))]];
+
+    document.getElementById('filter-pills').innerHTML = projects.map(p => {
+      const key = p === 'All' ? 'all' : p === 'Travel Planner' ? 'Travel' : p;
+      const active = p === _activeFilter ? `active-${key}` : '';
+      return `<button class="pill ${active}" onclick="setFilter('${p}')">${p}</button>`;
+    }).join('');
+
+    document.getElementById('kanban-board').innerHTML = COLS.map(col => {
+      const items = _backlog.filter(i => i.column === col.id);
+      const visible = _activeFilter === 'All' ? items : items.filter(i => i.project === _activeFilter);
+      return `<div class="kcol">
+        <div class="kcol-header">
+          <span>${col.label}</span>
+          <span class="kcol-count">${visible.length}</span>
+        </div>
+        ${items.map(item => {
+          const hide = (_activeFilter !== 'All' && item.project !== _activeFilter) ? 'hidden' : '';
+          const pClass = item.project === 'Travel Planner' ? 'c-Travel' : `c-${item.project}`;
+          return `<div class="kcard ${hide}" title="${(item.description||'').replace(/"/g,'&quot;')}">
+            <div class="kcard-project ${pClass}">${item.project}</div>
+            <div class="kcard-title">${item.title}</div>
+            <span class="kcard-pri ${item.priority}">${item.priority}</span>
+          </div>`;
+        }).join('')}
+      </div>`;
+    }).join('');
+  }
+
+  function setFilter(p) { _activeFilter = p; renderKanban(); }
+
+  /* ─── Render: 513Sips Ops ─── */
+  function renderSipsOps(s) {
+    const blogHtml = s.blogPosts.map(p => {
+      const cd = countdown(p.publishDate);
+      const dt = new Date(p.publishDate).toLocaleDateString('en-US', { month:'short', day:'numeric' });
+      const titleEl = p.url
+        ? `<a href="${p.url}" target="_blank" class="blog-title">${p.title}</a>`
+        : `<span class="blog-title">${p.title}</span>`;
+      return `<div class="blog-row">
+        <div class="bdot ${p.status}"></div>
+        <div class="blog-info">${titleEl}<div class="blog-date">${dt}</div></div>
+        ${p.status === 'published'
+          ? '<span class="blog-cd ok">Live</span>'
+          : `<span class="blog-cd ${cd.cls}">${cd.txt}</span>`}
+      </div>`;
+    }).join('');
+
+    const bugsHtml = s.openBugs.length
+      ? s.openBugs.map(b => `
+          <div class="bug-item">
+            <span class="bug-badge">${b.id}</span>
+            <div>
+              <div class="bug-title">${b.title}</div>
+              <div class="bug-branch">${b.branch}</div>
+            </div>
+          </div>`).join('')
+      : '<div style="font-size:11px;color:var(--text-dim);padding:6px 0">No open bugs</div>';
+
+    const bd = new Date(s.board.lastInvoked).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+    const boardHtml = `
+      <div class="board-date">Last invoked: ${bd}</div>
+      <div class="board-decision">${s.board.lastDecision}</div>
+      <button class="invoke-btn" onclick="showBoardPrompt()">Invoke Board →</button>`;
+
+    document.getElementById('sips-ops').innerHTML = `
+      <div class="ops-q">
+        <div class="ops-q-title">Blog Schedule</div>
+        ${blogHtml}
+      </div>
+      <div class="ops-q">
+        <div class="ops-q-title">Open Bugs</div>
+        ${bugsHtml}
+      </div>
+      <div class="ops-q" style="grid-column:1/-1">
+        <div class="ops-q-title">Strategic Board</div>
+        ${boardHtml}
+      </div>`;
+  }
+
+  function showBoardPrompt() {
+    alert('Invoke the Board in a Claude session:\n\n"Run the backlog through the board"\n\nor for a specific topic:\n"Run [topic] through the board"');
+  }
+
+  /* ─── Render: Automation Feed ─── */
+  function renderFeed(feed) {
+    const el = document.getElementById('automation-feed');
+    if (!feed || !feed.length) {
+      el.innerHTML = `
+        <div class="feed-empty">
+          <div class="feed-empty-ring">◎</div>
+          <div class="feed-empty-text">No intel yet.<br>Once the Customer Outreach agent runs, insights will appear here.</div>
+          <div class="feed-empty-sub">Customer Outreach loop · Social pipeline · Future automations</div>
+        </div>`;
+      return;
+    }
+    el.innerHTML = feed.map(c => `
+      <div class="feed-card">
+        <div class="feed-head">
+          <span class="feed-source">${c.source}</span>
+          <span class="feed-date-label">${c.date}</span>
+        </div>
+        <div class="feed-insight">${c.insight}</div>
+        <div class="feed-actions">
+          <button class="feed-btn">Review</button>
+          <button class="feed-btn">Action</button>
+          <button class="feed-btn">Dismiss</button>
+        </div>
+      </div>`).join('');
+  }
+
+  /* ─── Render: Claude Insights ─── */
+  function renderInsights(ins) {
+    const s = ins.usageSnapshot;
+    const stats = `
+      <div class="ins-section">
+        <div class="ins-title">Usage Snapshot</div>
+        <div class="stats-grid">
+          <div class="stat-box"><span class="stat-num">${s.totalAgents}</span><div class="stat-lbl">Agents</div></div>
+          <div class="stat-box"><span class="stat-num">${s.activeProjects}</span><div class="stat-lbl">Projects</div></div>
+          <div class="stat-box"><span class="stat-num">${s.sessionsThisMonth}</span><div class="stat-lbl">Sessions</div></div>
+          <div class="stat-box"><span class="stat-num">${s.brainAge}</span><div class="stat-lbl">Brain Age</div></div>
+        </div>
+      </div>`;
+
+    const tips = `
+      <div class="ins-section">
+        <div class="ins-title">Tips for You</div>
+        ${ins.tips.slice(0,3).map(t => `
+          <div class="tip-card">
+            <div class="tip-cat">${t.category}</div>
+            <div class="tip-text">${t.tip}</div>
+          </div>`).join('')}
+      </div>`;
+
+    const bp = `
+      <div class="ins-section">
+        <div class="ins-title">Best Practices</div>
+        ${ins.bestPractices.map(b => `
+          <div class="bp-item">
+            <div class="bp-title">${b.title}</div>
+            <div class="bp-body">${b.body}</div>
+          </div>`).join('')}
+      </div>`;
+
+    document.getElementById('claude-insights').innerHTML = stats + tips + bp;
+  }
+
+  /* ─── Init ─── */
+  async function init() {
+    tick();
+    setInterval(tick, 30000);
+
+    try {
+      const data = await fetch('dashboard-data.json').then(r => r.json());
+      _backlog = data.backlog;
+
+      document.getElementById('brain-date').textContent =
+        new Date(data.meta.brainLastUpdated).toLocaleDateString('en-US', { month:'short', day:'numeric' });
+
+      renderAgents(data.agents);
+      renderKanban();
+      renderSipsOps(data.sips513);
+      renderFeed(data.automationFeed);
+      renderInsights(data.claudeInsights);
+
+      applyTilt(document.querySelectorAll('.glass'));
+
+    } catch(err) {
+      console.error('Dashboard data load failed:', err);
+      document.getElementById('brain-date').textContent = 'unavailable';
+    }
+  }
+
+  init();
+</script>
+</body>
+</html>
