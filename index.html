@@ -24,6 +24,8 @@
       --purple-dim: rgba(167,139,250,0.14);
       --teal: #64B5A0;
       --teal-dim: rgba(100,181,160,0.14);
+      --orange: #E8956D;
+      --orange-dim: rgba(232,149,109,0.14);
       --red: #E57373;
       --red-dim: rgba(229,115,115,0.14);
       --green: #81C784;
@@ -179,19 +181,20 @@
       white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
-    .tooltip {
-      position: absolute; left: calc(100% + 10px); top: 50%;
-      transform: translateY(-50%);
-      background: rgba(12,12,18,0.97);
-      backdrop-filter: blur(14px);
-      border: 1px solid rgba(255,255,255,0.1);
+    #global-tip {
+      position: fixed;
+      background: rgba(10,10,16,0.97);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.12);
       border-radius: var(--radius-sm);
       padding: 10px 13px; font-size: 11px;
-      color: var(--text); width: 210px; line-height: 1.55;
+      color: var(--text); width: 220px; line-height: 1.55;
       pointer-events: none; opacity: 0;
-      transition: opacity 0.18s ease; z-index: 100;
+      transition: opacity 0.15s ease; z-index: 9999;
+      font-family: 'Montserrat', sans-serif;
     }
-    .agent-card:hover .tooltip { opacity: 1; }
+    #global-tip.visible { opacity: 1; }
 
     /* ─── Kanban ─── */
     .kanban-header { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
@@ -211,6 +214,7 @@
     .pill.active-Travel     { background: var(--blue-dim); border-color: var(--blue); color: var(--blue); }
     .pill.active-Dashboard  { background: var(--purple-dim); border-color: var(--purple); color: var(--purple); }
     .pill.active-Brain      { background: var(--teal-dim); border-color: var(--teal); color: var(--teal); }
+    .pill.active-WebGrowth  { background: var(--orange-dim); border-color: var(--orange); color: var(--orange); }
 
     .kanban-board { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; align-items: start; }
 
@@ -246,6 +250,7 @@
     .kcard-project.c-Travel      { color: var(--blue); }
     .kcard-project.c-Dashboard   { color: var(--purple); }
     .kcard-project.c-Brain       { color: var(--teal); }
+    .kcard-project.c-WebGrowth   { color: var(--orange); }
 
     .kcard-title {
       font-size: 11px; font-weight: 500; color: var(--text);
@@ -403,9 +408,22 @@
     .tip-cat {
       font-size: 8px; font-weight: 700;
       letter-spacing: 0.09em; text-transform: uppercase;
-      color: var(--gold); margin-bottom: 5px;
+      color: var(--gold); margin-bottom: 7px;
     }
-    .tip-text { font-size: 11px; color: var(--text-muted); line-height: 1.55; }
+    .tip-now {
+      font-size: 10px; color: var(--text-dim); line-height: 1.5; margin-bottom: 5px;
+    }
+    .tip-now-label {
+      font-size: 8px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--text-dim); margin-right: 5px;
+    }
+    .tip-do {
+      font-size: 11px; color: var(--text-muted); line-height: 1.55;
+    }
+    .tip-do-label {
+      font-size: 8px; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--gold); margin-right: 5px;
+    }
 
     .bp-item {
       padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
@@ -446,6 +464,7 @@
   <div class="orb orb-3"></div>
 </div>
 <div id="spotlight"></div>
+<div id="global-tip"></div>
 
 <div id="dashboard">
 
@@ -554,8 +573,8 @@
 
   /* ─── Render: Agent Fleet ─── */
   function renderAgents(agents) {
-    const groupOrder = ['513Sips', 'Travel Planner', 'Shared'];
-    const groupColors = { '513Sips': 'var(--gold)', 'Travel Planner': 'var(--blue)', 'Shared': 'var(--teal)' };
+    const groupOrder = ['513Sips', 'Travel Planner', 'WebGrowth', 'Shared'];
+    const groupColors = { '513Sips': 'var(--gold)', 'Travel Planner': 'var(--blue)', 'WebGrowth': 'var(--orange)', 'Shared': 'var(--teal)' };
     const groups = {};
     agents.forEach(a => { (groups[a.group] = groups[a.group] || []).push(a); });
 
@@ -564,15 +583,34 @@
         <div class="agent-group">
           <div class="group-label" style="color:${groupColors[g]}">${g}</div>
           ${groups[g].map(a => `
-            <div class="agent-card">
+            <div class="agent-card" data-purpose="${a.purpose.replace(/"/g,'&quot;')}">
               <div class="sdot ${a.status}"></div>
               <div class="agent-info">
                 <div class="agent-name">${a.name}</div>
                 ${a.currentTask ? `<div class="agent-task">${a.currentTask}</div>` : ''}
               </div>
-              <div class="tooltip">${a.purpose}</div>
             </div>`).join('')}
         </div>`).join('');
+
+    initTooltips();
+  }
+
+  /* ─── Portal tooltip (escapes stacking context) ─── */
+  function initTooltips() {
+    const tip = document.getElementById('global-tip');
+    document.querySelectorAll('.agent-card[data-purpose]').forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        tip.textContent = card.dataset.purpose;
+        tip.classList.add('visible');
+      });
+      card.addEventListener('mousemove', e => {
+        const x = e.clientX + 16;
+        const y = e.clientY - 14;
+        tip.style.left = Math.min(x, window.innerWidth - 244) + 'px';
+        tip.style.top  = Math.max(y, 8) + 'px';
+      });
+      card.addEventListener('mouseleave', () => tip.classList.remove('visible'));
+    });
   }
 
   /* ─── Render: Kanban ─── */
@@ -718,7 +756,8 @@
         ${ins.tips.slice(0,3).map(t => `
           <div class="tip-card">
             <div class="tip-cat">${t.category}</div>
-            <div class="tip-text">${t.tip}</div>
+            ${t.current ? `<div class="tip-now"><span class="tip-now-label">Now</span>${t.current}</div>` : ''}
+            <div class="tip-do"><span class="tip-do-label">→</span>${t.better || t.tip}</div>
           </div>`).join('')}
       </div>`;
 

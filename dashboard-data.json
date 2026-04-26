@@ -3,7 +3,7 @@
     "lastUpdated": "2026-04-25",
     "brainLastUpdated": "2026-04-25",
     "sessionCount": 6,
-    "activeProjects": 4
+    "activeProjects": 5
   },
   "agents": [
     {
@@ -129,6 +129,51 @@
       "group": "Travel Planner",
       "tier": "Technical",
       "purpose": "Technical architecture and implementation for the Travel Planner app. React + TypeScript + Vercel stack.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "wg-engagement-manager",
+      "name": "Engagement Manager",
+      "group": "WebGrowth",
+      "tier": "Strategic",
+      "purpose": "Orchestrates the full pre-call workflow. Give it a prospect name + URL and it sequences brand research, site audit, and competitor analysis into a ready-to-use call package.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "wg-brand-intelligence",
+      "name": "Brand Intelligence",
+      "group": "WebGrowth",
+      "tier": "Research",
+      "purpose": "Reviews a prospect's website, Facebook, and Instagram. Outputs tone, culture, platform, customer profile, and recent business activity.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "wg-site-audit",
+      "name": "Site Audit",
+      "group": "WebGrowth",
+      "tier": "Research",
+      "purpose": "Audits a prospect's site for broken links, SEO issues, missing CTAs, mobile problems, page speed, and outdated content. Outputs a scored report.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "wg-competitor-analysis",
+      "name": "Competitor Analysis",
+      "group": "WebGrowth",
+      "tier": "Research",
+      "purpose": "Identifies 2–3 direct competitors, benchmarks their sites against the prospect's, and produces a gap summary showing where the prospect is losing ground.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "wg-standards",
+      "name": "Standards",
+      "group": "WebGrowth",
+      "tier": "Reference",
+      "purpose": "Source of truth for deliverable templates, tone rules, scoring rubrics, pricing tiers, and prototype layout standards. Every other WebGrowth agent references this.",
       "status": "ready",
       "currentTask": null
     },
@@ -312,6 +357,38 @@
       "priority": "P2",
       "column": "needs-refinement",
       "description": "Wire scheduled outreach agent to write intel cards directly to repo via GitHub API. No session required."
+    },
+    {
+      "id": "wg-pre-call-template",
+      "title": "Build Pre-Call Audit Template",
+      "project": "WebGrowth",
+      "priority": "P2",
+      "column": "needs-refinement",
+      "description": "Repeatable checklist: brand intel, site audit, competitor snapshot, call-out list."
+    },
+    {
+      "id": "wg-pricing-model",
+      "title": "Build Service Pricing Model",
+      "project": "WebGrowth",
+      "priority": "P2",
+      "column": "needs-refinement",
+      "description": "Rebuild tiers + monthly maintenance retainer pricing. One-time vs recurring."
+    },
+    {
+      "id": "wg-pitch-deck",
+      "title": "Build One-Page Pitch Deck",
+      "project": "WebGrowth",
+      "priority": "P2",
+      "column": "needs-refinement",
+      "description": "Leave-behind after first call. Positions rebuild as solution to audit findings."
+    },
+    {
+      "id": "wg-first-prospect",
+      "title": "Run first prospect through pre-call workflow",
+      "project": "WebGrowth",
+      "priority": "P2",
+      "column": "needs-refinement",
+      "description": "Use Engagement Manager agent end-to-end on first real prospect to validate pipeline."
     }
   ],
   "sips513": {
@@ -379,44 +456,44 @@
       {
         "id": "tip-1",
         "category": "Board Usage",
-        "tip": "Run the Board before major sessions, not after. Pre-session alignment means you ship with confidence instead of second-guessing mid-build.",
-        "priority": "high"
+        "current": "You invoke the Board after decisions are made — using it to validate work already done.",
+        "better": "Run it before major sessions. Pre-session alignment means you build the right thing first time instead of course-correcting mid-build."
       },
       {
         "id": "tip-2",
         "category": "CLAUDE.md Files",
-        "tip": "513Sips and Brain still need CLAUDE.md files. A tight one saves 5+ minutes of context at every session start — it compounds fast across dozens of sessions.",
-        "priority": "high"
+        "current": "513Sips and Brain have no CLAUDE.md — Claude rebuilds context from scratch at the start of every session.",
+        "better": "Add CLAUDE.md to both. 20 lines covering purpose, paths, and build commands saves 5+ minutes of ramp-up every session — it compounds fast."
       },
       {
         "id": "tip-3",
         "category": "Session Hygiene",
-        "tip": "Add a 'key decisions made this session' field to your handoffs. Makes future Board reviews faster and preserves reasoning that gets lost otherwise.",
-        "priority": "high"
+        "current": "Handoffs capture what was done but not why decisions were made.",
+        "better": "Add a 'decisions + reasoning' field. In 3 months you'll know why you chose accrual-basis accounting — not just that you did."
       },
       {
         "id": "tip-4",
         "category": "Model Selection",
-        "tip": "Sonnet 4.6 for builds, saves, and blog drafts. Opus 4.7 for Board reviews, pricing strategy, and complex architecture decisions where depth matters.",
-        "priority": "medium"
+        "current": "You're likely using one model for everything — builds, strategy, quick lookups.",
+        "better": "Sonnet for builds/saves/drafts. Opus for Board reviews and complex strategy. Haiku for quick lookups and data formatting. Match cost to task depth."
       },
       {
         "id": "tip-5",
-        "category": "Agent Design",
-        "tip": "17 agents is a lot. Review which ones you actually invoke. Unused agents are noise — archive rarely-used ones to keep the fleet readable and purposeful.",
-        "priority": "medium"
+        "category": "Agent Fleet",
+        "current": "You have 22 agents defined. Several have never been invoked in a real session.",
+        "better": "Archive agents unused in 30+ days. A smaller, sharper fleet is faster to navigate and forces clarity on when each agent actually gets used."
       },
       {
         "id": "tip-6",
-        "category": "Automation",
-        "tip": "Your Automation Feed is empty. The Customer Outreach loop is in the backlog — once it runs, you'll have weekly competitive intel without lifting a finger.",
-        "priority": "medium"
+        "category": "Automation Pipeline",
+        "current": "Customer Outreach and Social pipelines are in the backlog but not built — intel is manual or missing.",
+        "better": "Build the outreach loop before the social pipeline. Weekly competitive intel from PoppinBar/CincySips feeds content strategy automatically."
       },
       {
         "id": "tip-7",
-        "category": "Prompt Craft",
-        "tip": "Strong session openers eliminate back-and-forth. Try: 'Working on [X], last session we did [Y], today I need [Z].' First pass gets sharper immediately.",
-        "priority": "low"
+        "category": "Session Openers",
+        "current": "Sessions start with Claude asking clarifying questions before getting to work.",
+        "better": "Open with: 'Working on [X]. Last session: [Y]. Today: [Z]. Start with [first task].' Eliminates warm-up entirely — first pass is production-quality."
       }
     ],
     "bestPractices": [
