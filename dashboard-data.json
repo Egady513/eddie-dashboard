@@ -1,9 +1,9 @@
 {
   "meta": {
-    "lastUpdated": "2026-04-25",
-    "brainLastUpdated": "2026-04-25",
-    "sessionCount": 6,
-    "activeProjects": 5
+    "lastUpdated": "2026-04-27",
+    "brainLastUpdated": "2026-04-27",
+    "sessionCount": 7,
+    "activeProjects": 6
   },
   "agents": [
     {
@@ -233,18 +233,34 @@
     {
       "id": "513-blog2",
       "title": "Publish blog post 2 — How Much Does a Mobile Bartender Cost?",
-      "project": "513Sips",
+      "project": "513Sips Website",
       "priority": "P1",
       "column": "ready",
       "description": "Add card to blog/index.html and push to main. Was scheduled Apr 23 — overdue."
     },
     {
-      "id": "513-bug3",
-      "title": "Merge BUG-3: Privacy Policy + ToS modals",
-      "project": "513Sips",
+      "id": "513-pricing-update",
+      "title": "Update Pricing section on index.html",
+      "project": "513Sips Website",
+      "priority": "P1",
+      "column": "needs-refinement",
+      "description": "Review pricing cards/callouts for accuracy and brand alignment."
+    },
+    {
+      "id": "513-seo1",
+      "title": "SEO-1: Google Search Console setup",
+      "project": "513Sips Website",
       "priority": "P1",
       "column": "ready",
-      "description": "Branch: feature/BUG-3-privacy-tos-modals. Footer links go to href='#' in production."
+      "description": "Eddie action: go to search.google.com/search-console, add www.513sips.com, verify via TXT record in Squarespace DNS, submit sitemap.xml."
+    },
+    {
+      "id": "513-bug3",
+      "title": "BUG-3: Privacy Policy + ToS modals",
+      "project": "513Sips Website",
+      "priority": "P1",
+      "column": "done",
+      "description": "Shipped 2026-04-26. Footer links now open branded modal overlays. Applied cleanly to main."
     },
     {
       "id": "513-claude-md",
@@ -267,8 +283,8 @@
       "title": "Complete Vercel deployment for Travel Planner",
       "project": "Travel Planner",
       "priority": "P1",
-      "column": "ready",
-      "description": "Import Egady513/TravelPlanner, add 4 env vars from .env.local, get live URL."
+      "column": "done",
+      "description": "Completed 2026-04-26. App is live on Vercel."
     },
     {
       "id": "brain-handoffs",
@@ -297,15 +313,15 @@
     {
       "id": "513-blog3",
       "title": "Publish blog post 3 — What Does a Mobile Bartender Do?",
-      "project": "513Sips",
+      "project": "513Sips Website",
       "priority": "P2",
       "column": "ready",
-      "description": "Target: Apr 30"
+      "description": "Target: Apr 30. Uncomment card in blog/index.html, push to main."
     },
     {
       "id": "513-blog4",
       "title": "Publish blog post 4 — Open Bar vs Cash Bar vs Consumption Bar",
-      "project": "513Sips",
+      "project": "513Sips Website",
       "priority": "P2",
       "column": "ready",
       "description": "Target: May 7"
@@ -313,10 +329,50 @@
     {
       "id": "513-blog5",
       "title": "Publish blog post 5 — What to Expect When You Book 513Sips",
-      "project": "513Sips",
+      "project": "513Sips Website",
       "priority": "P2",
       "column": "ready",
       "description": "Target: May 14"
+    },
+    {
+      "id": "513-nav-js-faq-gallery",
+      "title": "Convert faq.html + gallery.html to nav.js",
+      "project": "513Sips Website",
+      "priority": "P2",
+      "column": "needs-refinement",
+      "description": "Both pages use hardcoded navs. Converting to shared nav.js means nav changes propagate everywhere."
+    },
+    {
+      "id": "513-faq-logo",
+      "title": "Fix FAQ page logo",
+      "project": "513Sips Website",
+      "priority": "P2",
+      "column": "needs-refinement",
+      "description": "Logo appears small/awkward on FAQ page. nav.js mobile fix doesn't apply since FAQ uses its own .nav class."
+    },
+    {
+      "id": "513-tool3",
+      "title": "TOOL-3: Client Photo Gallery hidden URL",
+      "project": "513Sips Website",
+      "priority": "P2",
+      "column": "needs-refinement",
+      "description": "Hidden event URL (www.513sips.com/photos/{slug}) to share event photos post-event. No login — URL is the key. Cloudinary delivery API + per-photo download."
+    },
+    {
+      "id": "513-p15",
+      "title": "P15: FAQ wording updates",
+      "project": "513Sips Website",
+      "priority": "P2",
+      "column": "needs-refinement",
+      "description": "Eddie to provide updated copy for specific questions. Applies to both faq.html accordion and index.html mobile FAQ preview."
+    },
+    {
+      "id": "513-p20",
+      "title": "P20: Video support in gallery",
+      "project": "513Sips Website",
+      "priority": "P2",
+      "column": "needs-refinement",
+      "description": "Videos folder excluded from Cloudinary sync. Needs design decision: autoplay on hover or lightbox playback?"
     },
     {
       "id": "513-outreach-loop",
@@ -429,15 +485,7 @@
         "url": null
       }
     ],
-    "openBugs": [
-      {
-        "id": "BUG-3",
-        "title": "Privacy Policy + ToS modals missing",
-        "branch": "feature/BUG-3-privacy-tos-modals",
-        "description": "Footer links go to href='#' in production. Branch exists, not yet merged.",
-        "severity": "high"
-      }
-    ],
+    "openBugs": [],
     "board": {
       "lastInvoked": "2026-04-24",
       "lastDecision": "Implement accrual-basis accounting in Books. No double-counting confirmed. Owner reimbursement widget added ($326.92 due to Eddie).",
