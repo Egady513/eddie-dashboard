@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Floor — Command Center</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #060609; --glass: rgba(255,255,255,0.04); --glass-border: rgba(255,255,255,0.08);
+  --text: rgba(255,255,255,0.9); --text-muted: rgba(255,255,255,0.48);
+  --gold: #C9A264; --gold-dim: rgba(201,162,100,0.14);
+  --radius: 14px; --ease: all 0.25s ease;
+}
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 100%; height: 100vh; overflow: hidden; background: var(--bg); color: var(--text); font-family: 'Montserrat', sans-serif; }
+
+#bg-layer { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.08; }
+.orb-1 { width: 600px; height: 600px; background: #C9A264; top: -200px; right: -100px; }
+.orb-2 { width: 400px; height: 400px; background: #5B9BD5; bottom: 0; left: -150px; }
+
+#header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+  height: 56px; display: flex; align-items: center; gap: 20px;
+  padding: 0 24px;
+  background: rgba(6,6,9,0.85); backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+}
+.back-btn {
+  font-size: 11px; font-weight: 500; color: var(--text-muted);
+  text-decoration: none; letter-spacing: 0.04em;
+  padding: 5px 12px; border: 1px solid var(--glass-border);
+  border-radius: 6px; transition: var(--ease);
+}
+.back-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+#header h1 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: var(--gold); }
+#header-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
+.legend { display: flex; gap: 14px; align-items: center; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 500; color: var(--text-muted); letter-spacing: 0.04em; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+#agent-count { font-size: 11px; color: var(--text-muted); }
+
+#floor-viewport {
+  position: fixed; inset: 56px 0 0 0; overflow: hidden; cursor: grab; z-index: 1;
+}
+#floor-viewport.dragging { cursor: grabbing; }
+#floor-canvas { position: absolute; top: 0; left: 0; }
+
+#info-panel {
+  position: fixed; right: -320px; top: 56px; bottom: 0; width: 300px; z-index: 20;
+  background: rgba(12,12,20,0.95); backdrop-filter: blur(28px);
+  border-left: 1px solid var(--glass-border);
+  transition: right 0.3s cubic-bezier(0.4,0,0.2,1);
+  padding: 24px; display: flex; flex-direction: column; gap: 16px;
+  overflow-y: auto;
+}
+#info-panel.open { right: 0; }
+#info-close { align-self: flex-end; background: none; border: 1px solid var(--glass-border); color: var(--text-muted); cursor: pointer; border-radius: 6px; padding: 4px 10px; font-size: 11px; transition: var(--ease); }
+#info-close:hover { color: var(--text); }
+#info-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--gold); }
+#info-name { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 400; color: var(--text); line-height: 1.1; }
+#info-group { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
+#info-role { font-size: 11px; color: var(--text-muted); margin-top: -8px; }
+#info-purpose { font-size: 12px; color: rgba(255,255,255,0.65); line-height: 1.65; }
+#info-model-badge { display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; padding: 3px 10px; border-radius: 4px; }
+#info-status { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
+#info-status-dot { width: 7px; height: 7px; border-radius: 50%; }
+#info-divider { border: none; border-top: 1px solid var(--glass-border); }
+#info-state-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+#info-state-desc { font-size: 11px; color: rgba(255,255,255,0.55); line-height: 1.5; }
+
+#hint { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 10; font-size: 11px; color: var(--text-muted); background: rgba(12,12,20,0.8); backdrop-filter: blur(10px); padding: 6px 16px; border-radius: 20px; border: 1px solid var(--glass-border); pointer-events: none; transition: opacity 0.5s; }
+#hint.fade { opacity: 0; }
+</style>
+</head>
+<body>
+<div id="bg-layer"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
+
+<div id="header">
+  <a href="index.html" class="back-btn">← Command Center</a>
+  <h1>Agent Floor</h1>
+  <div id="header-right">
+    <div class="legend" id="legend"></div>
+    <span id="agent-count"></span>
+  </div>
+</div>
+
+<div id="floor-viewport">
+  <canvas id="floor-canvas"></canvas>
+</div>
+
+<div id="info-panel">
+  <button id="info-close">✕ Close</button>
+  <div style="display:flex;align-items:center;gap:8px">
+    <div id="info-dot"></div>
+    <div id="info-name">Agent</div>
+  </div>
+  <div id="info-group"></div>
+  <div id="info-role"></div>
+  <hr id="info-divider">
+  <div id="info-purpose"></div>
+  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+    <div id="info-model-badge"></div>
+    <div id="info-status"><div id="info-status-dot"></div><span id="info-status-text"></span></div>
+  </div>
+  <div id="info-state-label"></div>
+  <div id="info-state-desc"></div>
+</div>
+
+<div id="hint">Drag to pan · Click an agent to inspect</div>
+
+<script>
+// ─── Constants ───────────────────────────────────────────
+const TW = 72, TH = 36, WH = 54; // tile width, tile height, wall height
+const CANVAS_W = 2200, CANVAS_H = 1800;
+
+const TEAMS = {
+  'Board':       { color: '#C9A264', dark: '#8B6D3A', label: 'Board' },
+  '513Sips':     { color: '#64B5A0', dark: '#3D7A6A', label: '513Sips' },
+  'Design':      { color: '#A78BFA', dark: '#6B57BE', label: 'Design' },
+  'Travel Planner': { color: '#81C784', dark: '#4A8B4D', label: 'Travel' },
+  'WebGrowth':   { color: '#E8956D', dark: '#A85E3A', label: 'WebGrowth' },
+  'Shared':      { color: '#9E9E9E', dark: '#5E5E5E', label: 'Shared' },
+};
+
+const MODEL_STYLE = {
+  opus:   { bg: 'rgba(201,162,100,0.2)', color: '#C9A264', label: 'Opus' },
+  sonnet: { bg: 'rgba(91,155,213,0.2)', color: '#5B9BD5', label: 'Sonnet' },
+  haiku:  { bg: 'rgba(100,181,160,0.2)', color: '#64B5A0', label: 'Haiku' },
+};
+
+// ─── Agent Data ──────────────────────────────────────────
+const AGENTS_DATA = [
+  { id:'marcus',   name:'Marcus',    label:'CEO',             group:'Board',    model:'opus',   room:'boardroom',  purpose:'Strategic vision, brand alignment, long-term growth. Opens most board discussions.', tier:'Board' },
+  { id:'rachel',   name:'Rachel',    label:'CFO',             group:'Board',    model:'opus',   room:'boardroom',  purpose:'Financial reality, full cost accounting, margin discipline. The last voice on a discount.', tier:'Board' },
+  { id:'danny',    name:'Danny',     label:'Hard Sell',       group:'Board',    model:'opus',   room:'boardroom',  purpose:'Leverage, negotiation, what 513Sips actually gets out of a deal. Never quiet for long.', tier:'Board' },
+  { id:'vivian',   name:'Vivian',    label:'Brand Director',  group:'Board',    model:'opus',   room:'boardroom',  purpose:'Premium perception, guest experience, the elevated standard. Protects the brand.', tier:'Board' },
+  { id:'finance',  name:'Finance/Tax', label:'SME',           group:'513Sips',  model:'opus',   room:'finance',    purpose:'Tax strategy, complex accounting, multi-year planning. Escalation from Bookkeeper.', tier:'SME' },
+  { id:'bookkeeper',name:'Bookkeeper', label:'Accounting',    group:'513Sips',  model:'haiku',  room:'finance',    purpose:'Day-to-day ledger, vendor payments, owner reimbursements. Knows every cost cold.', tier:'SME' },
+  { id:'pricing',  name:'Pricing',   label:'SME',             group:'513Sips',  model:'haiku',  room:'finance',    purpose:'Quote generation, margin check, package building. Cross-refs Pricing-Strategy note.', tier:'SME' },
+  { id:'contract', name:'Contract',  label:'Legal',           group:'513Sips',  model:'sonnet', room:'client',     purpose:'Contract generation and management. Legal language for customer and vendor agreements.', tier:'SME' },
+  { id:'ops',      name:'Ops Manager', label:'Operations',    group:'513Sips',  model:'sonnet', room:'events',     purpose:'Day-to-day ops, scheduling, vendor coordination. Event logistics end-to-end.', tier:'Domain' },
+  { id:'marketing',name:'Marketing', label:'Strategy',        group:'513Sips',  model:'sonnet', room:'content',    purpose:'Campaign planning, channel strategy, content calendar. Briefs the Design Team.', tier:'Domain' },
+  { id:'quote',    name:'Quote',     label:'Client Quote',    group:'513Sips',  model:'haiku',  room:'client',     purpose:'Builds client-facing event quotes from specs using current pricing model.', tier:'Domain' },
+  { id:'recap',    name:'Event Recap', label:'Documentation', group:'513Sips',  model:'haiku',  room:'events',     purpose:'Post-event documentation. Captures what happened, what was served, what worked.', tier:'Domain' },
+  { id:'drink',    name:'Drink',     label:'Mixology',        group:'513Sips',  model:'haiku',  room:'events',     purpose:'Drink recommendations, batch quantities, seasonal menus, event drink log.', tier:'Domain' },
+  { id:'postmortem',name:'PostMortem', label:'Debrief',       group:'513Sips',  model:'sonnet', room:'events',     purpose:'28-question guided debrief after every event. Drives continuous improvement.', tier:'Domain' },
+  { id:'acquisition',name:'Customer Acq.', label:'Lead Gen', group:'513Sips',  model:'sonnet', room:'client',     purpose:'Venue scouting, Google reviews, outreach templates. Drives new business pipeline.', tier:'Domain' },
+  { id:'social513',name:'Social Media', label:'Content',      group:'513Sips',  model:'sonnet', room:'content',    purpose:'Instagram strategy from Cloudinary photos + blog. Competitive analysis vs PoppinBar.', tier:'Domain' },
+  { id:'cd',       name:'Creative Dir.', label:'Design Lead', group:'Design',   model:'sonnet', room:'design',     purpose:'Team lead for all creative. Orchestrates AD + Copywriter + QA. Final gate before Eddie.', tier:'Design' },
+  { id:'ad',       name:'Art Director', label:'Visual Lead',  group:'Design',   model:'sonnet', room:'design',     purpose:'Layout, photo selection, visual hierarchy. Every pixel on every deliverable.', tier:'Design' },
+  { id:'copy',     name:'Copywriter', label:'Copy Lead',      group:'Design',   model:'sonnet', room:'design',     purpose:'Headlines, body copy, captions, hashtags. Brand voice guardian.', tier:'Design' },
+  { id:'qa',       name:'Design QA',  label:'Quality Gate',  group:'Design',   model:'haiku',  room:'design',     purpose:'3-lens review: Functional · UX · Customer Mindset. Nothing ships without passing QA.', tier:'Design' },
+  { id:'tp-pm',    name:'Travel PM',  label:'Product',        group:'Travel Planner', model:'sonnet', room:'travel', purpose:'Feature roadmap, sprint planning, scope decisions for the Travel Planner app.', tier:'PM' },
+  { id:'tp-dev',   name:'Travel Dev', label:'Engineering',   group:'Travel Planner', model:'sonnet', room:'travel', purpose:'Technical architecture and implementation. React + TypeScript + Vercel stack.', tier:'Dev' },
+  { id:'wg-em',    name:'Eng. Manager', label:'Orchestrator', group:'WebGrowth', model:'sonnet', room:'webgrowth', purpose:'Sequences the full pre-call pipeline. Give it a prospect URL, it runs everything.', tier:'Lead' },
+  { id:'wg-brand', name:'Brand Intel.', label:'Research',    group:'WebGrowth', model:'sonnet', room:'webgrowth', purpose:'Website + Facebook + Instagram review. Brand, tone, culture, hosting cost.', tier:'Research' },
+  { id:'wg-audit', name:'Site Audit',  label:'Technical',    group:'WebGrowth', model:'sonnet', room:'webgrowth', purpose:'Broken links, SEO issues, missing CTAs, mobile issues. Scored audit report.', tier:'Research' },
+  { id:'wg-comp',  name:'Competitor',  label:'Analysis',     group:'WebGrowth', model:'sonnet', room:'webgrowth', purpose:'2–3 competitor benchmarks. Shows exactly where the prospect is losing ground.', tier:'Research' },
+  { id:'wg-call',  name:'Callout Gen.', label:'Hooks',       group:'WebGrowth', model:'haiku',  room:'webgrowth', purpose:'"We did our homework" moments. 5–7 specific, named observations for the first call.', tier:'Content' },
+  { id:'wg-price', name:'Pricing',     label:'Scoping',      group:'WebGrowth', model:'haiku',  room:'webgrowth', purpose:'Refresh / Rebuild / Transform tier selection + investment estimate.', tier:'Finance' },
+  { id:'wg-prop',  name:'Proposal',    label:'Writing',      group:'WebGrowth', model:'sonnet', room:'webgrowth', purpose:'Assembles full pre-call package from all research. The leave-behind that closes deals.', tier:'Content' },
+  { id:'wg-proto', name:'Prototype',   label:'Build',        group:'WebGrowth', model:'sonnet', room:'webgrowth', purpose:'Lo-fi HTML prototype tailored to prospect. Visual proof of "better" before they say yes.', tier:'Dev' },
+  { id:'wg-design',name:'Design Insp.', label:'Trends',      group:'WebGrowth', model:'haiku',  room:'webgrowth', purpose:'Design trends by industry from Awwwards, Dribbble, etc. Feeds Prototype agent.', tier:'Research' },
+  { id:'wg-std',   name:'Standards',   label:'Reference',    group:'WebGrowth', model:'haiku',  room:'webgrowth', purpose:'Deliverable templates, tone rules, scoring rubrics. Source of truth for all WebGrowth.', tier:'Reference' },
+  { id:'librarian',name:'Brain Lib.',  label:'Vault',        group:'Shared',   model:'haiku',  room:'library',    purpose:'Save protocol, vault deduplication, structural maintenance. The brain\'s archivist.', tier:'Shared' },
+  { id:'summarizer',name:'Summarizer', label:'Handoffs',     group:'Shared',   model:'haiku',  room:'library',    purpose:'Session handoff generation. Creates the closing note saved to Brain each session.', tier:'Shared' },
+  { id:'social-mgr',name:'Social Mgr', label:'Principles',  group:'Shared',   model:'haiku',  room:'library',    purpose:'Cross-project social media principles. Project agents handle execution.', tier:'Shared' },
+];
+
+// ─── Room Definitions ────────────────────────────────────
+const ROOMS = {
+  boardroom:  { label:'The Board Room',       ox:520,  oy:280,  cols:10, rows:8,  team:'Board',    wallColor:'#1a1508', floorColor:'#12100a', accentColor:'#C9A264' },
+  finance:    { label:'Finance Office',        ox:1050, oy:200,  cols:8,  rows:6,  team:'513Sips',  wallColor:'#071518', floorColor:'#080f10', accentColor:'#64B5A0' },
+  client:     { label:'Client Services',       ox:1050, oy:580,  cols:8,  rows:6,  team:'513Sips',  wallColor:'#071518', floorColor:'#080f10', accentColor:'#64B5A0' },
+  content:    { label:'Content Studio',        ox:500,  oy:640,  cols:8,  rows:6,  team:'513Sips',  wallColor:'#071518', floorColor:'#080f10', accentColor:'#64B5A0' },
+  events:     { label:'Events & Ops',          ox:1550, oy:390,  cols:9,  rows:7,  team:'513Sips',  wallColor:'#071518', floorColor:'#080f10', accentColor:'#64B5A0' },
+  design:     { label:'Design Studio',         ox:900,  oy:910,  cols:10, rows:7,  team:'Design',   wallColor:'#120a1a', floorColor:'#0e0812', accentColor:'#A78BFA' },
+  travel:     { label:'Travel Planner Suite',  ox:450,  oy:990,  cols:7,  rows:5,  team:'Travel Planner', wallColor:'#081208', floorColor:'#08100a', accentColor:'#81C784' },
+  webgrowth:  { label:'WebGrowth Agency Floor',ox:1380, oy:1000, cols:13, rows:8,  team:'WebGrowth',wallColor:'#180e08', floorColor:'#120a06', accentColor:'#E8956D' },
+  library:    { label:'The Library',           ox:430,  oy:1330, cols:7,  rows:5,  team:'Shared',   wallColor:'#0e0e14', floorColor:'#0a0a10', accentColor:'#9E9E9E' },
+  breakroom:  { label:'☕ Break Room',          ox:900,  oy:1340, cols:8,  rows:6,  team:'Shared',   wallColor:'#0e100e', floorColor:'#0a0c0a', accentColor:'#81C784' },
+};
+
+// ─── Character State ─────────────────────────────────────
+const CHARS = AGENTS_DATA.map((a, i) => ({
+  ...a,
+  sx: 0, sy: 0,           // current screen pos
+  tx: 0, ty: 0,           // target screen pos (walk destination)
+  gx: 0, gy: 0,           // grid position within room
+  state: 'working',        // working | walking | break | sleeping
+  frame: Math.random() * 200,
+  walkTimer: 200 + Math.random() * 400,
+  selected: false,
+  deskX: 0, deskY: 0,     // home desk screen pos
+}));
+
+// ─── Canvas Setup ────────────────────────────────────────
+const canvas = document.getElementById('floor-canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = CANVAS_W;
+canvas.height = CANVAS_H;
+
+// ─── Viewport / Pan ──────────────────────────────────────
+let camX = -(CANVAS_W/2 - window.innerWidth/2);
+let camY = -60;
+let dragging = false, dragStartX = 0, dragStartY = 0, camStartX = 0, camStartY = 0;
+const viewport = document.getElementById('floor-viewport');
+
+canvas.style.transform = `translate(${camX}px, ${camY}px)`;
+function applyCamera() { canvas.style.transform = `translate(${camX}px, ${camY}px)`; }
+
+viewport.addEventListener('mousedown', e => {
+  dragging = true; viewport.classList.add('dragging');
+  dragStartX = e.clientX; dragStartY = e.clientY;
+  camStartX = camX; camStartY = camY;
+});
+window.addEventListener('mousemove', e => {
+  if (!dragging) return;
+  camX = camStartX + (e.clientX - dragStartX);
+  camY = camStartY + (e.clientY - dragStartY);
+  applyCamera();
+});
+window.addEventListener('mouseup', () => { dragging = false; viewport.classList.remove('dragging'); });
+
+// ─── Utility ──────────────────────────────────────────────
+function hex2rgb(hex) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return {r,g,b};
+}
+function shade(hex, factor) {
+  const {r,g,b} = hex2rgb(hex);
+  return `rgb(${Math.round(r*factor)},${Math.round(g*factor)},${Math.round(b*factor)})`;
+}
+function poly(ctx, pts, color, stroke) {
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, pts[0].y);
+  pts.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.closePath();
+  ctx.fillStyle = color;
+  ctx.fill();
+  if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 0.5; ctx.stroke(); }
+}
+function isoXY(room, col, row) {
+  return {
+    x: room.ox + (col - row) * TW / 2,
+    y: room.oy + (col + row) * TH / 2
+  };
+}
+
+// ─── Drawing: Isometric Building Blocks ──────────────────
+function drawFloorTile(room, col, row, topColor) {
+  const {x,y} = isoXY(room, col, row);
+  poly(ctx, [
+    {x, y: y - TH/2},
+    {x: x+TW/2, y},
+    {x, y: y+TH/2},
+    {x: x-TW/2, y}
+  ], topColor, 'rgba(255,255,255,0.03)');
+}
+
+function drawBox(room, col, row, w, d, h, topC, leftC, rightC) {
+  const {x,y} = isoXY(room, col, row);
+  const elevation = h * WH;
+  // Top face
+  poly(ctx, [
+    {x, y: y - elevation},
+    {x: x+TW/2*w, y: y - elevation + TH/2*w},
+    {x: x+TW/2*w - TW/2*d, y: y - elevation + TH/2*w + TH/2*d},
+    {x: x - TW/2*d, y: y - elevation + TH/2*d}
+  ], topC, 'rgba(255,255,255,0.05)');
+  // Left face
+  poly(ctx, [
+    {x: x - TW/2*d, y: y - elevation + TH/2*d},
+    {x, y: y - elevation},
+    {x, y},
+    {x: x - TW/2*d, y: y + TH/2*d}
+  ], leftC, 'rgba(255,255,255,0.03)');
+  // Right face
+  poly(ctx, [
+    {x, y: y - elevation},
+    {x: x+TW/2*w, y: y - elevation + TH/2*w},
+    {x: x+TW/2*w, y: y + TH/2*w},
+    {x, y}
+  ], rightC, 'rgba(255,255,255,0.03)');
+}
+
+function drawWallLeft(room, col, row, h, color) {
+  const {x,y} = isoXY(room, col, row);
+  poly(ctx, [
+    {x: x-TW/2, y: y - h*WH},
+    {x, y: y - h*WH + TH/2},
+    {x, y: y+TH/2},
+    {x: x-TW/2, y}
+  ], shade(color, 0.6));
+  // accent stripe
+  poly(ctx, [
+    {x: x-TW/2, y: y - h*WH},
+    {x, y: y - h*WH + TH/2},
+    {x, y: y - h*WH + TH/2 + 4},
+    {x: x-TW/2, y: y - h*WH + 4}
+  ], shade(color, 1.8));
+}
+
+function drawWallRight(room, col, row, h, color) {
+  const {x,y} = isoXY(room, col, row);
+  poly(ctx, [
+    {x, y: y - h*WH + TH/2},
+    {x: x+TW/2, y: y - h*WH},
+    {x: x+TW/2, y},
+    {x, y: y+TH/2}
+  ], shade(color, 0.45));
+  poly(ctx, [
+    {x, y: y - h*WH + TH/2},
+    {x: x+TW/2, y: y - h*WH},
+    {x: x+TW/2, y: y - h*WH + 4},
+    {x, y: y - h*WH + TH/2 + 4}
+  ], shade(color, 1.6));
+}
+
+// ─── Drawing: Room ────────────────────────────────────────
+function drawRoom(room) {
+  const cols = room.cols, rows = room.rows;
+  // Floor
+  for (let c = 0; c < cols; c++) {
+    for (let r = 0; r < rows; r++) {
+      const shade_val = ((c + r) % 2 === 0) ? 1.0 : 0.88;
+      drawFloorTile(room, c, r, shade(room.floorColor, shade_val));
+    }
+  }
+  // Left walls (col = 0, all rows)
+  for (let r = 0; r < rows; r++) drawWallLeft(room, 0, r, 2.2, room.wallColor);
+  // Right walls (row = 0, all cols)
+  for (let c = 0; c < cols; c++) drawWallRight(room, c, 0, 2.2, room.wallColor);
+  // Room label
+  const labelPos = isoXY(room, cols/2, -0.8);
+  ctx.font = '700 11px Montserrat';
+  ctx.letterSpacing = '0.08em';
+  ctx.textAlign = 'center';
+  ctx.fillStyle = room.accentColor;
+  ctx.globalAlpha = 0.85;
+  ctx.fillText(room.label.toUpperCase(), labelPos.x, labelPos.y);
+  ctx.globalAlpha = 1;
+}
+
+// ─── Drawing: Furniture ───────────────────────────────────
+function drawDesk(room, col, row, accentC) {
+  // Desk surface
+  drawBox(room, col, row, 1.8, 1, 0.55, shade(accentC, 0.25), shade(accentC, 0.18), shade(accentC, 0.15));
+  // Monitor
+  drawBox(room, col+0.3, row+0.1, 0.7, 0.08, 1.1, shade(accentC, 0.6), shade(accentC, 0.4), shade(accentC, 0.35));
+  // Monitor glow
+  const mp = isoXY(room, col+0.65, row+0.05);
+  ctx.beginPath();
+  ctx.ellipse(mp.x, mp.y - WH*0.9, 18, 9, 0, 0, Math.PI*2);
+  ctx.fillStyle = shade(accentC, 1.4);
+  ctx.globalAlpha = 0.15;
+  ctx.fill();
+  ctx.globalAlpha = 1;
+}
+
+function drawChair(room, col, row, color) {
+  drawBox(room, col, row, 0.9, 0.9, 0.4, shade(color, 0.4), shade(color, 0.28), shade(color, 0.22));
+  drawBox(room, col, row-0.05, 0.9, 0.1, 0.9, shade(color, 0.35), shade(color, 0.24), shade(color, 0.18));
+}
+
+function drawBookshelf(room, col, row, color) {
+  drawBox(room, col, row, 2, 0.5, 1.6, shade(color, 0.22), shade(color, 0.15), shade(color, 0.12));
+  for (let i = 0; i < 5; i++) {
+    const bc = ['#C9A264','#5B9BD5','#A78BFA','#81C784','#E8956D'][i];
+    drawBox(room, col+0.15+i*0.32, row+0.08, 0.28, 0.35, 1.2, shade(bc, 0.7), shade(bc, 0.5), shade(bc, 0.4));
+  }
+}
+
+function drawTable(room, col, row, w, d, color) {
+  drawBox(room, col, row, w, d, 0.7, shade(color, 0.32), shade(color, 0.22), shade(color, 0.18));
+}
+
+function drawCouch(room, col, row, color) {
+  drawBox(room, col, row, 2.5, 1, 0.5, shade(color, 0.35), shade(color, 0.25), shade(color, 0.2));
+  drawBox(room, col, row, 2.5, 0.2, 0.9, shade(color, 0.28), shade(color, 0.2), shade(color, 0.16));
+  drawBox(room, col, row, 0.2, 1, 0.9, shade(color, 0.28), shade(color, 0.2), shade(color, 0.16));
+  drawBox(room, col+2.3, row, 0.2, 1, 0.9, shade(color, 0.28), shade(color, 0.2), shade(color, 0.16));
+}
+
+function drawCoffeeMachine(room, col, row) {
+  drawBox(room, col, row, 0.8, 0.8, 1.2, '#2a1f14', '#1a1310', '#151008');
+  drawBox(room, col+0.15, row+0.15, 0.5, 0.5, 1.0, '#3a2a1a', '#2a1e12', '#22180e');
+  const light = isoXY(room, col+0.4, row+0.4);
+  ctx.beginPath();
+  ctx.arc(light.x, light.y - WH*0.95, 4, 0, Math.PI*2);
+  ctx.fillStyle = '#C9A264';
+  ctx.globalAlpha = 0.9; ctx.fill(); ctx.globalAlpha = 1;
+}
+
+function drawPlant(room, col, row) {
+  drawBox(room, col, row, 0.5, 0.5, 0.5, '#1a2814', '#121e0e', '#0e180a');
+  const {x,y} = isoXY(room, col+0.25, row+0.25);
+  ctx.beginPath(); ctx.arc(x, y - WH*0.6, 12, 0, Math.PI*2);
+  ctx.fillStyle = '#2d4a1e'; ctx.fill();
+  ctx.beginPath(); ctx.arc(x-8, y - WH*0.7, 9, 0, Math.PI*2);
+  ctx.fillStyle = '#264018'; ctx.fill();
+  ctx.beginPath(); ctx.arc(x+6, y - WH*0.65, 8, 0, Math.PI*2);
+  ctx.fillStyle = '#2d4a1e'; ctx.fill();
+}
+
+function drawRoundTable(room, col, row, color) {
+  const {x,y} = isoXY(room, col, row);
+  ctx.beginPath();
+  ctx.ellipse(x, y - WH*0.6, TW*0.9, TH*0.9, 0, 0, Math.PI*2);
+  ctx.fillStyle = shade(color, 0.3);
+  ctx.fill();
+  ctx.strokeStyle = shade(color, 0.8);
+  ctx.lineWidth = 1.5; ctx.stroke();
+  // Pedestal
+  drawBox(room, col-0.15, row-0.15, 0.3, 0.3, 0.6, shade(color, 0.2), shade(color, 0.14), shade(color, 0.11));
+}
+
+function drawWhiteboard(room, col, row) {
+  drawBox(room, col, row, 2.5, 0.1, 1.5, '#e8e8f0', shade('#e8e8f0', 0.5), shade('#e8e8f0', 0.4));
+  const {x,y} = isoXY(room, col+1.25, row);
+  ctx.font = '8px sans-serif'; ctx.fillStyle = 'rgba(100,120,220,0.6)';
+  ctx.textAlign = 'center'; ctx.fillText('───────', x, y - WH*1.1);
+  ctx.fillText('Strategy', x, y - WH*1.2);
+}
+
+// ─── Furniture Placement per Room ─────────────────────────
+function drawRoomFurniture(roomKey, room) {
+  const acc = room.accentColor;
+  switch(roomKey) {
+    case 'boardroom':
+      drawRoundTable(room, 3.5, 3, acc);
+      for (let i = 0; i < 4; i++) {
+        const positions = [[2.5,2.2],[5,2.2],[2,4.2],[4.8,4.2]];
+        drawChair(room, positions[i][0], positions[i][1], acc);
+      }
+      drawWhiteboard(room, 1, 0.3);
+      drawBookshelf(room, 7, 1, acc);
+      drawPlant(room, 8, 6.5);
+      drawPlant(room, 0.5, 7);
+      break;
+    case 'finance':
+      drawDesk(room, 1, 1, acc);
+      drawDesk(room, 4, 1.5, acc);
+      drawDesk(room, 1, 4, acc);
+      drawChair(room, 1.2, 2.2, acc);
+      drawChair(room, 4.2, 2.7, acc);
+      drawChair(room, 1.2, 5.2, acc);
+      drawBox(room, 6, 0.5, 1.2, 0.5, 2, shade(acc,0.2), shade(acc,0.14), shade(acc,0.11)); // filing cabinet
+      drawBox(room, 6, 1.3, 1.2, 0.5, 2, shade(acc,0.2), shade(acc,0.14), shade(acc,0.11));
+      break;
+    case 'client':
+      drawDesk(room, 1, 1, acc); drawChair(room, 1.2, 2.2, acc);
+      drawDesk(room, 4, 1, acc); drawChair(room, 4.2, 2.2, acc);
+      drawDesk(room, 1, 3.5, acc); drawChair(room, 1.2, 4.7, acc);
+      drawPlant(room, 7, 5);
+      break;
+    case 'content':
+      drawDesk(room, 1, 1, acc); drawChair(room, 1.2, 2.2, acc);
+      drawDesk(room, 4, 1.5, acc); drawChair(room, 4.2, 2.7, acc);
+      // Mood board
+      drawBox(room, 0.5, 0.2, 2, 0.08, 1.3, '#1e1a2e', '#141228', '#10101f');
+      const moodPos = isoXY(room, 1.5, 0.2);
+      ['#E8956D','#C9A264','#A78BFA','#81C784'].forEach((c,i) => {
+        ctx.fillStyle = c; ctx.globalAlpha = 0.7;
+        ctx.fillRect(moodPos.x - 20 + i*12, moodPos.y - WH*1.1 + 5, 10, 14);
+        ctx.globalAlpha = 1;
+      });
+      drawPlant(room, 7, 5);
+      break;
+    case 'events':
+      drawDesk(room, 1, 1, acc); drawChair(room, 1.2, 2.2, acc);
+      drawDesk(room, 4, 1, acc); drawChair(room, 4.2, 2.2, acc);
+      drawDesk(room, 1, 3.5, acc); drawChair(room, 1.2, 4.7, acc);
+      drawDesk(room, 5, 3.5, acc); drawChair(room, 5.2, 4.7, acc);
+      // Bar cart (for Drink agent)
+      drawBox(room, 7, 2, 1.5, 0.8, 0.9, '#2a1a08', '#1c1208', '#161008');
+      ['#C9A264','#5B9BD5','#A78BFA'].forEach((c,i) => {
+        drawBox(room, 7.1+i*0.4, 2.1, 0.25, 0.6, 1.2, shade(c,0.6), shade(c,0.4), shade(c,0.35));
+      });
+      break;
+    case 'design':
+      drawDesk(room, 1, 1, acc); drawChair(room, 1.2, 2.2, acc);
+      drawDesk(room, 4, 1, acc); drawChair(room, 4.2, 2.2, acc);
+      drawDesk(room, 1, 4, acc); drawChair(room, 1.2, 5.2, acc);
+      drawDesk(room, 6.5, 1.5, acc); drawChair(room, 6.7, 2.7, acc);
+      // Drawing board for Art Director
+      drawBox(room, 4, 3.5, 2, 1.2, 0.8, shade('#A78BFA', 0.35), shade('#A78BFA', 0.24), shade('#A78BFA', 0.2));
+      drawPlant(room, 9, 6); drawPlant(room, 0.5, 6);
+      // Color swatches on wall
+      ['#C9A264','#A78BFA','#E8956D','#5B9BD5'].forEach((c,i) => {
+        const sp = isoXY(room, 0.08, i*1.4+0.5);
+        ctx.fillStyle = c; ctx.globalAlpha = 0.8;
+        ctx.fillRect(sp.x+2, sp.y - WH*1.5, 8, 22);
+        ctx.globalAlpha = 1;
+      });
+      break;
+    case 'travel':
+      drawDesk(room, 1, 1, acc); drawChair(room, 1.2, 2.2, acc);
+      drawDesk(room, 3.5, 1.5, acc); drawChair(room, 3.7, 2.7, acc);
+      // Multiple monitors for Dev
+      drawBox(room, 3.5+1.0, 1.5+0.1, 0.6, 0.08, 1.2, shade(acc,0.6), shade(acc,0.4), shade(acc,0.35));
+      drawPlant(room, 6, 4);
+      break;
+    case 'webgrowth':
+      // Long team desks in rows
+      for (let i = 0; i < 5; i++) {
+        drawDesk(room, 1+i*2.2, 1, acc);
+        drawChair(room, 1.2+i*2.2, 2.2, acc);
+      }
+      for (let i = 0; i < 5; i++) {
+        drawDesk(room, 1+i*2.2, 4, acc);
+        drawChair(room, 1.2+i*2.2, 5.2, acc);
+      }
+      // Prospect website on big screen (back wall)
+      drawBox(room, 3, 0.2, 4, 0.1, 2, shade(acc, 0.5), shade(acc, 0.35), shade(acc, 0.28));
+      const screenPos = isoXY(room, 5, 0.2);
+      ctx.font = '8px Montserrat'; ctx.fillStyle = shade(acc, 1.4);
+      ctx.textAlign = 'center'; ctx.globalAlpha = 0.7;
+      ctx.fillText('PROSPECT SITE', screenPos.x, screenPos.y - WH*1.6);
+      ctx.globalAlpha = 1;
+      drawPlant(room, 12, 7); drawPlant(room, 0.5, 7);
+      break;
+    case 'library':
+      drawBookshelf(room, 0.5, 0.5, '#9E9E9E');
+      drawBookshelf(room, 0.5, 2.5, '#9E9E9E');
+      drawDesk(room, 3.5, 1, '#9E9E9E'); drawChair(room, 3.7, 2.2, '#9E9E9E');
+      drawDesk(room, 3.5, 3.5, '#9E9E9E'); drawChair(room, 3.7, 4.7, '#9E9E9E');
+      break;
+    case 'breakroom':
+      drawCouch(room, 1, 2, '#2a3a2a');
+      drawCouch(room, 4.5, 3, '#2a3a2a');
+      drawTable(room, 3, 2.5, 1.5, 1.2, '#3a3a2a');
+      drawCoffeeMachine(room, 0.8, 0.5);
+      drawPlant(room, 7, 5); drawPlant(room, 7, 0.5);
+      // Small rug under table
+      const rugPos = isoXY(room, 3.75, 3.1);
+      ctx.beginPath(); ctx.ellipse(rugPos.x, rugPos.y, 40, 20, 0, 0, Math.PI*2);
+      ctx.fillStyle = 'rgba(100,180,140,0.12)'; ctx.fill();
+      break;
+  }
+}
+
+// ─── Agent Desk Positions ─────────────────────────────────
+const DESK_POSITIONS = {
+  boardroom:  [[2.5,2.5],[5.0,2.5],[2.5,4.5],[5.0,4.5]],
+  finance:    [[1.4,1.5],[4.4,2.0],[1.4,4.5]],
+  client:     [[1.4,1.5],[4.4,1.5],[1.4,4.0]],
+  content:    [[1.4,1.5],[4.4,2.0]],
+  events:     [[1.4,1.5],[4.4,1.5],[1.4,4.0],[5.4,4.0]],
+  design:     [[1.4,1.5],[4.4,1.5],[1.4,4.5],[6.9,2.0]],
+  travel:     [[1.4,1.5],[3.9,2.0]],
+  webgrowth:  [[1.4,1.5],[3.6,1.5],[5.8,1.5],[8.0,1.5],[10.2,1.5],[1.4,4.5],[3.6,4.5],[5.8,4.5],[8.0,4.5],[10.2,4.5],[2.0,2.8],[4.5,3.2]],
+  library:    [[3.9,1.5],[3.9,4.0],[4.5,2.5]],
+  breakroom:  [],
+};
+
+// Assign desk positions to agents
+function assignDesks() {
+  const deskIdx = {};
+  Object.keys(DESK_POSITIONS).forEach(rk => { deskIdx[rk] = 0; });
+
+  CHARS.forEach(c => {
+    const rk = c.room;
+    const room = ROOMS[rk];
+    if (!room) return;
+
+    if (rk === 'breakroom') {
+      // Break room agents wander
+      const {x,y} = isoXY(room, 2 + Math.random()*5, 2 + Math.random()*3);
+      c.deskX = x; c.deskY = y;
+      c.sx = x; c.sy = y;
+      c.state = 'break';
+    } else {
+      const desks = DESK_POSITIONS[rk] || [];
+      const idx = deskIdx[rk] % desks.length;
+      deskIdx[rk]++;
+      const [dc, dr] = desks[idx] || [Math.random()*room.cols, Math.random()*room.rows];
+      const {x,y} = isoXY(room, dc, dr);
+      c.deskX = x; c.deskY = y;
+      c.sx = x; c.sy = y;
+      c.state = 'working';
+    }
+    c.tx = c.sx; c.ty = c.sy;
+  });
+}
+
+// ─── Drawing: Character ───────────────────────────────────
+function drawCharacter(c, frame) {
+  const x = c.sx, y = c.sy;
+  const team = TEAMS[c.group] || TEAMS['Shared'];
+  const color = team.color;
+  const isSelected = c.selected;
+  const isSleeping = c.state === 'sleeping';
+  const isWalking = c.state === 'walking';
+  const isBreak = c.state === 'break';
+
+  // Selection glow
+  if (isSelected) {
+    ctx.beginPath();
+    ctx.ellipse(x, y, 22, 11, 0, 0, Math.PI*2);
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.25;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+
+  // Shadow
+  ctx.beginPath();
+  ctx.ellipse(x, y, 13, 6, 0, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(0,0,0,0.4)';
+  ctx.fill();
+
+  const legSwing = isWalking ? Math.sin(frame * 0.28) * 6 : 0;
+
+  // ── Body (isometric box for depth) ──
+  const bodyH = 24; const bodyW = 14;
+  const bodyTopY = y - 40;
+
+  // Right face of body (darkest)
+  poly(ctx, [
+    {x: x + 2, y: bodyTopY},
+    {x: x + bodyW*0.7, y: bodyTopY + bodyW*0.35},
+    {x: x + bodyW*0.7, y: bodyTopY + bodyH + bodyW*0.35},
+    {x: x + 2, y: bodyTopY + bodyH}
+  ], shade(color, 0.45));
+
+  // Front face of body
+  poly(ctx, [
+    {x: x - bodyW*0.7, y: bodyTopY + bodyW*0.35},
+    {x: x + 2, y: bodyTopY},
+    {x: x + 2, y: bodyTopY + bodyH},
+    {x: x - bodyW*0.7, y: bodyTopY + bodyH + bodyW*0.35}
+  ], shade(color, 0.75));
+
+  // Top of body / shoulders
+  poly(ctx, [
+    {x: x - bodyW*0.7, y: bodyTopY + bodyW*0.35},
+    {x: x + 2, y: bodyTopY},
+    {x: x + bodyW*0.7, y: bodyTopY + bodyW*0.35},
+    {x: x, y: bodyTopY + bodyW*0.7}
+  ], isSleeping ? shade(color, 0.4) : shade(color, 1.1));
+
+  // ── Legs ──
+  const legColor = shade(color, 0.25);
+  const legDarkColor = shade(color, 0.18);
+  // Left leg
+  poly(ctx, [
+    {x: x-7, y: bodyTopY + bodyH - 2},
+    {x: x-3, y: bodyTopY + bodyH - 4 + legSwing},
+    {x: x-3, y: y + legSwing},
+    {x: x-7, y: y - 2}
+  ], legColor);
+  // Right leg
+  poly(ctx, [
+    {x: x+1, y: bodyTopY + bodyH - 2},
+    {x: x+5, y: bodyTopY + bodyH - 4 - legSwing},
+    {x: x+5, y: y - legSwing},
+    {x: x+1, y: y - 2}
+  ], legDarkColor);
+
+  // ── Neck ──
+  ctx.fillStyle = '#c8956c';
+  ctx.fillRect(x-3, bodyTopY - 10, 6, 10);
+
+  // ── Head (sphere-like) ──
+  const headY = bodyTopY - 20;
+  const grad = ctx.createRadialGradient(x-3, headY-3, 2, x, headY, 11);
+  grad.addColorStop(0, '#f5d0a0');
+  grad.addColorStop(1, '#c8956c');
+  ctx.beginPath();
+  ctx.arc(x, headY, 11, 0, Math.PI*2);
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Hair
+  const hairColors = {'marcus':'#5a3a22','rachel':'#8a6040','danny':'#2a2218','vivian':'#6a4a30','cd':'#3a2a18','ad':'#1a1a3a','copy':'#5a1a2a','qa':'#1a3a1a','default':'#3a2a20'};
+  const hc = hairColors[c.id] || hairColors.default;
+  ctx.beginPath();
+  ctx.arc(x, headY - 2, 11, Math.PI*1.05, Math.PI*1.95);
+  ctx.lineTo(x, headY - 2);
+  ctx.fillStyle = hc; ctx.fill();
+
+  // Eyes
+  ctx.fillStyle = '#1a1a2e';
+  ctx.beginPath(); ctx.arc(x-4, headY+1, 1.8, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+4, headY+1, 1.8, 0, Math.PI*2); ctx.fill();
+  // Eye whites
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  ctx.beginPath(); ctx.arc(x-4.5, headY+0.5, 0.8, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(x+3.5, headY+0.5, 0.8, 0, Math.PI*2); ctx.fill();
+
+  // ── State indicators ──
+  if (isSleeping) {
+    ctx.font = '11px sans-serif'; ctx.fillStyle = 'rgba(150,160,220,0.85)';
+    ctx.textAlign = 'center';
+    const zzz = ['z','zz','zzz'];
+    zzz.forEach((z,i) => {
+      const bounce = Math.sin(frame * 0.04 + i*0.8) * 3;
+      ctx.globalAlpha = 0.4 + i*0.2;
+      ctx.font = `${9+i*2}px sans-serif`;
+      ctx.fillText(z, x + 12 + i*5, headY - 18 - i*8 + bounce);
+    });
+    ctx.globalAlpha = 1;
+  }
+
+  if (isBreak) {
+    // Coffee cup
+    ctx.fillStyle = '#8B6D3A'; ctx.globalAlpha = 0.9;
+    ctx.fillRect(x+8, bodyTopY+8, 8, 9);
+    ctx.fillStyle = '#3a2a1a';
+    ctx.fillRect(x+9, bodyTopY+10, 6, 5);
+    ctx.globalAlpha = 1;
+  }
+
+  // ── Name tag ──
+  if (!isSleeping) {
+    ctx.font = 'bold 8.5px Montserrat';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = isSelected ? color : 'rgba(255,255,255,0.75)';
+    ctx.fillText(c.name, x, headY - 24);
+  }
+}
+
+// ─── Animation ────────────────────────────────────────────
+function moveToBreak(c) {
+  const room = ROOMS.breakroom;
+  const {x,y} = isoXY(room, 1.5 + Math.random()*5, 1.5 + Math.random()*3.5);
+  c.tx = x; c.ty = y;
+  c.state = 'walking';
+  c._nextState = 'break';
+}
+
+function moveToDesk(c) {
+  c.tx = c.deskX; c.ty = c.deskY;
+  c.state = 'walking';
+  c._nextState = 'working';
+}
+
+function update(dt) {
+  CHARS.forEach(c => {
+    c.frame += dt * 0.06;
+    c.walkTimer -= dt;
+
+    // Move toward target
+    const dx = c.tx - c.sx, dy = c.ty - c.sy;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist > 2) {
+      const speed = 1.8;
+      c.sx += (dx/dist) * speed;
+      c.sy += (dy/dist) * speed;
+    } else if (c._nextState) {
+      c.state = c._nextState;
+      c._nextState = null;
+      c.walkTimer = c.state === 'working' ? 300 + Math.random()*500 : 150 + Math.random()*200;
+    }
+
+    // Autonomous behavior
+    if (c.walkTimer <= 0 && !c._nextState) {
+      if (c.state === 'working') {
+        if (Math.random() < 0.7) moveToBreak(c);
+        else c.walkTimer = 100 + Math.random()*200;
+      } else if (c.state === 'break') {
+        moveToDesk(c);
+      }
+    }
+  });
+}
+
+// ─── Click Detection ─────────────────────────────────────
+canvas.addEventListener('click', e => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+  let hit = null;
+  // Characters span from their feet (c.sy) up to ~65px above (head)
+  // Check bounding box first, then precise distance to body center
+  CHARS.forEach(c => {
+    if (Math.abs(c.sx - mx) < 28 && Math.abs(my - (c.sy - 32)) < 42) {
+      const dx = mx - c.sx, dy = my - (c.sy - 32);
+      if (Math.sqrt(dx*dx + dy*dy) < 28) hit = c;
+    }
+  });
+  CHARS.forEach(c => c.selected = false);
+  if (hit) { hit.selected = true; showPanel(hit); }
+  else hidePanel();
+});
+
+// ─── Info Panel ───────────────────────────────────────────
+function showPanel(c) {
+  const team = TEAMS[c.group] || TEAMS['Shared'];
+  const model = MODEL_STYLE[c.model] || MODEL_STYLE.sonnet;
+  document.getElementById('info-dot').style.background = team.color;
+  document.getElementById('info-name').textContent = c.name;
+  document.getElementById('info-group').style.color = team.color;
+  document.getElementById('info-group').textContent = c.group + ' · ' + c.tier;
+  document.getElementById('info-role').textContent = c.label;
+  document.getElementById('info-purpose').textContent = c.purpose;
+  const mb = document.getElementById('info-model-badge');
+  mb.textContent = model.label; mb.style.background = model.bg; mb.style.color = model.color;
+  const sd = document.getElementById('info-status-dot'), st = document.getElementById('info-status-text');
+  sd.style.background = c.state === 'working' ? '#81C784' : c.state === 'break' ? '#C9A264' : '#9E9E9E';
+  st.textContent = c.state === 'working' ? 'At desk' : c.state === 'break' ? 'On break' : c.state === 'walking' ? 'In transit' : 'Offline';
+  document.getElementById('info-state-label').textContent = 'Current activity';
+  document.getElementById('info-state-desc').textContent =
+    c.state === 'working' ? 'Ready to be invoked. Say "Act as the ' + c.name + ' agent."' :
+    c.state === 'break' ? 'Idle. Will return to desk shortly.' :
+    c.state === 'walking' ? 'Moving between sessions.' : 'Not recently active. Invoke to wake.';
+  document.getElementById('info-panel').classList.add('open');
+}
+function hidePanel() { document.getElementById('info-panel').classList.remove('open'); }
+document.getElementById('info-close').addEventListener('click', () => { hidePanel(); CHARS.forEach(c=>c.selected=false); });
+
+// ─── Main Render ──────────────────────────────────────────
+let lastTime = 0;
+function render(ts) {
+  const dt = Math.min(ts - lastTime, 32);
+  lastTime = ts;
+  update(dt);
+
+  ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+
+  // Draw all rooms
+  Object.entries(ROOMS).forEach(([key, room]) => {
+    drawRoom(room);
+    drawRoomFurniture(key, room);
+  });
+
+  // Sort characters back-to-front (painter's algorithm)
+  const sorted = [...CHARS].sort((a,b) => (a.sx+a.sy) - (b.sx+b.sy));
+  sorted.forEach(c => drawCharacter(c, c.frame));
+
+  requestAnimationFrame(render);
+}
+
+// ─── Legend ───────────────────────────────────────────────
+function buildLegend() {
+  const el = document.getElementById('legend');
+  Object.values(TEAMS).forEach(t => {
+    el.innerHTML += `<div class="legend-item"><div class="legend-dot" style="background:${t.color}"></div>${t.label}</div>`;
+  });
+  document.getElementById('agent-count').textContent = `${CHARS.length} agents`;
+}
+
+// ─── Hint fade ────────────────────────────────────────────
+setTimeout(() => document.getElementById('hint').classList.add('fade'), 4000);
+
+// ─── Init ─────────────────────────────────────────────────
+assignDesks();
+buildLegend();
+requestAnimationFrame(render);
+</script>
+</body>
+</html>
