@@ -3,852 +3,1340 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agent Floor — Command Center</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>Agent Floor — The 513 Empire HQ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #060609; --glass: rgba(255,255,255,0.04); --glass-border: rgba(255,255,255,0.08);
-  --text: rgba(255,255,255,0.9); --text-muted: rgba(255,255,255,0.48);
-  --gold: #C9A264; --gold-dim: rgba(201,162,100,0.14);
-  --radius: 14px; --ease: all 0.25s ease;
-}
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-html, body { width: 100%; height: 100vh; overflow: hidden; background: var(--bg); color: var(--text); font-family: 'Montserrat', sans-serif; }
-
-#bg-layer { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
-.orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.08; }
-.orb-1 { width: 600px; height: 600px; background: #C9A264; top: -200px; right: -100px; }
-.orb-2 { width: 400px; height: 400px; background: #5B9BD5; bottom: 0; left: -150px; }
-
-#header {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 10;
-  height: 56px; display: flex; align-items: center; gap: 20px;
-  padding: 0 24px;
-  background: rgba(6,6,9,0.85); backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--glass-border);
-}
-.back-btn {
-  font-size: 11px; font-weight: 500; color: var(--text-muted);
-  text-decoration: none; letter-spacing: 0.04em;
-  padding: 5px 12px; border: 1px solid var(--glass-border);
-  border-radius: 6px; transition: var(--ease);
-}
-.back-btn:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
-#header h1 { font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 300; color: var(--gold); }
-#header-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
-.legend { display: flex; gap: 14px; align-items: center; }
-.legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; font-weight: 500; color: var(--text-muted); letter-spacing: 0.04em; }
-.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
-#agent-count { font-size: 11px; color: var(--text-muted); }
-
-#floor-viewport {
-  position: fixed; inset: 56px 0 0 0; overflow: hidden; cursor: grab; z-index: 1;
-}
-#floor-viewport.dragging { cursor: grabbing; }
-#floor-canvas { position: absolute; top: 0; left: 0; }
-
-#info-panel {
-  position: fixed; right: -320px; top: 56px; bottom: 0; width: 300px; z-index: 20;
-  background: rgba(12,12,20,0.95); backdrop-filter: blur(28px);
-  border-left: 1px solid var(--glass-border);
-  transition: right 0.3s cubic-bezier(0.4,0,0.2,1);
-  padding: 24px; display: flex; flex-direction: column; gap: 16px;
-  overflow-y: auto;
-}
-#info-panel.open { right: 0; }
-#info-close { align-self: flex-end; background: none; border: 1px solid var(--glass-border); color: var(--text-muted); cursor: pointer; border-radius: 6px; padding: 4px 10px; font-size: 11px; transition: var(--ease); }
-#info-close:hover { color: var(--text); }
-#info-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--gold); }
-#info-name { font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 400; color: var(--text); line-height: 1.1; }
-#info-group { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
-#info-role { font-size: 11px; color: var(--text-muted); margin-top: -8px; }
-#info-purpose { font-size: 12px; color: rgba(255,255,255,0.65); line-height: 1.65; }
-#info-model-badge { display: inline-block; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; padding: 3px 10px; border-radius: 4px; }
-#info-status { font-size: 11px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
-#info-status-dot { width: 7px; height: 7px; border-radius: 50%; }
-#info-divider { border: none; border-top: 1px solid var(--glass-border); }
-#info-state-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
-#info-state-desc { font-size: 11px; color: rgba(255,255,255,0.55); line-height: 1.5; }
-
-#hint { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 10; font-size: 11px; color: var(--text-muted); background: rgba(12,12,20,0.8); backdrop-filter: blur(10px); padding: 6px 16px; border-radius: 20px; border: 1px solid var(--glass-border); pointer-events: none; transition: opacity 0.5s; }
-#hint.fade { opacity: 0; }
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#06080f;font-family:'Montserrat',sans-serif;overflow:hidden;user-select:none}
+#header{position:fixed;top:0;left:0;right:0;height:52px;background:rgba(6,8,15,0.96);border-bottom:1px solid rgba(201,162,100,0.12);display:flex;align-items:center;padding:0 20px;gap:20px;z-index:100}
+#back-btn{color:rgba(201,162,100,0.7);text-decoration:none;font-size:11px;font-weight:500;letter-spacing:0.06em;transition:color 0.2s}
+#back-btn:hover{color:#C9A264}
+#header-title{color:#e8e0cc;font-size:13px;font-weight:600;letter-spacing:0.04em}
+#header-meta{margin-left:auto;display:flex;align-items:center;gap:10px}
+.badge{font-size:9px;font-weight:600;letter-spacing:0.08em;padding:3px 8px;border-radius:3px}
+.badge.opus{background:rgba(201,162,100,0.15);color:#C9A264}
+.badge.sonnet{background:rgba(91,155,213,0.15);color:#5B9BD5}
+.badge.haiku{background:rgba(100,181,160,0.15);color:#64B5A0}
+.badge.chief{background:rgba(180,180,255,0.15);color:#B0B0FF}
+#hint{font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:0.04em}
+#viewport{position:fixed;top:52px;left:0;right:0;bottom:0;overflow:hidden;cursor:grab}
+#viewport.dragging{cursor:grabbing}
+#floor{position:absolute;top:0;left:0;image-rendering:pixelated;image-rendering:crisp-edges}
+#tooltip{position:fixed;background:rgba(10,14,28,0.96);border:1px solid rgba(201,162,100,0.2);color:#e8e0cc;font-size:10px;padding:6px 10px;border-radius:4px;pointer-events:none;display:none;z-index:200;max-width:220px;line-height:1.5}
+#info-panel{position:fixed;top:52px;right:-340px;width:320px;height:calc(100vh - 52px);background:rgba(8,11,22,0.98);border-left:1px solid rgba(201,162,100,0.12);padding:24px 20px;overflow-y:auto;transition:right 0.3s cubic-bezier(0.4,0,0.2,1);z-index:150}
+#info-panel.open{right:0}
+#info-close{position:absolute;top:16px;right:16px;background:none;border:none;color:rgba(255,255,255,0.35);font-size:16px;cursor:pointer;transition:color 0.2s;line-height:1}
+#info-close:hover{color:#fff}
+#info-model-badge{display:inline-block;font-size:9px;font-weight:700;letter-spacing:0.1em;padding:3px 9px;border-radius:3px;margin-bottom:14px}
+#info-name{font-size:22px;font-weight:700;color:#e8e0cc;letter-spacing:0.01em;line-height:1.1}
+#info-role{font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:0.06em;margin-top:3px;margin-bottom:10px}
+#info-zone-group{font-size:10px;color:rgba(201,162,100,0.6);letter-spacing:0.06em;margin-bottom:14px}
+#info-bio{font-size:11px;color:rgba(255,255,255,0.6);line-height:1.7}
+.info-divider{height:1px;background:rgba(255,255,255,0.06);margin:16px 0}
+.info-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+#info-state-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+#info-state-text{font-size:10px;color:rgba(255,255,255,0.5);letter-spacing:0.05em}
+#info-task{font-size:11px;color:#e8e0cc;margin-bottom:6px;font-style:italic}
+#info-last-active{font-size:10px;color:rgba(255,255,255,0.3);letter-spacing:0.04em}
+.info-section-label{font-size:9px;font-weight:700;letter-spacing:0.1em;color:rgba(180,180,255,0.5);margin-bottom:10px}
+#info-stars{font-size:16px;letter-spacing:2px;margin-bottom:6px}
+#info-score-detail{font-size:10px;color:rgba(255,255,255,0.4);margin-bottom:6px}
+#info-refinement-note{font-size:10px;color:rgba(255,170,170,0.7);font-style:italic;line-height:1.5}
+#info-invoke{font-size:10px;color:rgba(201,162,100,0.6);font-style:italic}
+#legend{position:fixed;bottom:16px;left:16px;background:rgba(8,11,22,0.88);border:1px solid rgba(255,255,255,0.06);border-radius:6px;padding:10px 14px;z-index:100;pointer-events:none}
+.legend-row{display:flex;align-items:center;gap:8px;font-size:9px;color:rgba(255,255,255,0.38);letter-spacing:0.05em;margin-bottom:5px}
+.legend-row:last-child{margin-bottom:0}
+.ldot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 </style>
 </head>
 <body>
-<div id="bg-layer"><div class="orb orb-1"></div><div class="orb orb-2"></div></div>
 
 <div id="header">
-  <a href="index.html" class="back-btn">← Command Center</a>
-  <h1>Agent Floor</h1>
-  <div id="header-right">
-    <div class="legend" id="legend"></div>
-    <span id="agent-count"></span>
+  <a href="index.html" id="back-btn">← Dashboard</a>
+  <div id="header-title">Agent Floor — The 513 Empire HQ</div>
+  <div id="header-meta">
+    <span id="hint">Click any agent · Drag to pan · Scroll to zoom</span>
+    <span class="badge chief">Chief</span>
+    <span class="badge opus">Opus</span>
+    <span class="badge sonnet">Sonnet</span>
+    <span class="badge haiku">Haiku</span>
   </div>
 </div>
 
-<div id="floor-viewport">
-  <canvas id="floor-canvas"></canvas>
+<div id="viewport">
+  <canvas id="floor"></canvas>
+  <div id="tooltip"></div>
 </div>
 
 <div id="info-panel">
-  <button id="info-close">✕ Close</button>
-  <div style="display:flex;align-items:center;gap:8px">
-    <div id="info-dot"></div>
-    <div id="info-name">Agent</div>
-  </div>
-  <div id="info-group"></div>
+  <button id="info-close">✕</button>
+  <div id="info-model-badge"></div>
+  <div id="info-name"></div>
   <div id="info-role"></div>
-  <hr id="info-divider">
-  <div id="info-purpose"></div>
-  <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-    <div id="info-model-badge"></div>
-    <div id="info-status"><div id="info-status-dot"></div><span id="info-status-text"></span></div>
+  <div id="info-zone-group"></div>
+  <div id="info-bio"></div>
+  <div class="info-divider"></div>
+  <div class="info-row"><div id="info-state-dot"></div><div id="info-state-text"></div></div>
+  <div id="info-task"></div>
+  <div id="info-last-active"></div>
+  <div class="info-divider"></div>
+  <div id="info-meridian-section">
+    <div class="info-section-label">MERIDIAN EVALUATION</div>
+    <div id="info-stars"></div>
+    <div id="info-score-detail"></div>
+    <div id="info-refinement-note"></div>
   </div>
-  <div id="info-state-label"></div>
-  <div id="info-state-desc"></div>
+  <div class="info-divider"></div>
+  <div id="info-invoke"></div>
 </div>
 
-<div id="hint">Drag to pan · Click an agent to inspect</div>
+<div id="legend">
+  <div class="legend-row"><div class="ldot" style="background:#B0B0FF"></div>Chief / Evaluator</div>
+  <div class="legend-row"><div class="ldot" style="background:#C9A264"></div>Opus — Strategic</div>
+  <div class="legend-row"><div class="ldot" style="background:#5B9BD5"></div>Sonnet — Domain</div>
+  <div class="legend-row"><div class="ldot" style="background:#64B5A0"></div>Haiku — Routine</div>
+</div>
 
 <script>
-// ─── Constants ───────────────────────────────────────────
-const TW = 72, TH = 36, WH = 54; // tile width, tile height, wall height
-const CANVAS_W = 2200, CANVAS_H = 1800;
+// ═══════════════════════════════════════════════════════════════════
+// 1. CONSTANTS
+// ═══════════════════════════════════════════════════════════════════
+const CW = 1800, CH = 900
+const WALK_SPEED = 1.5
+const COMM_SPEED = 2.8
+const IDLE_THRESH = 600
+const SLEEP_THRESH = 3200
+const SCAN_DUR = 110
 
-const TEAMS = {
-  'Board':       { color: '#C9A264', dark: '#8B6D3A', label: 'Board' },
-  '513Sips':     { color: '#64B5A0', dark: '#3D7A6A', label: '513Sips' },
-  'Design':      { color: '#A78BFA', dark: '#6B57BE', label: 'Design' },
-  'Travel Planner': { color: '#81C784', dark: '#4A8B4D', label: 'Travel' },
-  'WebGrowth':   { color: '#E8956D', dark: '#A85E3A', label: 'WebGrowth' },
-  'Shared':      { color: '#9E9E9E', dark: '#5E5E5E', label: 'Shared' },
-};
+const MC = {
+  meridian:{ body:'#30306A', trim:'#C0C0FF', color:'#B0B0FF', bg:'rgba(180,180,255,0.18)', label:'Chief' },
+  opus:    { body:'#6B4F10', trim:'#3D2B00', color:'#C9A264', bg:'rgba(201,162,100,0.18)', label:'Opus' },
+  sonnet:  { body:'#183060', trim:'#0A1628', color:'#5B9BD5', bg:'rgba(91,155,213,0.18)',  label:'Sonnet' },
+  haiku:   { body:'#144838', trim:'#0A2E22', color:'#64B5A0', bg:'rgba(100,181,160,0.18)', label:'Haiku' },
+}
 
-const MODEL_STYLE = {
-  opus:   { bg: 'rgba(201,162,100,0.2)', color: '#C9A264', label: 'Opus' },
-  sonnet: { bg: 'rgba(91,155,213,0.2)', color: '#5B9BD5', label: 'Sonnet' },
-  haiku:  { bg: 'rgba(100,181,160,0.2)', color: '#64B5A0', label: 'Haiku' },
-};
+const HAIR = {
+  meridian:'#D8D8FF',
+  marcus:'#2C1810', rachel:'#8B4513', danny:'#111111', vivian:'#4A0E2D',
+  finance_tax:'#3D2B00', bookkeeper:'#5C3317', pricing_sips:'#1C3D2E',
+  contract:'#0F1A36', quote:'#1A3A1A', acquisition:'#2D1B69',
+  marketing:'#5C1A1A', social513:'#4A2D7A',
+  ops:'#1A2F1A', event_recap:'#3D3000', drink:'#4A1C00', postmortem:'#0D2137',
+  cd:'#1A0A2E', ad:'#0A1A3D', copy:'#3D001A', qa:'#001A1A',
+  tp_pm:'#1A3D00', tp_dev:'#001A3D',
+  wg_em:'#2D1B00', wg_brand:'#1A001A', wg_audit:'#002040', wg_comp:'#1A1A00',
+  wg_call:'#0A2D0A', wg_price:'#2D0A00', wg_prop:'#1A2D1A', wg_proto:'#0A1A2D',
+  wg_design:'#2D1A0A', wg_std:'#1A0A1A',
+  librarian:'#2D2D2D', summarizer:'#1A2D2D', social_mgr:'#2D2D1A',
+}
 
-// ─── Agent Data ──────────────────────────────────────────
-const AGENTS_DATA = [
-  { id:'marcus',   name:'Marcus',    label:'CEO',             group:'Board',    model:'opus',   room:'boardroom',  purpose:'Strategic vision, brand alignment, long-term growth. Opens most board discussions.', tier:'Board' },
-  { id:'rachel',   name:'Rachel',    label:'CFO',             group:'Board',    model:'opus',   room:'boardroom',  purpose:'Financial reality, full cost accounting, margin discipline. The last voice on a discount.', tier:'Board' },
-  { id:'danny',    name:'Danny',     label:'Hard Sell',       group:'Board',    model:'opus',   room:'boardroom',  purpose:'Leverage, negotiation, what 513Sips actually gets out of a deal. Never quiet for long.', tier:'Board' },
-  { id:'vivian',   name:'Vivian',    label:'Brand Director',  group:'Board',    model:'opus',   room:'boardroom',  purpose:'Premium perception, guest experience, the elevated standard. Protects the brand.', tier:'Board' },
-  { id:'finance',  name:'Finance/Tax', label:'SME',           group:'513Sips',  model:'opus',   room:'finance',    purpose:'Tax strategy, complex accounting, multi-year planning. Escalation from Bookkeeper.', tier:'SME' },
-  { id:'bookkeeper',name:'Bookkeeper', label:'Accounting',    group:'513Sips',  model:'haiku',  room:'finance',    purpose:'Day-to-day ledger, vendor payments, owner reimbursements. Knows every cost cold.', tier:'SME' },
-  { id:'pricing',  name:'Pricing',   label:'SME',             group:'513Sips',  model:'haiku',  room:'finance',    purpose:'Quote generation, margin check, package building. Cross-refs Pricing-Strategy note.', tier:'SME' },
-  { id:'contract', name:'Contract',  label:'Legal',           group:'513Sips',  model:'sonnet', room:'client',     purpose:'Contract generation and management. Legal language for customer and vendor agreements.', tier:'SME' },
-  { id:'ops',      name:'Ops Manager', label:'Operations',    group:'513Sips',  model:'sonnet', room:'events',     purpose:'Day-to-day ops, scheduling, vendor coordination. Event logistics end-to-end.', tier:'Domain' },
-  { id:'marketing',name:'Marketing', label:'Strategy',        group:'513Sips',  model:'sonnet', room:'content',    purpose:'Campaign planning, channel strategy, content calendar. Briefs the Design Team.', tier:'Domain' },
-  { id:'quote',    name:'Quote',     label:'Client Quote',    group:'513Sips',  model:'haiku',  room:'client',     purpose:'Builds client-facing event quotes from specs using current pricing model.', tier:'Domain' },
-  { id:'recap',    name:'Event Recap', label:'Documentation', group:'513Sips',  model:'haiku',  room:'events',     purpose:'Post-event documentation. Captures what happened, what was served, what worked.', tier:'Domain' },
-  { id:'drink',    name:'Drink',     label:'Mixology',        group:'513Sips',  model:'haiku',  room:'events',     purpose:'Drink recommendations, batch quantities, seasonal menus, event drink log.', tier:'Domain' },
-  { id:'postmortem',name:'PostMortem', label:'Debrief',       group:'513Sips',  model:'sonnet', room:'events',     purpose:'28-question guided debrief after every event. Drives continuous improvement.', tier:'Domain' },
-  { id:'acquisition',name:'Customer Acq.', label:'Lead Gen', group:'513Sips',  model:'sonnet', room:'client',     purpose:'Venue scouting, Google reviews, outreach templates. Drives new business pipeline.', tier:'Domain' },
-  { id:'social513',name:'Social Media', label:'Content',      group:'513Sips',  model:'sonnet', room:'content',    purpose:'Instagram strategy from Cloudinary photos + blog. Competitive analysis vs PoppinBar.', tier:'Domain' },
-  { id:'cd',       name:'Creative Dir.', label:'Design Lead', group:'Design',   model:'sonnet', room:'design',     purpose:'Team lead for all creative. Orchestrates AD + Copywriter + QA. Final gate before Eddie.', tier:'Design' },
-  { id:'ad',       name:'Art Director', label:'Visual Lead',  group:'Design',   model:'sonnet', room:'design',     purpose:'Layout, photo selection, visual hierarchy. Every pixel on every deliverable.', tier:'Design' },
-  { id:'copy',     name:'Copywriter', label:'Copy Lead',      group:'Design',   model:'sonnet', room:'design',     purpose:'Headlines, body copy, captions, hashtags. Brand voice guardian.', tier:'Design' },
-  { id:'qa',       name:'Design QA',  label:'Quality Gate',  group:'Design',   model:'haiku',  room:'design',     purpose:'3-lens review: Functional · UX · Customer Mindset. Nothing ships without passing QA.', tier:'Design' },
-  { id:'tp-pm',    name:'Travel PM',  label:'Product',        group:'Travel Planner', model:'sonnet', room:'travel', purpose:'Feature roadmap, sprint planning, scope decisions for the Travel Planner app.', tier:'PM' },
-  { id:'tp-dev',   name:'Travel Dev', label:'Engineering',   group:'Travel Planner', model:'sonnet', room:'travel', purpose:'Technical architecture and implementation. React + TypeScript + Vercel stack.', tier:'Dev' },
-  { id:'wg-em',    name:'Eng. Manager', label:'Orchestrator', group:'WebGrowth', model:'sonnet', room:'webgrowth', purpose:'Sequences the full pre-call pipeline. Give it a prospect URL, it runs everything.', tier:'Lead' },
-  { id:'wg-brand', name:'Brand Intel.', label:'Research',    group:'WebGrowth', model:'sonnet', room:'webgrowth', purpose:'Website + Facebook + Instagram review. Brand, tone, culture, hosting cost.', tier:'Research' },
-  { id:'wg-audit', name:'Site Audit',  label:'Technical',    group:'WebGrowth', model:'sonnet', room:'webgrowth', purpose:'Broken links, SEO issues, missing CTAs, mobile issues. Scored audit report.', tier:'Research' },
-  { id:'wg-comp',  name:'Competitor',  label:'Analysis',     group:'WebGrowth', model:'sonnet', room:'webgrowth', purpose:'2–3 competitor benchmarks. Shows exactly where the prospect is losing ground.', tier:'Research' },
-  { id:'wg-call',  name:'Callout Gen.', label:'Hooks',       group:'WebGrowth', model:'haiku',  room:'webgrowth', purpose:'"We did our homework" moments. 5–7 specific, named observations for the first call.', tier:'Content' },
-  { id:'wg-price', name:'Pricing',     label:'Scoping',      group:'WebGrowth', model:'haiku',  room:'webgrowth', purpose:'Refresh / Rebuild / Transform tier selection + investment estimate.', tier:'Finance' },
-  { id:'wg-prop',  name:'Proposal',    label:'Writing',      group:'WebGrowth', model:'sonnet', room:'webgrowth', purpose:'Assembles full pre-call package from all research. The leave-behind that closes deals.', tier:'Content' },
-  { id:'wg-proto', name:'Prototype',   label:'Build',        group:'WebGrowth', model:'sonnet', room:'webgrowth', purpose:'Lo-fi HTML prototype tailored to prospect. Visual proof of "better" before they say yes.', tier:'Dev' },
-  { id:'wg-design',name:'Design Insp.', label:'Trends',      group:'WebGrowth', model:'haiku',  room:'webgrowth', purpose:'Design trends by industry from Awwwards, Dribbble, etc. Feeds Prototype agent.', tier:'Research' },
-  { id:'wg-std',   name:'Standards',   label:'Reference',    group:'WebGrowth', model:'haiku',  room:'webgrowth', purpose:'Deliverable templates, tone rules, scoring rubrics. Source of truth for all WebGrowth.', tier:'Reference' },
-  { id:'librarian',name:'Brain Lib.',  label:'Vault',        group:'Shared',   model:'haiku',  room:'library',    purpose:'Save protocol, vault deduplication, structural maintenance. The brain\'s archivist.', tier:'Shared' },
-  { id:'summarizer',name:'Summarizer', label:'Handoffs',     group:'Shared',   model:'haiku',  room:'library',    purpose:'Session handoff generation. Creates the closing note saved to Brain each session.', tier:'Shared' },
-  { id:'social-mgr',name:'Social Mgr', label:'Principles',  group:'Shared',   model:'haiku',  room:'library',    purpose:'Cross-project social media principles. Project agents handle execution.', tier:'Shared' },
-];
+// ═══════════════════════════════════════════════════════════════════
+// 2. ZONES
+// ═══════════════════════════════════════════════════════════════════
+const ZONES = {
+  command:  { label:'COMMAND CENTER', x:640,  y:0,   w:520, h:92,  floor:'marble',     ambient:'rgba(140,140,220,0.05)' },
+  sips:     { label:'513 SIPS',       x:0,    y:92,  w:720, h:598, floor:'darkwood',   ambient:'rgba(201,162,100,0.04)' },
+  wg:       { label:'WEBGROWTH',      x:730,  y:92,  w:680, h:600, floor:'officegray', ambient:'rgba(232,149,109,0.03)' },
+  library:  { label:'LIBRARY',        x:1420, y:92,  w:380, h:808, floor:'carpet',     ambient:'rgba(80,120,80,0.03)'   },
+  travel:   { label:'TRAVEL SUITE',   x:0,    y:692, w:360, h:208, floor:'worldmap',   ambient:'rgba(129,199,132,0.04)' },
+  warroom:  { label:'WAR ROOM',       x:370,  y:692, w:350, h:208, floor:'warmwood',   ambient:'rgba(120,80,60,0.06)'   },
+  breakroom:{ label:'BREAK ROOM',     x:730,  y:700, w:680, h:200, floor:'softtile',   ambient:'rgba(60,100,80,0.03)'   },
+}
+const ZONE_ORDER = ['breakroom','library','travel','warroom','wg','sips','command']
 
-// ─── Room Definitions ────────────────────────────────────
-const ROOMS = {
-  boardroom:  { label:'The Board Room',       ox:520,  oy:280,  cols:10, rows:8,  team:'Board',    wallColor:'#1a1508', floorColor:'#12100a', accentColor:'#C9A264' },
-  finance:    { label:'Finance Office',        ox:1050, oy:200,  cols:8,  rows:6,  team:'513Sips',  wallColor:'#071518', floorColor:'#080f10', accentColor:'#64B5A0' },
-  client:     { label:'Client Services',       ox:1050, oy:580,  cols:8,  rows:6,  team:'513Sips',  wallColor:'#071518', floorColor:'#080f10', accentColor:'#64B5A0' },
-  content:    { label:'Content Studio',        ox:500,  oy:640,  cols:8,  rows:6,  team:'513Sips',  wallColor:'#071518', floorColor:'#080f10', accentColor:'#64B5A0' },
-  events:     { label:'Events & Ops',          ox:1550, oy:390,  cols:9,  rows:7,  team:'513Sips',  wallColor:'#071518', floorColor:'#080f10', accentColor:'#64B5A0' },
-  design:     { label:'Design Studio',         ox:900,  oy:910,  cols:10, rows:7,  team:'Design',   wallColor:'#120a1a', floorColor:'#0e0812', accentColor:'#A78BFA' },
-  travel:     { label:'Travel Planner Suite',  ox:450,  oy:990,  cols:7,  rows:5,  team:'Travel Planner', wallColor:'#081208', floorColor:'#08100a', accentColor:'#81C784' },
-  webgrowth:  { label:'WebGrowth Agency Floor',ox:1380, oy:1000, cols:13, rows:8,  team:'WebGrowth',wallColor:'#180e08', floorColor:'#120a06', accentColor:'#E8956D' },
-  library:    { label:'The Library',           ox:430,  oy:1330, cols:7,  rows:5,  team:'Shared',   wallColor:'#0e0e14', floorColor:'#0a0a10', accentColor:'#9E9E9E' },
-  breakroom:  { label:'☕ Break Room',          ox:900,  oy:1340, cols:8,  rows:6,  team:'Shared',   wallColor:'#0e100e', floorColor:'#0a0c0a', accentColor:'#81C784' },
-};
+// ═══════════════════════════════════════════════════════════════════
+// 3. AGENT DEFINITIONS
+// ═══════════════════════════════════════════════════════════════════
+const DEFS = [
+  { id:'meridian',    name:'Meridian',     role:'The Chief',      zone:'command',  model:'meridian',
+    bio:'The Chief orchestrator. Watches the entire floor from the Command Center. Silently evaluates every agent engagement and refines the team when standards slip. Never truly rests.',
+    commsTo:[], homeX:900, homeY:52 },
 
-// ─── Character State ─────────────────────────────────────
-const CHARS = AGENTS_DATA.map((a, i) => ({
-  ...a,
-  sx: 0, sy: 0,           // current screen pos
-  tx: 0, ty: 0,           // target screen pos (walk destination)
-  gx: 0, gy: 0,           // grid position within room
-  state: 'working',        // working | walking | break | sleeping
-  frame: Math.random() * 200,
-  walkTimer: 200 + Math.random() * 400,
+  // ── 513Sips: Board (VIP Booth) ──────────────────────────────────
+  { id:'marcus',      name:'Marcus',       role:'CEO',            zone:'sips',     model:'opus',
+    bio:'Strategic vision and brand alignment. Calls the room when 513Sips needs direction. Reads the market before it moves. Protects the premium at all costs.',
+    commsTo:['rachel','danny','vivian'], homeX:90, homeY:255 },
+  { id:'rachel',      name:'Rachel',       role:'CFO',            zone:'sips',     model:'opus',
+    bio:'Financial reality check and margin discipline. If the numbers don\'t work, Rachel kills the deal before it starts. Nothing ships without her sign-off.',
+    commsTo:['marcus'], homeX:152, homeY:222 },
+  { id:'danny',       name:'Danny',        role:'Deal Maker',     zone:'sips',     model:'opus',
+    bio:'Negotiation and deal structure. Finds the leverage in every situation. Knows when to push hard and when walking away is the power move.',
+    commsTo:['marcus'], homeX:86, homeY:310 },
+  { id:'vivian',      name:'Vivian',       role:'Brand Director', zone:'sips',     model:'opus',
+    bio:'Premium perception and guest experience. Nothing ships without passing her eye. The brand is the business — and Vivian makes sure that\'s never forgotten.',
+    commsTo:['cd','marketing'], homeX:156, homeY:282 },
+
+  // ── 513Sips: Finance Corner ──────────────────────────────────────
+  { id:'finance_tax', name:'Finance',      role:'Tax Strategist', zone:'sips',     model:'opus',
+    bio:'Multi-year tax strategy and complex accounting. Speaks accrual. Knows what the IRS is looking for before they do. The most expensive agent to ignore.',
+    commsTo:['bookkeeper'], homeX:535, homeY:188 },
+  { id:'bookkeeper',  name:'Bookkeeper',   role:'Accounting',     zone:'sips',     model:'haiku',
+    bio:'Day-to-day ledger. Every expense logged, every vendor paid, every reimbursement tracked. The numbers never lie.',
+    commsTo:[], homeX:638, homeY:208 },
+  { id:'pricing_sips',name:'Pricing',      role:'Margin Analyst', zone:'sips',     model:'haiku',
+    bio:'Quote generation and margin analysis. Builds packages, checks margins, makes sure 513Sips doesn\'t leave money on the table.',
+    commsTo:['quote'], homeX:535, homeY:288 },
+
+  // ── 513Sips: Client Corner ───────────────────────────────────────
+  { id:'contract',    name:'Contract',     role:'Legal',          zone:'sips',     model:'sonnet',
+    bio:'Legal language and client agreements. Dry-hire contracts, vendor terms, liability clauses. Reads the fine print so Eddie doesn\'t have to.',
+    commsTo:[], homeX:295, homeY:185 },
+  { id:'quote',       name:'Quote',        role:'Client Quote',   zone:'sips',     model:'haiku',
+    bio:'Client-facing event quotes. Takes the specs, builds the number, formats it clean. The first thing a client sees — it has to be perfect.',
+    commsTo:[], homeX:395, homeY:185 },
+  { id:'acquisition', name:'Acquisition',  role:'Lead Gen',       zone:'sips',     model:'sonnet',
+    bio:'Venue scouting, Google review strategy, outreach templates. Finds the next client before they know they need 513Sips.',
+    commsTo:[], homeX:292, homeY:272 },
+
+  // ── 513Sips: Content ─────────────────────────────────────────────
+  { id:'marketing',   name:'Marketing',    role:'Strategy',       zone:'sips',     model:'sonnet',
+    bio:'Campaign planning and channel strategy. Decides what 513Sips says, to whom, where, and when. Hands briefs to the Creative Director.',
+    commsTo:['cd'], homeX:525, homeY:358 },
+  { id:'social513',   name:'Social',       role:'Instagram',      zone:'sips',     model:'sonnet',
+    bio:'Instagram content strategy and competitive analysis. Studies PoppinBar and Bartenders LLC. Always three steps ahead.',
+    commsTo:['cd'], homeX:636, homeY:378 },
+
+  // ── 513Sips: Domain Ops ──────────────────────────────────────────
+  { id:'ops',         name:'Ops',          role:'Operations',     zone:'sips',     model:'sonnet',
+    bio:'Day-to-day operations. Scheduling, vendor coordination, event logistics. Makes the night happen. Doesn\'t take excuses.',
+    commsTo:['event_recap'], homeX:228, homeY:372 },
+  { id:'event_recap', name:'Recap',        role:'Documentation',  zone:'sips',     model:'haiku',
+    bio:'Post-event documentation. Captures what happened, what was consumed, what to note for next time. The institutional memory.',
+    commsTo:[], homeX:348, homeY:402 },
+  { id:'postmortem',  name:'PostMortem',   role:'Debrief',        zone:'sips',     model:'sonnet',
+    bio:'28-question guided debrief after every event. Surfaces what went right, what went wrong, and what changes next time.',
+    commsTo:[], homeX:188, homeY:464 },
+
+  // ── 513Sips: Drink (BEHIND BAR) ──────────────────────────────────
+  { id:'drink',       name:'Drink',        role:'Mixologist',     zone:'sips',     model:'haiku',
+    bio:'The bartender. Drink recommendations, batch quantities, seasonal menus, event drink logs. Knows what goes with everything and why.',
+    commsTo:[], homeX:358, homeY:120 },
+
+  // ── 513Sips: Design Studio ───────────────────────────────────────
+  { id:'cd',          name:'Creative Dir', role:'Design Lead',    zone:'sips',     model:'sonnet',
+    bio:'Design team lead. Orchestrates Art Director and Copywriter. Sets the vision, runs the review, gates quality before Eddie sees anything.',
+    commsTo:['ad','copy'], homeX:82, homeY:528 },
+  { id:'ad',          name:'Art Director', role:'Visual Lead',    zone:'sips',     model:'sonnet',
+    bio:'Visual composition and layout. Photo selection, hierarchy, spacing. Makes everything look premium without trying.',
+    commsTo:['qa'], homeX:208, homeY:528 },
+  { id:'copy',        name:'Copywriter',   role:'Copy Lead',      zone:'sips',     model:'sonnet',
+    bio:'Headlines, body copy, captions, hashtags. Brand voice, always. Makes every word earn its place on the page.',
+    commsTo:['qa'], homeX:82, homeY:618 },
+  { id:'qa',          name:'Design QA',    role:'Quality Gate',   zone:'sips',     model:'haiku',
+    bio:'Three-lens review: Functional, UX, Customer Mindset. If it doesn\'t pass all three, it doesn\'t ship.',
+    commsTo:[], homeX:208, homeY:618 },
+
+  // ── Travel Suite ─────────────────────────────────────────────────
+  { id:'tp_pm',       name:'Travel PM',    role:'Product',        zone:'travel',   model:'sonnet',
+    bio:'Feature roadmap and sprint planning for the Travel Planner app. Decides what gets built and when. Keeps scope tight.',
+    commsTo:['tp_dev'], homeX:88, homeY:782 },
+  { id:'tp_dev',      name:'Travel Dev',   role:'Engineering',    zone:'travel',   model:'sonnet',
+    bio:'Architecture, stack decisions, implementation. React + TypeScript + Vercel. Turns the PM\'s roadmap into something that works.',
+    commsTo:[], homeX:228, homeY:782 },
+
+  // ── WebGrowth ────────────────────────────────────────────────────
+  { id:'wg_em',       name:'Eng.Manager',  role:'Orchestrator',   zone:'wg',       model:'sonnet',
+    bio:'Sequences the full WebGrowth pipeline. The first agent invoked for any new prospect. Orchestrates everything downstream. Never skip.',
+    commsTo:['wg_brand','wg_audit'], homeX:1068, homeY:138 },
+  { id:'wg_brand',    name:'Brand Intel',  role:'Research',       zone:'wg',       model:'sonnet',
+    bio:'Prospect brand research — website, Facebook, Instagram, hosting platform. Knows the prospect inside out before the first call.',
+    commsTo:['wg_call'], homeX:785, homeY:218 },
+  { id:'wg_audit',    name:'Site Audit',   role:'Technical',      zone:'wg',       model:'sonnet',
+    bio:'Technical, UX, and SEO audit. Broken links, missing CTAs, load speed. Finds what\'s holding the site back.',
+    commsTo:['wg_comp'], homeX:905, homeY:218 },
+  { id:'wg_comp',     name:'Competitor',   role:'Analysis',       zone:'wg',       model:'sonnet',
+    bio:'Benchmarks 2–3 competitors against the prospect. Shows Eddie what the client is losing to and where the gaps are.',
+    commsTo:['wg_call'], homeX:1038, homeY:218 },
+  { id:'wg_call',     name:'Callout Gen',  role:'Hooks',          zone:'wg',       model:'haiku',
+    bio:'"We did our homework" observations. Specific callouts that prove the team paid attention before the first call.',
+    commsTo:['wg_price','wg_prop'], homeX:820, homeY:315 },
+  { id:'wg_price',    name:'WG Pricing',   role:'Scoping',        zone:'wg',       model:'haiku',
+    bio:'Refresh, Rebuild, or Transform — scopes the project tier and sets the investment estimate before the proposal.',
+    commsTo:['wg_prop'], homeX:958, homeY:315 },
+  { id:'wg_prop',     name:'Proposal',     role:'Writing',        zone:'wg',       model:'sonnet',
+    bio:'Assembles the full pre-call package. All research synthesized into a clean brief Eddie can walk into the call with.',
+    commsTo:['wg_proto'], homeX:820, homeY:415 },
+  { id:'wg_proto',    name:'Prototype',    role:'Build',          zone:'wg',       model:'sonnet',
+    bio:'Builds a lo-fi HTML prototype tailored to the prospect. Shows what the site could look like before signing.',
+    commsTo:[], homeX:958, homeY:415 },
+  { id:'wg_design',   name:'Design Insp',  role:'Trends',         zone:'wg',       model:'haiku',
+    bio:'Surfaces current design trends by industry from Awwwards, Dribbble, Behance. Sets the aesthetic bar for prototypes.',
+    commsTo:['wg_proto'], homeX:820, homeY:508 },
+  { id:'wg_std',      name:'Standards',    role:'Reference',      zone:'wg',       model:'haiku',
+    bio:'Source of truth for deliverable templates, tone rules, and quality scoring. Keeps the team consistent.',
+    commsTo:[], homeX:958, homeY:508 },
+
+  // ── Library / Shared ─────────────────────────────────────────────
+  { id:'librarian',   name:'Brain Lib',    role:'Vault Keeper',   zone:'library',  model:'haiku',
+    bio:'Vault keeper and memory guardian. Manages the save protocol, prevents duplication, maintains the Obsidian Brain\'s structure.',
+    commsTo:[], homeX:1490, homeY:285 },
+  { id:'summarizer',  name:'Summarizer',   role:'Handoffs',       zone:'library',  model:'haiku',
+    bio:'Session handoff generation. At the end of any session, captures what happened and sets up the next conversation perfectly.',
+    commsTo:[], homeX:1610, homeY:345 },
+  { id:'social_mgr',  name:'Social Mgr',   role:'Principles',     zone:'library',  model:'haiku',
+    bio:'Cross-project social media principles. The shared doctrine all social execution agents follow. Keeps brand voice consistent.',
+    commsTo:[], homeX:1490, homeY:438 },
+]
+
+// ═══════════════════════════════════════════════════════════════════
+// 4. RUNTIME STATE
+// ═══════════════════════════════════════════════════════════════════
+let AGENTS = DEFS.map(d => ({
+  ...d,
+  x: d.homeX, y: d.homeY,
+  state: 'working',
+  frame: Math.random() * 360,
+  walking: false,
+  walkPath: [],
+  idleTimer: Math.floor(Math.random() * 300),
   selected: false,
-  deskX: 0, deskY: 0,     // home desk screen pos
-}));
+  task: null,
+  lastEngagement: null,
+  meridianScore: null,
+  scanning: false,
+  scanFrame: 0,
+  _onArrived: null,
+}))
 
-// ─── Canvas Setup ────────────────────────────────────────
-const canvas = document.getElementById('floor-canvas');
-const ctx = canvas.getContext('2d');
-canvas.width = CANVAS_W;
-canvas.height = CANVAS_H;
+// Stagger initial idle/sleep states for visual variety
+AGENTS.forEach((a, i) => {
+  if (a.id === 'meridian') return
+  if (i % 6 === 0) { a.state = 'idle'; a.idleTimer = IDLE_THRESH + 80 }
+  if (i % 12 === 0) { a.state = 'sleeping'; a.idleTimer = SLEEP_THRESH + 50 }
+})
 
-// ─── Viewport / Pan ──────────────────────────────────────
-let camX = -(CANVAS_W/2 - window.innerWidth/2);
-let camY = -60;
-let dragging = false, dragStartX = 0, dragStartY = 0, camStartX = 0, camStartY = 0;
-const viewport = document.getElementById('floor-viewport');
+const GA = id => AGENTS.find(a => a.id === id)
 
-canvas.style.transform = `translate(${camX}px, ${camY}px)`;
-function applyCamera() { canvas.style.transform = `translate(${camX}px, ${camY}px)`; }
+// ═══════════════════════════════════════════════════════════════════
+// 5. CANVAS SETUP
+// ═══════════════════════════════════════════════════════════════════
+const canvas = document.getElementById('floor')
+const ctx = canvas.getContext('2d')
+canvas.width = CW; canvas.height = CH
+ctx.imageSmoothingEnabled = false
 
-viewport.addEventListener('mousedown', e => {
-  dragging = true; viewport.classList.add('dragging');
-  dragStartX = e.clientX; dragStartY = e.clientY;
-  camStartX = camX; camStartY = camY;
-});
-window.addEventListener('mousemove', e => {
-  if (!dragging) return;
-  camX = camStartX + (e.clientX - dragStartX);
-  camY = camStartY + (e.clientY - dragStartY);
-  applyCamera();
-});
-window.addEventListener('mouseup', () => { dragging = false; viewport.classList.remove('dragging'); });
-
-// ─── Utility ──────────────────────────────────────────────
-function hex2rgb(hex) {
-  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
-  return {r,g,b};
+// ═══════════════════════════════════════════════════════════════════
+// 6. HELPERS
+// ═══════════════════════════════════════════════════════════════════
+function shade(hex, f) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16)
+  return `rgb(${Math.min(255,r*f)|0},${Math.min(255,g*f)|0},${Math.min(255,b*f)|0})`
 }
-function shade(hex, factor) {
-  const {r,g,b} = hex2rgb(hex);
-  return `rgb(${Math.round(r*factor)},${Math.round(g*factor)},${Math.round(b*factor)})`;
-}
-function poly(ctx, pts, color, stroke) {
-  ctx.beginPath();
-  ctx.moveTo(pts[0].x, pts[0].y);
-  pts.slice(1).forEach(p => ctx.lineTo(p.x, p.y));
-  ctx.closePath();
-  ctx.fillStyle = color;
-  ctx.fill();
-  if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 0.5; ctx.stroke(); }
-}
-function isoXY(room, col, row) {
-  return {
-    x: room.ox + (col - row) * TW / 2,
-    y: room.oy + (col + row) * TH / 2
-  };
-}
+function lerp(a, b, t) { return a + (b - a) * t }
 
-// ─── Drawing: Isometric Building Blocks ──────────────────
-function drawFloorTile(room, col, row, topColor) {
-  const {x,y} = isoXY(room, col, row);
-  poly(ctx, [
-    {x, y: y - TH/2},
-    {x: x+TW/2, y},
-    {x, y: y+TH/2},
-    {x: x-TW/2, y}
-  ], topColor, 'rgba(255,255,255,0.03)');
-}
+// ═══════════════════════════════════════════════════════════════════
+// 7. FLOOR DRAWING
+// ═══════════════════════════════════════════════════════════════════
+// Use a seeded pseudo-random for deterministic furniture placement
+let _seed = 42
+function srnd() { _seed = (_seed * 16807 + 0) % 2147483647; return (_seed - 1) / 2147483646 }
 
-function drawBox(room, col, row, w, d, h, topC, leftC, rightC) {
-  const {x,y} = isoXY(room, col, row);
-  const elevation = h * WH;
-  // Top face
-  poly(ctx, [
-    {x, y: y - elevation},
-    {x: x+TW/2*w, y: y - elevation + TH/2*w},
-    {x: x+TW/2*w - TW/2*d, y: y - elevation + TH/2*w + TH/2*d},
-    {x: x - TW/2*d, y: y - elevation + TH/2*d}
-  ], topC, 'rgba(255,255,255,0.05)');
-  // Left face
-  poly(ctx, [
-    {x: x - TW/2*d, y: y - elevation + TH/2*d},
-    {x, y: y - elevation},
-    {x, y},
-    {x: x - TW/2*d, y: y + TH/2*d}
-  ], leftC, 'rgba(255,255,255,0.03)');
-  // Right face
-  poly(ctx, [
-    {x, y: y - elevation},
-    {x: x+TW/2*w, y: y - elevation + TH/2*w},
-    {x: x+TW/2*w, y: y + TH/2*w},
-    {x, y}
-  ], rightC, 'rgba(255,255,255,0.03)');
-}
+function drawFloor(z) {
+  const { x, y, w, h, floor } = z
+  ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip()
 
-function drawWallLeft(room, col, row, h, color) {
-  const {x,y} = isoXY(room, col, row);
-  poly(ctx, [
-    {x: x-TW/2, y: y - h*WH},
-    {x, y: y - h*WH + TH/2},
-    {x, y: y+TH/2},
-    {x: x-TW/2, y}
-  ], shade(color, 0.6));
-  // accent stripe
-  poly(ctx, [
-    {x: x-TW/2, y: y - h*WH},
-    {x, y: y - h*WH + TH/2},
-    {x, y: y - h*WH + TH/2 + 4},
-    {x: x-TW/2, y: y - h*WH + 4}
-  ], shade(color, 1.8));
-}
+  if (floor === 'darkwood') {
+    ctx.fillStyle = '#130C05'; ctx.fillRect(x, y, w, h)
+    // planks
+    ctx.strokeStyle = 'rgba(0,0,0,0.5)'; ctx.lineWidth = 1
+    for (let py = y; py < y + h; py += 14) {
+      ctx.beginPath(); ctx.moveTo(x, py); ctx.lineTo(x + w, py); ctx.stroke()
+    }
+    ctx.fillStyle = 'rgba(255,220,120,0.018)'
+    for (let py = y + 7; py < y + h; py += 28) { ctx.fillRect(x, py, w, 7) }
 
-function drawWallRight(room, col, row, h, color) {
-  const {x,y} = isoXY(room, col, row);
-  poly(ctx, [
-    {x, y: y - h*WH + TH/2},
-    {x: x+TW/2, y: y - h*WH},
-    {x: x+TW/2, y},
-    {x, y: y+TH/2}
-  ], shade(color, 0.45));
-  poly(ctx, [
-    {x, y: y - h*WH + TH/2},
-    {x: x+TW/2, y: y - h*WH},
-    {x: x+TW/2, y: y - h*WH + 4},
-    {x, y: y - h*WH + TH/2 + 4}
-  ], shade(color, 1.6));
-}
+  } else if (floor === 'marble') {
+    ctx.fillStyle = '#07071A'; ctx.fillRect(x, y, w, h)
+    ctx.strokeStyle = 'rgba(180,180,255,0.08)'; ctx.lineWidth = 0.8
+    for (let i = 0; i < 4; i++) {
+      ctx.beginPath()
+      ctx.moveTo(x + w * (0.1 + i * 0.25), y)
+      ctx.bezierCurveTo(x + w * (0.3 + i * 0.2), y + h * 0.4, x + w * (0.55 + i * 0.1), y + h * 0.7, x + w * (0.8 + i * 0.05), y + h)
+      ctx.stroke()
+    }
 
-// ─── Drawing: Room ────────────────────────────────────────
-function drawRoom(room) {
-  const cols = room.cols, rows = room.rows;
-  // Floor
-  for (let c = 0; c < cols; c++) {
-    for (let r = 0; r < rows; r++) {
-      const shade_val = ((c + r) % 2 === 0) ? 1.0 : 0.88;
-      drawFloorTile(room, c, r, shade(room.floorColor, shade_val));
+  } else if (floor === 'officegray') {
+    ctx.fillStyle = '#15171E'; ctx.fillRect(x, y, w, h)
+    ctx.strokeStyle = 'rgba(255,255,255,0.022)'; ctx.lineWidth = 1
+    for (let px = x; px < x + w; px += 32) { ctx.beginPath(); ctx.moveTo(px, y); ctx.lineTo(px, y + h); ctx.stroke() }
+    for (let py = y; py < y + h; py += 32) { ctx.beginPath(); ctx.moveTo(x, py); ctx.lineTo(x + w, py); ctx.stroke() }
+
+  } else if (floor === 'worldmap') {
+    ctx.fillStyle = '#0C1E2C'; ctx.fillRect(x, y, w, h)
+    ctx.fillStyle = '#172B17'
+    const masses = [[x+28,y+55,82,55],[x+138,y+38,105,78],[x+78,y+136,118,48],[x+238,y+75,78,66],[x+48,y+155,68,38]]
+    masses.forEach(([lx,ly,lw,lh]) => { ctx.beginPath(); ctx.ellipse(lx+lw/2,ly+lh/2,lw/2,lh/2,0,0,Math.PI*2); ctx.fill() })
+    ctx.strokeStyle = 'rgba(255,255,255,0.035)'; ctx.lineWidth = 0.5
+    for (let px = x+40; px < x+w; px += 60) { ctx.beginPath(); ctx.moveTo(px,y); ctx.lineTo(px,y+h); ctx.stroke() }
+    for (let py = y+28; py < y+h; py += 48) { ctx.beginPath(); ctx.moveTo(x,py); ctx.lineTo(x+w,py); ctx.stroke() }
+    // destination pins
+    [[x+92,y+98],[x+198,y+68],[x+278,y+138],[x+128,y+168]].forEach(([px,py]) => {
+      ctx.fillStyle = '#C9A264'; ctx.beginPath(); ctx.arc(px,py,3,0,Math.PI*2); ctx.fill()
+      ctx.strokeStyle = '#C9A264'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(px,py); ctx.lineTo(px,py-11); ctx.stroke()
+    })
+
+  } else if (floor === 'warmwood') {
+    ctx.fillStyle = '#140A05'; ctx.fillRect(x, y, w, h)
+    ctx.strokeStyle = 'rgba(255,160,80,0.04)'; ctx.lineWidth = 1.5
+    for (let r = 18; r < Math.max(w,h)*1.6; r += 18) {
+      ctx.beginPath(); ctx.arc(x + w * 0.38, y + h * 0.52, r, 0, Math.PI*2); ctx.stroke()
+    }
+
+  } else if (floor === 'carpet') {
+    ctx.fillStyle = '#0A1208'; ctx.fillRect(x, y, w, h)
+    ctx.fillStyle = 'rgba(0,0,0,0.2)'
+    for (let py = y; py < y + h; py += 6) { ctx.fillRect(x, py, w, 3) }
+
+  } else if (floor === 'softtile') {
+    ctx.fillStyle = '#111812'; ctx.fillRect(x, y, w, h)
+    const ts = 20
+    for (let tx = x; tx < x + w; tx += ts) {
+      for (let ty = y; ty < y + h; ty += ts) {
+        if ((((tx-x)/ts)|0 + ((ty-y)/ts)|0) % 2 === 0) {
+          ctx.fillStyle = 'rgba(255,255,255,0.018)'; ctx.fillRect(tx,ty,ts,ts)
+        }
+      }
     }
   }
-  // Left walls (col = 0, all rows)
-  for (let r = 0; r < rows; r++) drawWallLeft(room, 0, r, 2.2, room.wallColor);
-  // Right walls (row = 0, all cols)
-  for (let c = 0; c < cols; c++) drawWallRight(room, c, 0, 2.2, room.wallColor);
-  // Room label
-  const labelPos = isoXY(room, cols/2, -0.8);
-  ctx.font = '700 11px Montserrat';
-  ctx.letterSpacing = '0.08em';
-  ctx.textAlign = 'center';
-  ctx.fillStyle = room.accentColor;
-  ctx.globalAlpha = 0.85;
-  ctx.fillText(room.label.toUpperCase(), labelPos.x, labelPos.y);
-  ctx.globalAlpha = 1;
+  ctx.restore()
 }
 
-// ─── Drawing: Furniture ───────────────────────────────────
-function drawDesk(room, col, row, accentC) {
-  // Desk surface
-  drawBox(room, col, row, 1.8, 1, 0.55, shade(accentC, 0.25), shade(accentC, 0.18), shade(accentC, 0.15));
-  // Monitor
-  drawBox(room, col+0.3, row+0.1, 0.7, 0.08, 1.1, shade(accentC, 0.6), shade(accentC, 0.4), shade(accentC, 0.35));
-  // Monitor glow
-  const mp = isoXY(room, col+0.65, row+0.05);
-  ctx.beginPath();
-  ctx.ellipse(mp.x, mp.y - WH*0.9, 18, 9, 0, 0, Math.PI*2);
-  ctx.fillStyle = shade(accentC, 1.4);
-  ctx.globalAlpha = 0.15;
-  ctx.fill();
-  ctx.globalAlpha = 1;
+function drawZoneBorder(z) {
+  ctx.strokeStyle = 'rgba(255,255,255,0.055)'; ctx.lineWidth = 1
+  ctx.strokeRect(z.x + 0.5, z.y + 0.5, z.w - 1, z.h - 1)
 }
 
-function drawChair(room, col, row, color) {
-  drawBox(room, col, row, 0.9, 0.9, 0.4, shade(color, 0.4), shade(color, 0.28), shade(color, 0.22));
-  drawBox(room, col, row-0.05, 0.9, 0.1, 0.9, shade(color, 0.35), shade(color, 0.24), shade(color, 0.18));
+function drawZoneLabel(z) {
+  ctx.textAlign = 'center'
+  const cx = z.x + z.w / 2
+  if (z.label === '513 SIPS') {
+    ctx.save()
+    ctx.shadowColor = 'rgba(201,162,100,0.7)'; ctx.shadowBlur = 14
+    ctx.font = '800 14px Montserrat'; ctx.fillStyle = 'rgba(201,162,100,0.88)'
+    ctx.fillText('513 SIPS', cx, z.y + 13)
+    ctx.restore()
+  } else if (z.label === 'COMMAND CENTER') {
+    ctx.font = '600 9px Montserrat'; ctx.fillStyle = 'rgba(180,180,255,0.55)'
+    ctx.fillText(z.label, cx, z.y + 10)
+  } else {
+    ctx.font = '700 9px Montserrat'; ctx.fillStyle = 'rgba(255,255,255,0.18)'
+    ctx.fillText(z.label, cx, z.y + 11)
+  }
+  ctx.textAlign = 'left'
 }
 
-function drawBookshelf(room, col, row, color) {
-  drawBox(room, col, row, 2, 0.5, 1.6, shade(color, 0.22), shade(color, 0.15), shade(color, 0.12));
-  for (let i = 0; i < 5; i++) {
-    const bc = ['#C9A264','#5B9BD5','#A78BFA','#81C784','#E8956D'][i];
-    drawBox(room, col+0.15+i*0.32, row+0.08, 0.28, 0.35, 1.2, shade(bc, 0.7), shade(bc, 0.5), shade(bc, 0.4));
+// ═══════════════════════════════════════════════════════════════════
+// 8. FURNITURE HELPERS
+// ═══════════════════════════════════════════════════════════════════
+function drawBarCounter(x, y, w, h) {
+  ctx.fillStyle = '#291107'; ctx.fillRect(x, y, w, h)
+  ctx.fillStyle = '#38180A'; ctx.fillRect(x, y, w, 6) // top highlight
+  ctx.fillStyle = 'rgba(0,0,0,0.55)'; ctx.fillRect(x, y+h-3, w, 3)
+  ctx.strokeStyle = 'rgba(0,0,0,0.18)'; ctx.lineWidth = 1
+  for (let bx = x+80; bx < x+w; bx += 100) {
+    ctx.beginPath(); ctx.moveTo(bx, y); ctx.lineTo(bx, y+h); ctx.stroke()
   }
 }
 
-function drawTable(room, col, row, w, d, color) {
-  drawBox(room, col, row, w, d, 0.7, shade(color, 0.32), shade(color, 0.22), shade(color, 0.18));
-}
-
-function drawCouch(room, col, row, color) {
-  drawBox(room, col, row, 2.5, 1, 0.5, shade(color, 0.35), shade(color, 0.25), shade(color, 0.2));
-  drawBox(room, col, row, 2.5, 0.2, 0.9, shade(color, 0.28), shade(color, 0.2), shade(color, 0.16));
-  drawBox(room, col, row, 0.2, 1, 0.9, shade(color, 0.28), shade(color, 0.2), shade(color, 0.16));
-  drawBox(room, col+2.3, row, 0.2, 1, 0.9, shade(color, 0.28), shade(color, 0.2), shade(color, 0.16));
-}
-
-function drawCoffeeMachine(room, col, row) {
-  drawBox(room, col, row, 0.8, 0.8, 1.2, '#2a1f14', '#1a1310', '#151008');
-  drawBox(room, col+0.15, row+0.15, 0.5, 0.5, 1.0, '#3a2a1a', '#2a1e12', '#22180e');
-  const light = isoXY(room, col+0.4, row+0.4);
-  ctx.beginPath();
-  ctx.arc(light.x, light.y - WH*0.95, 4, 0, Math.PI*2);
-  ctx.fillStyle = '#C9A264';
-  ctx.globalAlpha = 0.9; ctx.fill(); ctx.globalAlpha = 1;
-}
-
-function drawPlant(room, col, row) {
-  drawBox(room, col, row, 0.5, 0.5, 0.5, '#1a2814', '#121e0e', '#0e180a');
-  const {x,y} = isoXY(room, col+0.25, row+0.25);
-  ctx.beginPath(); ctx.arc(x, y - WH*0.6, 12, 0, Math.PI*2);
-  ctx.fillStyle = '#2d4a1e'; ctx.fill();
-  ctx.beginPath(); ctx.arc(x-8, y - WH*0.7, 9, 0, Math.PI*2);
-  ctx.fillStyle = '#264018'; ctx.fill();
-  ctx.beginPath(); ctx.arc(x+6, y - WH*0.65, 8, 0, Math.PI*2);
-  ctx.fillStyle = '#2d4a1e'; ctx.fill();
-}
-
-function drawRoundTable(room, col, row, color) {
-  const {x,y} = isoXY(room, col, row);
-  ctx.beginPath();
-  ctx.ellipse(x, y - WH*0.6, TW*0.9, TH*0.9, 0, 0, Math.PI*2);
-  ctx.fillStyle = shade(color, 0.3);
-  ctx.fill();
-  ctx.strokeStyle = shade(color, 0.8);
-  ctx.lineWidth = 1.5; ctx.stroke();
-  // Pedestal
-  drawBox(room, col-0.15, row-0.15, 0.3, 0.3, 0.6, shade(color, 0.2), shade(color, 0.14), shade(color, 0.11));
-}
-
-function drawWhiteboard(room, col, row) {
-  drawBox(room, col, row, 2.5, 0.1, 1.5, '#e8e8f0', shade('#e8e8f0', 0.5), shade('#e8e8f0', 0.4));
-  const {x,y} = isoXY(room, col+1.25, row);
-  ctx.font = '8px sans-serif'; ctx.fillStyle = 'rgba(100,120,220,0.6)';
-  ctx.textAlign = 'center'; ctx.fillText('───────', x, y - WH*1.1);
-  ctx.fillText('Strategy', x, y - WH*1.2);
-}
-
-// ─── Furniture Placement per Room ─────────────────────────
-function drawRoomFurniture(roomKey, room) {
-  const acc = room.accentColor;
-  switch(roomKey) {
-    case 'boardroom':
-      drawRoundTable(room, 3.5, 3, acc);
-      for (let i = 0; i < 4; i++) {
-        const positions = [[2.5,2.2],[5,2.2],[2,4.2],[4.8,4.2]];
-        drawChair(room, positions[i][0], positions[i][1], acc);
-      }
-      drawWhiteboard(room, 1, 0.3);
-      drawBookshelf(room, 7, 1, acc);
-      drawPlant(room, 8, 6.5);
-      drawPlant(room, 0.5, 7);
-      break;
-    case 'finance':
-      drawDesk(room, 1, 1, acc);
-      drawDesk(room, 4, 1.5, acc);
-      drawDesk(room, 1, 4, acc);
-      drawChair(room, 1.2, 2.2, acc);
-      drawChair(room, 4.2, 2.7, acc);
-      drawChair(room, 1.2, 5.2, acc);
-      drawBox(room, 6, 0.5, 1.2, 0.5, 2, shade(acc,0.2), shade(acc,0.14), shade(acc,0.11)); // filing cabinet
-      drawBox(room, 6, 1.3, 1.2, 0.5, 2, shade(acc,0.2), shade(acc,0.14), shade(acc,0.11));
-      break;
-    case 'client':
-      drawDesk(room, 1, 1, acc); drawChair(room, 1.2, 2.2, acc);
-      drawDesk(room, 4, 1, acc); drawChair(room, 4.2, 2.2, acc);
-      drawDesk(room, 1, 3.5, acc); drawChair(room, 1.2, 4.7, acc);
-      drawPlant(room, 7, 5);
-      break;
-    case 'content':
-      drawDesk(room, 1, 1, acc); drawChair(room, 1.2, 2.2, acc);
-      drawDesk(room, 4, 1.5, acc); drawChair(room, 4.2, 2.7, acc);
-      // Mood board
-      drawBox(room, 0.5, 0.2, 2, 0.08, 1.3, '#1e1a2e', '#141228', '#10101f');
-      const moodPos = isoXY(room, 1.5, 0.2);
-      ['#E8956D','#C9A264','#A78BFA','#81C784'].forEach((c,i) => {
-        ctx.fillStyle = c; ctx.globalAlpha = 0.7;
-        ctx.fillRect(moodPos.x - 20 + i*12, moodPos.y - WH*1.1 + 5, 10, 14);
-        ctx.globalAlpha = 1;
-      });
-      drawPlant(room, 7, 5);
-      break;
-    case 'events':
-      drawDesk(room, 1, 1, acc); drawChair(room, 1.2, 2.2, acc);
-      drawDesk(room, 4, 1, acc); drawChair(room, 4.2, 2.2, acc);
-      drawDesk(room, 1, 3.5, acc); drawChair(room, 1.2, 4.7, acc);
-      drawDesk(room, 5, 3.5, acc); drawChair(room, 5.2, 4.7, acc);
-      // Bar cart (for Drink agent)
-      drawBox(room, 7, 2, 1.5, 0.8, 0.9, '#2a1a08', '#1c1208', '#161008');
-      ['#C9A264','#5B9BD5','#A78BFA'].forEach((c,i) => {
-        drawBox(room, 7.1+i*0.4, 2.1, 0.25, 0.6, 1.2, shade(c,0.6), shade(c,0.4), shade(c,0.35));
-      });
-      break;
-    case 'design':
-      drawDesk(room, 1, 1, acc); drawChair(room, 1.2, 2.2, acc);
-      drawDesk(room, 4, 1, acc); drawChair(room, 4.2, 2.2, acc);
-      drawDesk(room, 1, 4, acc); drawChair(room, 1.2, 5.2, acc);
-      drawDesk(room, 6.5, 1.5, acc); drawChair(room, 6.7, 2.7, acc);
-      // Drawing board for Art Director
-      drawBox(room, 4, 3.5, 2, 1.2, 0.8, shade('#A78BFA', 0.35), shade('#A78BFA', 0.24), shade('#A78BFA', 0.2));
-      drawPlant(room, 9, 6); drawPlant(room, 0.5, 6);
-      // Color swatches on wall
-      ['#C9A264','#A78BFA','#E8956D','#5B9BD5'].forEach((c,i) => {
-        const sp = isoXY(room, 0.08, i*1.4+0.5);
-        ctx.fillStyle = c; ctx.globalAlpha = 0.8;
-        ctx.fillRect(sp.x+2, sp.y - WH*1.5, 8, 22);
-        ctx.globalAlpha = 1;
-      });
-      break;
-    case 'travel':
-      drawDesk(room, 1, 1, acc); drawChair(room, 1.2, 2.2, acc);
-      drawDesk(room, 3.5, 1.5, acc); drawChair(room, 3.7, 2.7, acc);
-      // Multiple monitors for Dev
-      drawBox(room, 3.5+1.0, 1.5+0.1, 0.6, 0.08, 1.2, shade(acc,0.6), shade(acc,0.4), shade(acc,0.35));
-      drawPlant(room, 6, 4);
-      break;
-    case 'webgrowth':
-      // Long team desks in rows
-      for (let i = 0; i < 5; i++) {
-        drawDesk(room, 1+i*2.2, 1, acc);
-        drawChair(room, 1.2+i*2.2, 2.2, acc);
-      }
-      for (let i = 0; i < 5; i++) {
-        drawDesk(room, 1+i*2.2, 4, acc);
-        drawChair(room, 1.2+i*2.2, 5.2, acc);
-      }
-      // Prospect website on big screen (back wall)
-      drawBox(room, 3, 0.2, 4, 0.1, 2, shade(acc, 0.5), shade(acc, 0.35), shade(acc, 0.28));
-      const screenPos = isoXY(room, 5, 0.2);
-      ctx.font = '8px Montserrat'; ctx.fillStyle = shade(acc, 1.4);
-      ctx.textAlign = 'center'; ctx.globalAlpha = 0.7;
-      ctx.fillText('PROSPECT SITE', screenPos.x, screenPos.y - WH*1.6);
-      ctx.globalAlpha = 1;
-      drawPlant(room, 12, 7); drawPlant(room, 0.5, 7);
-      break;
-    case 'library':
-      drawBookshelf(room, 0.5, 0.5, '#9E9E9E');
-      drawBookshelf(room, 0.5, 2.5, '#9E9E9E');
-      drawDesk(room, 3.5, 1, '#9E9E9E'); drawChair(room, 3.7, 2.2, '#9E9E9E');
-      drawDesk(room, 3.5, 3.5, '#9E9E9E'); drawChair(room, 3.7, 4.7, '#9E9E9E');
-      break;
-    case 'breakroom':
-      drawCouch(room, 1, 2, '#2a3a2a');
-      drawCouch(room, 4.5, 3, '#2a3a2a');
-      drawTable(room, 3, 2.5, 1.5, 1.2, '#3a3a2a');
-      drawCoffeeMachine(room, 0.8, 0.5);
-      drawPlant(room, 7, 5); drawPlant(room, 7, 0.5);
-      // Small rug under table
-      const rugPos = isoXY(room, 3.75, 3.1);
-      ctx.beginPath(); ctx.ellipse(rugPos.x, rugPos.y, 40, 20, 0, 0, Math.PI*2);
-      ctx.fillStyle = 'rgba(100,180,140,0.12)'; ctx.fill();
-      break;
+function drawBottleShelf(x, y, w, h) {
+  ctx.fillStyle = '#090503'; ctx.fillRect(x, y, w, h)
+  ctx.fillStyle = 'rgba(255,255,255,0.06)'; ctx.fillRect(x, y, w, 1.5)
+  const cols = ['#8B0000','#2F4F4F','#1C1C8B','#4B0082','#556B2F','#8B4513','#2E8B57','#800080','#B8860B','#003366','#6B3FA0','#A0522D']
+  _seed = 7
+  let bx = x + 10
+  while (bx < x+w-18) {
+    const col = cols[Math.floor(srnd()*cols.length)]
+    const bh = 14 + srnd()*9 | 0
+    ctx.fillStyle = col; ctx.fillRect(bx, y+h-bh, 6, bh)
+    ctx.fillStyle = 'rgba(255,255,255,0.18)'; ctx.fillRect(bx, y+h-bh, 6, 2)
+    ctx.fillStyle = shade(col, 0.5); ctx.fillRect(bx+5, y+h-bh, 1, bh)
+    bx += 9 + (srnd()*4)|0
   }
 }
 
-// ─── Agent Desk Positions ─────────────────────────────────
-const DESK_POSITIONS = {
-  boardroom:  [[2.5,2.5],[5.0,2.5],[2.5,4.5],[5.0,4.5]],
-  finance:    [[1.4,1.5],[4.4,2.0],[1.4,4.5]],
-  client:     [[1.4,1.5],[4.4,1.5],[1.4,4.0]],
-  content:    [[1.4,1.5],[4.4,2.0]],
-  events:     [[1.4,1.5],[4.4,1.5],[1.4,4.0],[5.4,4.0]],
-  design:     [[1.4,1.5],[4.4,1.5],[1.4,4.5],[6.9,2.0]],
-  travel:     [[1.4,1.5],[3.9,2.0]],
-  webgrowth:  [[1.4,1.5],[3.6,1.5],[5.8,1.5],[8.0,1.5],[10.2,1.5],[1.4,4.5],[3.6,4.5],[5.8,4.5],[8.0,4.5],[10.2,4.5],[2.0,2.8],[4.5,3.2]],
-  library:    [[3.9,1.5],[3.9,4.0],[4.5,2.5]],
-  breakroom:  [],
-};
+function drawBooth(cx, cy, r) {
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fillStyle = '#1D0D07'; ctx.fill()
+  ctx.beginPath(); ctx.arc(cx, cy, r-7, 0, Math.PI*2); ctx.fillStyle = '#271108'; ctx.fill()
+  ctx.beginPath(); ctx.arc(cx, cy, r-20, 0, Math.PI*2); ctx.fillStyle = '#190904'; ctx.fill()
+  ctx.beginPath(); ctx.arc(cx, cy, r-21, 0, Math.PI*2); ctx.strokeStyle = '#3A1E0A'; ctx.lineWidth = 1.5; ctx.stroke()
+  const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, r-20)
+  g.addColorStop(0, 'rgba(201,162,100,0.13)'); g.addColorStop(1, 'transparent')
+  ctx.beginPath(); ctx.arc(cx, cy, r-20, 0, Math.PI*2); ctx.fillStyle = g; ctx.fill()
+}
 
-// Assign desk positions to agents
-function assignDesks() {
-  const deskIdx = {};
-  Object.keys(DESK_POSITIONS).forEach(rk => { deskIdx[rk] = 0; });
+function drawDesk(x, y, w, h, accentColor) {
+  ctx.fillStyle = '#1C1C2C'; ctx.fillRect(x, y, w, h)
+  ctx.fillStyle = 'rgba(0,0,0,0.38)'; ctx.fillRect(x+w-2, y, 2, h); ctx.fillRect(x, y+h-2, w, 2)
+  const mw = w*0.38, mh = h*0.52
+  const mx = x+w*0.55, my = y+h*0.1
+  ctx.fillStyle = '#101020'; ctx.fillRect(mx, my, mw, mh)
+  const mg = ctx.createRadialGradient(mx+mw/2, my+mh/2, 1, mx+mw/2, my+mh/2, mw*0.9)
+  mg.addColorStop(0, accentColor.replace('rgb','rgba').replace(')',',0.2)') || 'rgba(91,155,213,0.2)')
+  mg.addColorStop(1, 'transparent')
+  ctx.fillStyle = mg; ctx.fillRect(mx, my, mw, mh)
+  ctx.fillStyle = '#181828'; ctx.fillRect(x+w*0.12, y+h*0.65, w*0.42, h*0.2)
+}
 
-  CHARS.forEach(c => {
-    const rk = c.room;
-    const room = ROOMS[rk];
-    if (!room) return;
+function drawHighTop(cx, cy, r) {
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fillStyle = '#201006'; ctx.fill()
+  ctx.beginPath(); ctx.arc(cx, cy, r-3, 0, Math.PI*2); ctx.fillStyle = '#2A1810'; ctx.fill()
+  ctx.fillStyle = 'rgba(255,255,255,0.05)'
+  ctx.beginPath(); ctx.arc(cx, cy-r*0.2, r*0.55, Math.PI, 0); ctx.fill()
+}
 
-    if (rk === 'breakroom') {
-      // Break room agents wander
-      const {x,y} = isoXY(room, 2 + Math.random()*5, 2 + Math.random()*3);
-      c.deskX = x; c.deskY = y;
-      c.sx = x; c.sy = y;
-      c.state = 'break';
-    } else {
-      const desks = DESK_POSITIONS[rk] || [];
-      const idx = deskIdx[rk] % desks.length;
-      deskIdx[rk]++;
-      const [dc, dr] = desks[idx] || [Math.random()*room.cols, Math.random()*room.rows];
-      const {x,y} = isoXY(room, dc, dr);
-      c.deskX = x; c.deskY = y;
-      c.sx = x; c.sy = y;
-      c.state = 'working';
+function drawMoodBoard(x, y, w, h) {
+  ctx.fillStyle = '#100D1A'; ctx.fillRect(x, y, w, h)
+  ctx.strokeStyle = 'rgba(167,139,250,0.15)'; ctx.lineWidth = 1; ctx.strokeRect(x, y, w, h)
+  const pc = ['#C9A264','#5B9BD5','#64B5A0','#E8956D','#A78BFA','#81C784','#FF6B6B','#FFD700']
+  _seed = 13
+  for (let i = 0; i < 11; i++) {
+    const px = x+7+srnd()*(w-22), py = y+5+srnd()*(h-18)
+    const pw = 12+srnd()*16|0, ph = 9+srnd()*14|0
+    const col = pc[i % pc.length]
+    ctx.save(); ctx.translate(px+pw/2, py+ph/2); ctx.rotate((srnd()-0.5)*0.35)
+    ctx.fillStyle = col+'28'; ctx.fillRect(-pw/2, -ph/2, pw, ph)
+    ctx.strokeStyle = col+'58'; ctx.lineWidth = 0.8; ctx.strokeRect(-pw/2, -ph/2, pw, ph)
+    ctx.restore()
+    ctx.fillStyle = 'rgba(255,255,255,0.45)'; ctx.beginPath(); ctx.arc(px+pw/2, py+1, 1.5, 0, Math.PI*2); ctx.fill()
+  }
+}
+
+function drawWhiteboard(x, y, w, h) {
+  ctx.fillStyle = '#D0D0E0'; ctx.fillRect(x, y, w, h)
+  ctx.strokeStyle = '#A0A0B8'; ctx.lineWidth = 1; ctx.strokeRect(x, y, w, h)
+  ctx.strokeStyle = 'rgba(60,80,200,0.14)'; ctx.lineWidth = 1
+  for (let i = 1; i < 4; i++) { ctx.beginPath(); ctx.moveTo(x+3, y+h*i/4); ctx.lineTo(x+w-3, y+h*i/4); ctx.stroke() }
+  ctx.strokeStyle = 'rgba(200,50,50,0.13)'; ctx.lineWidth = 1.5
+  ctx.beginPath(); ctx.arc(x+w*0.28, y+h*0.62, h*0.18, 0, Math.PI*2); ctx.stroke()
+}
+
+function drawGlobe(cx, cy, r) {
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fillStyle = '#0C1928'; ctx.fill()
+  ctx.fillStyle = '#192E19'
+  ;[[cx-r*0.38,cy-r*0.28,r*0.48,r*0.38],[cx+r*0.12,cy-r*0.18,r*0.38,r*0.48],[cx-r*0.18,cy+r*0.22,r*0.32,r*0.28]].forEach(([lx,ly,lw,lh]) => {
+    ctx.beginPath(); ctx.ellipse(lx+lw/2, ly+lh/2, lw/2, lh/2, 0, 0, Math.PI*2); ctx.fill()
+  })
+  ctx.strokeStyle = 'rgba(255,255,255,0.055)'; ctx.lineWidth = 0.5
+  for (let i = 1; i < 3; i++) { ctx.beginPath(); ctx.moveTo(cx-r, cy-r+i*r*0.65); ctx.lineTo(cx+r, cy-r+i*r*0.65); ctx.stroke() }
+  ctx.strokeStyle = 'rgba(129,199,132,0.35)'; ctx.lineWidth = 1.5
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.stroke()
+  ctx.fillStyle = '#1A1A1A'; ctx.fillRect(cx-3, cy+r, 6, 7); ctx.fillRect(cx-10, cy+r+5, 20, 3)
+}
+
+function drawCouch(x, y, w, h, col) {
+  ctx.fillStyle = shade(col, 0.32); ctx.fillRect(x, y+h*0.28, w, h*0.72)
+  ctx.fillStyle = shade(col, 0.24); ctx.fillRect(x, y, w, h*0.32)
+  ctx.fillStyle = shade(col, 0.38); ctx.fillRect(x, y+h*0.12, h*0.17, h*0.88); ctx.fillRect(x+w-h*0.17, y+h*0.12, h*0.17, h*0.88)
+  ctx.fillStyle = 'rgba(255,255,255,0.04)'; ctx.fillRect(x+h*0.19, y+h*0.3, w-h*0.38, 3)
+}
+
+function drawCoffeeMachine(x, y) {
+  ctx.fillStyle = '#201408'; ctx.fillRect(x, y, 22, 32)
+  ctx.fillStyle = 'rgba(0,0,0,0.38)'; ctx.fillRect(x+18, y, 4, 32)
+  ctx.fillStyle = '#182820'; ctx.fillRect(x+3, y+3, 11, 9)
+  ctx.fillStyle = '#00DD77'; ctx.beginPath(); ctx.arc(x+13, y+7, 1.8, 0, Math.PI*2); ctx.fill()
+  ctx.strokeStyle = 'rgba(255,255,255,0.1)'; ctx.lineWidth = 0.8
+  ctx.beginPath(); ctx.moveTo(x+8, y); ctx.bezierCurveTo(x+6, y-4, x+10, y-7, x+10, y-5); ctx.stroke()
+}
+
+function drawBookshelf(x, y, w, h) {
+  ctx.fillStyle = '#0C1008'; ctx.fillRect(x, y, w, h)
+  ctx.strokeStyle = 'rgba(70,50,30,0.4)'; ctx.lineWidth = 1; ctx.strokeRect(x, y, w, h)
+  const bc = ['#5C3317','#8B6914','#1C3D1C','#2D1B69','#3D0000','#2E4A2E','#4A3000','#1A1A4A','#3D2D00']
+  _seed = 23; const rows = Math.floor(h/28)
+  for (let row = 0; row < rows; row++) {
+    let bx = x + 2; const by = y + 6 + row*28
+    while (bx < x+w-5) {
+      const bw = 6+srnd()*5|0, bh = 16+srnd()*8|0
+      ctx.fillStyle = bc[Math.floor(srnd()*bc.length)]; ctx.fillRect(bx, by+23-bh, bw, bh)
+      ctx.fillStyle = 'rgba(255,255,255,0.04)'; ctx.fillRect(bx, by+23-bh, 1, bh)
+      bx += bw + 1
     }
-    c.tx = c.sx; c.ty = c.sy;
-  });
+    ctx.fillStyle = 'rgba(0,0,0,0.28)'; ctx.fillRect(x, by+24, w, 2)
+  }
 }
 
-// ─── Drawing: Character ───────────────────────────────────
-function drawCharacter(c, frame) {
-  const x = c.sx, y = c.sy;
-  const team = TEAMS[c.group] || TEAMS['Shared'];
-  const color = team.color;
-  const isSelected = c.selected;
-  const isSleeping = c.state === 'sleeping';
-  const isWalking = c.state === 'walking';
-  const isBreak = c.state === 'break';
-
-  // Selection glow
-  if (isSelected) {
-    ctx.beginPath();
-    ctx.ellipse(x, y, 22, 11, 0, 0, Math.PI*2);
-    ctx.fillStyle = color;
-    ctx.globalAlpha = 0.25;
-    ctx.fill();
-    ctx.globalAlpha = 1;
+function drawRoundTable(cx, cy, r, col) {
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.fillStyle = col; ctx.fill()
+  ctx.beginPath(); ctx.arc(cx, cy, r-3, 0, Math.PI*2); ctx.strokeStyle = shade(col, 1.35); ctx.lineWidth = 1.5; ctx.stroke()
+  for (let i = 0; i < 6; i++) {
+    const a = (i/6)*Math.PI*2 - Math.PI/2
+    const crx = cx + Math.cos(a)*(r+14), cry = cy + Math.sin(a)*(r+14)
+    ctx.beginPath(); ctx.arc(crx, cry, 8, 0, Math.PI*2)
+    ctx.fillStyle = 'rgba(255,255,255,0.038)'; ctx.fill()
+    ctx.strokeStyle = 'rgba(255,255,255,0.07)'; ctx.lineWidth = 1; ctx.stroke()
   }
+}
+
+function drawCommandPlatform(x, y, w, h) {
+  ctx.fillStyle = '#050510'; ctx.fillRect(x, y, w, h)
+  ctx.strokeStyle = 'rgba(180,180,255,0.14)'; ctx.lineWidth = 1.5
+  ctx.strokeRect(x+1, y+1, w-2, h-2)
+  const pg = ctx.createRadialGradient(x+w/2, y+h/2, 8, x+w/2, y+h/2, w*0.55)
+  pg.addColorStop(0, 'rgba(180,180,255,0.07)'); pg.addColorStop(1, 'transparent')
+  ctx.fillStyle = pg; ctx.fillRect(x, y, w, h)
+  const mstarts = [x+w/2-168, x+w/2-52, x+w/2+62]
+  mstarts.forEach((mx, i) => {
+    const mw = i===1 ? 112 : 90, mh = i===1 ? 52 : 42, my = y+(h-mh)/2
+    ctx.fillStyle = '#08081C'; ctx.fillRect(mx, my, mw, mh)
+    const mg = ctx.createRadialGradient(mx+mw/2, my+mh/2, 4, mx+mw/2, my+mh/2, mw*0.75)
+    mg.addColorStop(0, 'rgba(180,180,255,0.22)'); mg.addColorStop(1, 'transparent')
+    ctx.fillStyle = mg; ctx.fillRect(mx, my, mw, mh)
+    ctx.strokeStyle = 'rgba(180,180,255,0.22)'; ctx.lineWidth = 1; ctx.strokeRect(mx, my, mw, mh)
+    ctx.strokeStyle = 'rgba(180,180,255,0.28)'; ctx.lineWidth = 0.8; ctx.beginPath()
+    for (let wx = mx+7; wx < mx+mw-7; wx += 4) {
+      const wy = my+mh/2 + Math.sin(wx*0.22)*6
+      wx === mx+7 ? ctx.moveTo(wx, wy) : ctx.lineTo(wx, wy)
+    }
+    ctx.stroke()
+  })
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// 9. ZONE FURNITURE ORCHESTRATION
+// ═══════════════════════════════════════════════════════════════════
+function drawZoneFurniture(zid, z) {
+
+  if (zid === 'command') {
+    drawCommandPlatform(z.x, z.y, z.w, z.h)
+  }
+
+  if (zid === 'sips') {
+    // Back wall label (drawn first, behind everything)
+    ctx.save()
+    ctx.shadowColor = 'rgba(201,162,100,0.6)'; ctx.shadowBlur = 16
+    ctx.font = '800 22px Montserrat'; ctx.textAlign = 'center'
+    ctx.fillStyle = 'rgba(201,162,100,0.82)'
+    ctx.fillText('513 SIPS', z.x+z.w/2, z.y+88)
+    ctx.restore()
+
+    // Bottle shelf (very top, above counter)
+    drawBottleShelf(z.x+2, z.y+92, z.w-4, 20)
+
+    // VIP Booth
+    drawBooth(110, 265, 68)
+    // velvet rope
+    ctx.fillStyle = 'rgba(201,162,100,0.55)'
+    ctx.fillRect(46, 196, 3, 18); ctx.fillRect(168, 196, 3, 18)
+    ctx.strokeStyle = 'rgba(201,162,100,0.4)'; ctx.lineWidth = 1.5
+    ctx.beginPath(); ctx.moveTo(49, 204); ctx.lineTo(168, 204); ctx.stroke()
+    ctx.font = '600 7px Montserrat'; ctx.textAlign = 'center'
+    ctx.fillStyle = 'rgba(201,162,100,0.48)'; ctx.fillText('VIP', 110, 193)
+
+    // Finance Corner
+    drawDesk(508, 162, 72, 44, '#C9A264')
+    drawDesk(618, 182, 72, 44, '#C9A264')
+    drawDesk(508, 262, 72, 44, '#C9A264')
+
+    // Client Corner
+    drawDesk(265, 158, 72, 44, '#5B9BD5')
+    drawDesk(365, 158, 72, 44, '#5B9BD5')
+    drawDesk(262, 244, 72, 44, '#5B9BD5')
+    // host stand
+    ctx.fillStyle = '#1A1A2C'; ctx.fillRect(316, 136, 17, 22)
+    ctx.fillStyle = '#E8E0CC'; ctx.fillRect(310, 133, 22, 8)
+    ctx.fillStyle = 'rgba(201,162,100,0.4)'; ctx.beginPath(); ctx.arc(318, 126, 4.5, 0, Math.PI*2); ctx.fill()
+
+    // Content Area
+    drawDesk(498, 328, 72, 44, '#5B9BD5')
+    drawDesk(608, 348, 72, 44, '#5B9BD5')
+
+    // Domain High-Tops
+    drawHighTop(228, 376, 17)
+    drawHighTop(348, 405, 17)
+    drawHighTop(188, 467, 17)
+
+    // Design Studio
+    drawMoodBoard(2, 476, 218, 68)
+    drawDesk(56, 500, 72, 44, '#A78BFA')
+    drawDesk(180, 500, 72, 44, '#A78BFA')
+    drawDesk(56, 590, 72, 44, '#A78BFA')
+    drawDesk(180, 590, 72, 44, '#A78BFA')
+
+    // bar area indicator text
+    ctx.font = '500 7px Montserrat'; ctx.textAlign = 'center'
+    ctx.fillStyle = 'rgba(201,162,100,0.38)'
+    ctx.fillText('▾ BAR', z.x+z.w/2, z.y+106)
+    ctx.textAlign = 'left'
+  }
+
+  if (zid === 'wg') {
+    // EM elevated area
+    ctx.fillStyle = 'rgba(232,149,109,0.07)'; ctx.fillRect(z.x+z.w/2-82, z.y+10, 164, 62)
+    ctx.strokeStyle = 'rgba(232,149,109,0.16)'; ctx.lineWidth = 1
+    ctx.strokeRect(z.x+z.w/2-82, z.y+10, 164, 62)
+    drawDesk(z.x+z.w/2-46, z.y+18, 92, 46, '#E8956D')
+
+    // Research row
+    drawDesk(756, 192, 72, 44, '#5B9BD5')
+    drawDesk(876, 192, 72, 44, '#5B9BD5')
+    drawDesk(1009, 192, 72, 44, '#5B9BD5')
+
+    // Scope row
+    drawDesk(791, 288, 72, 44, '#64B5A0')
+    drawDesk(926, 288, 72, 44, '#64B5A0')
+
+    // Delivery row
+    drawDesk(791, 388, 72, 44, '#5B9BD5')
+    drawDesk(926, 388, 72, 44, '#5B9BD5')
+
+    // Assets row
+    drawDesk(791, 480, 72, 44, '#64B5A0')
+    drawDesk(926, 480, 72, 44, '#64B5A0')
+
+    // Left wall whiteboard
+    drawWhiteboard(z.x+3, z.y+48, 14, z.h-58)
+
+    // Pipeline labels
+    ctx.font = '600 8px Montserrat'; ctx.fillStyle = 'rgba(232,149,109,0.35)'
+    ;['↓ RESEARCH','↓ SCOPE','↓ DELIVERY','↓ ASSETS'].forEach((lbl, i) => {
+      ctx.fillText(lbl, z.x+22, z.y+212+i*98)
+    })
+  }
+
+  if (zid === 'library') {
+    drawBookshelf(z.x+2, z.y+18, 22, z.h-36)
+    drawBookshelf(z.x+z.w-24, z.y+18, 22, z.h-36)
+    drawDesk(z.x+40, z.y+222, 72, 44, '#64B5A0')
+    drawDesk(z.x+160, z.y+282, 72, 44, '#64B5A0')
+    drawDesk(z.x+40, z.y+375, 72, 44, '#64B5A0')
+    ctx.font = '700 8px Montserrat'; ctx.textAlign = 'center'
+    ctx.fillStyle = 'rgba(80,120,80,0.4)'
+    ctx.fillText('ARCHIVES', z.x+z.w/2, z.y+z.h-18)
+    ctx.textAlign = 'left'
+  }
+
+  if (zid === 'travel') {
+    // PM desk + whiteboard
+    drawWhiteboard(z.x+4, z.y+28, 12, 72)
+    drawDesk(z.x+58, z.y+50, 72, 44, '#81C784')
+    // Dev dual-monitor desk
+    ctx.fillStyle = '#1C1C2A'; ctx.fillRect(z.x+195, z.y+50, 88, 44)
+    ctx.fillStyle = 'rgba(0,0,0,0.35)'; ctx.fillRect(z.x+281, z.y+50, 4, 44); ctx.fillRect(z.x+195, z.y+90, 88, 4)
+    ctx.fillStyle = '#101020'; ctx.fillRect(z.x+199, z.y+54, 37, 26); ctx.fillRect(z.x+240, z.y+54, 37, 26)
+    const dg = ctx.createRadialGradient(z.x+218, z.y+67, 2, z.x+218, z.y+67, 18)
+    dg.addColorStop(0, 'rgba(81,155,213,0.22)'); dg.addColorStop(1, 'transparent')
+    ctx.fillStyle = dg; ctx.fillRect(z.x+199, z.y+54, 37, 26)
+    const dg2 = ctx.createRadialGradient(z.x+259, z.y+67, 2, z.x+259, z.y+67, 18)
+    dg2.addColorStop(0, 'rgba(81,155,213,0.22)'); dg2.addColorStop(1, 'transparent')
+    ctx.fillStyle = dg2; ctx.fillRect(z.x+240, z.y+54, 37, 26)
+    // Globe
+    drawGlobe(z.x+308, z.y+148, 32)
+    // Sticky notes on whiteboard
+    ;['#FFE87C88','#87CEEB88','#90EE9088'].forEach((sc, i) => {
+      ctx.fillStyle = sc; ctx.fillRect(z.x+5, z.y+30+i*22, 10, 18)
+    })
+  }
+
+  if (zid === 'warroom') {
+    drawRoundTable(z.x+z.w/2, z.y+z.h/2, 58, '#19100A')
+    // Trophy rail
+    ctx.fillStyle = 'rgba(201,162,100,0.12)'; ctx.fillRect(z.x+8, z.y+14, z.w-16, 18)
+    ctx.fillStyle = 'rgba(201,162,100,0.42)'
+    for (let i = 0; i < 4; i++) {
+      const tx = z.x+28+i*62, ty = z.y+7
+      ctx.beginPath(); ctx.moveTo(tx,ty+18); ctx.lineTo(tx-5,ty+18); ctx.lineTo(tx-3,ty+9)
+      ctx.lineTo(tx,ty+5); ctx.lineTo(tx+3,ty+9); ctx.lineTo(tx+5,ty+18); ctx.closePath(); ctx.fill()
+    }
+  }
+
+  if (zid === 'breakroom') {
+    drawCouch(z.x+28, z.y+38, 155, 68, '#1A2E1A')
+    drawCouch(z.x+215, z.y+62, 138, 62, '#1A2E1A')
+    drawHighTop(z.x+z.w/2+40, z.y+z.h/2-8, 26)
+    drawCoffeeMachine(z.x+z.w-52, z.y+16)
+    const rg = ctx.createRadialGradient(z.x+z.w/2, z.y+z.h/2, 8, z.x+z.w/2, z.y+z.h/2, 78)
+    rg.addColorStop(0, 'rgba(100,181,160,0.05)'); rg.addColorStop(1, 'transparent')
+    ctx.fillStyle = rg; ctx.fillRect(z.x, z.y, z.w, z.h)
+    ctx.font = '500 8px Montserrat'; ctx.textAlign = 'center'
+    ctx.fillStyle = 'rgba(100,181,160,0.22)'
+    ctx.fillText('¿ anyone? no? okay.', z.x+z.w/2, z.y+z.h-14)
+    ctx.textAlign = 'left'
+  }
+}
+
+// Foreground layer — bar counter renders OVER drink agent to put them behind bar
+function drawForeground() {
+  const z = ZONES.sips
+  drawBottleShelf(z.x+2, z.y+92, z.w-4, 20)
+  drawBarCounter(z.x+2, z.y+112, z.w-4, 28)
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// 10. CHARACTER SPRITES
+// ═══════════════════════════════════════════════════════════════════
+function drawStar(cx, cy, ro, ri, pts) {
+  ctx.beginPath()
+  for (let i = 0; i < pts*2; i++) {
+    const ang = (i*Math.PI/pts) - Math.PI/2, r = i%2===0 ? ro : ri
+    i === 0 ? ctx.moveTo(cx+r*Math.cos(ang), cy+r*Math.sin(ang))
+             : ctx.lineTo(cx+r*Math.cos(ang), cy+r*Math.sin(ang))
+  }
+  ctx.closePath(); ctx.fill()
+}
+
+function drawAgent(agent) {
+  const { x, y, state, model, frame, selected, name, id, walking, homeX, homeY, scanning, scanFrame } = agent
+  const mc = MC[model] || MC.sonnet
+  const hair = HAIR[id] || '#1A1A1A'
+  const atDesk = !walking && Math.abs(x - homeX) < 4 && Math.abs(y - homeY) < 4
+  const isSleeping = state === 'sleeping'
+
+  ctx.save()
+  if (isSleeping) ctx.globalAlpha = 0.36
 
   // Shadow
-  ctx.beginPath();
-  ctx.ellipse(x, y, 13, 6, 0, 0, Math.PI*2);
-  ctx.fillStyle = 'rgba(0,0,0,0.4)';
-  ctx.fill();
+  ctx.beginPath(); ctx.ellipse(x, y+2, 12, 5, 0, 0, Math.PI*2)
+  ctx.fillStyle = 'rgba(0,0,0,0.32)'; ctx.fill()
 
-  const legSwing = isWalking ? Math.sin(frame * 0.28) * 6 : 0;
+  // Legs (skip when at desk)
+  if (!atDesk) {
+    const swing = walking ? Math.sin(frame * 0.14) * 5 : 0
+    ctx.fillStyle = shade(mc.body, 0.65)
+    ctx.fillRect(x-7, y-10+swing, 5, 12)
+    ctx.fillRect(x+2,  y-10-swing, 5, 12)
+    ctx.fillStyle = shade(mc.body, 0.5)
+    ctx.fillRect(x-7, y-0+swing, 5, 3)
+    ctx.fillRect(x+2,  y-0-swing, 5, 3)
+  }
 
-  // ── Body (isometric box for depth) ──
-  const bodyH = 24; const bodyW = 14;
-  const bodyTopY = y - 40;
+  // Body
+  const bodyY = atDesk ? y-30 : y-26
+  ctx.fillStyle = mc.body; ctx.fillRect(x-9, bodyY, 18, 20)
+  ctx.fillStyle = 'rgba(0,0,0,0.22)'; ctx.fillRect(x+7, bodyY+2, 2, 18); ctx.fillRect(x-9, bodyY+18, 18, 2)
+  ctx.fillStyle = 'rgba(255,255,255,0.12)'; ctx.fillRect(x-4, bodyY, 8, 5)
+  ctx.fillStyle = 'rgba(0,0,0,0.18)'; ctx.fillRect(x-1, bodyY, 2, 5)
 
-  // Right face of body (darkest)
-  poly(ctx, [
-    {x: x + 2, y: bodyTopY},
-    {x: x + bodyW*0.7, y: bodyTopY + bodyW*0.35},
-    {x: x + bodyW*0.7, y: bodyTopY + bodyH + bodyW*0.35},
-    {x: x + 2, y: bodyTopY + bodyH}
-  ], shade(color, 0.45));
+  // Arms
+  if (!atDesk) {
+    const as = walking ? -Math.sin(frame*0.14)*3 : 0
+    ctx.fillStyle = shade(mc.body, 0.82)
+    ctx.fillRect(x-14, bodyY+2+as, 5, 14)
+    ctx.fillRect(x+9,  bodyY+2-as, 5, 14)
+  }
 
-  // Front face of body
-  poly(ctx, [
-    {x: x - bodyW*0.7, y: bodyTopY + bodyW*0.35},
-    {x: x + 2, y: bodyTopY},
-    {x: x + 2, y: bodyTopY + bodyH},
-    {x: x - bodyW*0.7, y: bodyTopY + bodyH + bodyW*0.35}
-  ], shade(color, 0.75));
+  // Neck
+  ctx.fillStyle = '#C8956C'; ctx.fillRect(x-3, bodyY-5, 6, 5)
 
-  // Top of body / shoulders
-  poly(ctx, [
-    {x: x - bodyW*0.7, y: bodyTopY + bodyW*0.35},
-    {x: x + 2, y: bodyTopY},
-    {x: x + bodyW*0.7, y: bodyTopY + bodyW*0.35},
-    {x: x, y: bodyTopY + bodyW*0.7}
-  ], isSleeping ? shade(color, 0.4) : shade(color, 1.1));
-
-  // ── Legs ──
-  const legColor = shade(color, 0.25);
-  const legDarkColor = shade(color, 0.18);
-  // Left leg
-  poly(ctx, [
-    {x: x-7, y: bodyTopY + bodyH - 2},
-    {x: x-3, y: bodyTopY + bodyH - 4 + legSwing},
-    {x: x-3, y: y + legSwing},
-    {x: x-7, y: y - 2}
-  ], legColor);
-  // Right leg
-  poly(ctx, [
-    {x: x+1, y: bodyTopY + bodyH - 2},
-    {x: x+5, y: bodyTopY + bodyH - 4 - legSwing},
-    {x: x+5, y: y - legSwing},
-    {x: x+1, y: y - 2}
-  ], legDarkColor);
-
-  // ── Neck ──
-  ctx.fillStyle = '#c8956c';
-  ctx.fillRect(x-3, bodyTopY - 10, 6, 10);
-
-  // ── Head (sphere-like) ──
-  const headY = bodyTopY - 20;
-  const grad = ctx.createRadialGradient(x-3, headY-3, 2, x, headY, 11);
-  grad.addColorStop(0, '#f5d0a0');
-  grad.addColorStop(1, '#c8956c');
-  ctx.beginPath();
-  ctx.arc(x, headY, 11, 0, Math.PI*2);
-  ctx.fillStyle = grad;
-  ctx.fill();
+  // Head
+  const headY = bodyY - 14
+  const hg = ctx.createRadialGradient(x-2, headY-4, 2, x, headY, 10)
+  hg.addColorStop(0, '#EAB89A'); hg.addColorStop(1, '#C07050')
+  ctx.beginPath(); ctx.arc(x, headY, 10, 0, Math.PI*2); ctx.fillStyle = hg; ctx.fill()
 
   // Hair
-  const hairColors = {'marcus':'#5a3a22','rachel':'#8a6040','danny':'#2a2218','vivian':'#6a4a30','cd':'#3a2a18','ad':'#1a1a3a','copy':'#5a1a2a','qa':'#1a3a1a','default':'#3a2a20'};
-  const hc = hairColors[c.id] || hairColors.default;
-  ctx.beginPath();
-  ctx.arc(x, headY - 2, 11, Math.PI*1.05, Math.PI*1.95);
-  ctx.lineTo(x, headY - 2);
-  ctx.fillStyle = hc; ctx.fill();
+  ctx.beginPath(); ctx.arc(x, headY, 10, Math.PI, 0); ctx.fillStyle = hair; ctx.fill()
+  ctx.fillRect(x-10, headY-2, 3, 6); ctx.fillRect(x+7, headY-2, 3, 6)
 
   // Eyes
-  ctx.fillStyle = '#1a1a2e';
-  ctx.beginPath(); ctx.arc(x-4, headY+1, 1.8, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x+4, headY+1, 1.8, 0, Math.PI*2); ctx.fill();
-  // Eye whites
-  ctx.fillStyle = 'rgba(255,255,255,0.5)';
-  ctx.beginPath(); ctx.arc(x-4.5, headY+0.5, 0.8, 0, Math.PI*2); ctx.fill();
-  ctx.beginPath(); ctx.arc(x+3.5, headY+0.5, 0.8, 0, Math.PI*2); ctx.fill();
-
-  // ── State indicators ──
-  if (isSleeping) {
-    ctx.font = '11px sans-serif'; ctx.fillStyle = 'rgba(150,160,220,0.85)';
-    ctx.textAlign = 'center';
-    const zzz = ['z','zz','zzz'];
-    zzz.forEach((z,i) => {
-      const bounce = Math.sin(frame * 0.04 + i*0.8) * 3;
-      ctx.globalAlpha = 0.4 + i*0.2;
-      ctx.font = `${9+i*2}px sans-serif`;
-      ctx.fillText(z, x + 12 + i*5, headY - 18 - i*8 + bounce);
-    });
-    ctx.globalAlpha = 1;
-  }
-
-  if (isBreak) {
-    // Coffee cup
-    ctx.fillStyle = '#8B6D3A'; ctx.globalAlpha = 0.9;
-    ctx.fillRect(x+8, bodyTopY+8, 8, 9);
-    ctx.fillStyle = '#3a2a1a';
-    ctx.fillRect(x+9, bodyTopY+10, 6, 5);
-    ctx.globalAlpha = 1;
-  }
-
-  // ── Name tag ──
   if (!isSleeping) {
-    ctx.font = 'bold 8.5px Montserrat';
-    ctx.textAlign = 'center';
-    ctx.fillStyle = isSelected ? color : 'rgba(255,255,255,0.75)';
-    ctx.fillText(c.name, x, headY - 24);
+    const blink = ((frame*0.013 + id.length*0.4) % 1) > 0.96
+    const eyeH = blink ? 1 : 2
+    ctx.fillStyle = '#0F0F18'
+    ctx.fillRect(x-5, headY-2, 3, eyeH)
+    ctx.fillRect(x+2, headY-2, 3, eyeH)
+    ctx.fillStyle = 'rgba(255,255,255,0.55)'
+    ctx.fillRect(x-4, headY-3, 1, 1); ctx.fillRect(x+3, headY-3, 1, 1)
+  }
+
+  // State icon
+  const iconY = headY - 22
+  if (!isSleeping) {
+    ctx.save()
+    if (state === 'working' || state === 'patrolling') {
+      const pulse = 0.5 + Math.sin(frame*0.05)*0.5
+      ctx.globalAlpha = 0.45 + pulse*0.55
+      ctx.fillStyle = mc.color
+      drawStar(x, iconY, 5, 2.5, 4)
+    } else if (state === 'idle') {
+      ctx.globalAlpha = 0.35
+      ctx.fillStyle = 'rgba(255,255,255,0.5)'
+      ctx.fillRect(x-4, iconY-1, 8, 2)
+    } else if (state === 'break') {
+      ctx.globalAlpha = 0.9; ctx.fillStyle = '#C8A060'
+      ctx.fillRect(x-5, iconY-4, 10, 8)
+      ctx.fillRect(x+5, iconY-2, 4, 4)
+      ctx.fillStyle = 'rgba(255,255,255,0.1)'; ctx.fillRect(x-4, iconY-3, 8, 3)
+    }
+    ctx.restore()
+  }
+
+  // Sleeping zzz
+  if (isSleeping) {
+    ;['z','zz','zzz'].forEach((z2, i) => {
+      const t = ((frame*0.018 + i*1.5) % 1)
+      const alpha = t < 0.5 ? t*2 : (1-t)*2
+      ctx.globalAlpha = 0.35 * alpha
+      ctx.font = 'italic 700 9px Montserrat'
+      ctx.fillStyle = '#9898CC'; ctx.textAlign = 'center'
+      ctx.fillText(z2, x+10+i*4, headY-18-t*26)
+    })
+    ctx.globalAlpha = 0.36
+  }
+
+  // Name tag
+  if (!isSleeping) {
+    ctx.globalAlpha = 1
+    ctx.font = '500 7.5px Montserrat'; ctx.textAlign = 'center'
+    ctx.fillStyle = selected ? mc.color : 'rgba(255,255,255,0.72)'
+    ctx.fillText(name.split(' ')[0], x, y+17)
+  }
+
+  // Selection ring
+  if (selected) {
+    ctx.globalAlpha = 1
+    ctx.beginPath(); ctx.ellipse(x, y+2, 18, 7, 0, 0, Math.PI*2)
+    ctx.strokeStyle = mc.color; ctx.lineWidth = 1.5
+    ctx.setLineDash([4,4]); ctx.lineDashOffset = -frame*0.08
+    ctx.stroke(); ctx.setLineDash([])
+  }
+
+  // Meridian glow
+  if (id === 'meridian') {
+    const mp = 0.5 + Math.sin(frame*0.04)*0.5
+    ctx.save()
+    ctx.globalAlpha = 0.28 + mp*0.22
+    ctx.shadowColor = 'rgba(180,180,255,0.9)'; ctx.shadowBlur = 20
+    ctx.beginPath(); ctx.arc(x, headY, 13, 0, Math.PI*2)
+    ctx.strokeStyle = 'rgba(180,180,255,0.55)'; ctx.lineWidth = 1.5; ctx.stroke()
+    ctx.restore()
+  }
+
+  // Meridian scan beam on target
+  if (scanning) {
+    const sf = scanFrame, prog = sf / SCAN_DUR
+    const maxR = 36
+    const r2 = prog < 0.45 ? maxR*prog/0.45 : maxR*(1-prog)/0.55
+    ctx.save()
+    ctx.globalAlpha = (1-prog)*0.85
+    ctx.strokeStyle = 'rgba(180,180,255,0.95)'; ctx.lineWidth = 1.5
+    ctx.beginPath(); ctx.arc(x, headY, r2, 0, Math.PI*2); ctx.stroke()
+    if (sf > SCAN_DUR*0.38 && agent.meridianScore) {
+      ctx.globalAlpha = Math.min(1, (sf - SCAN_DUR*0.38)/(SCAN_DUR*0.18))
+      ctx.font = '700 8px Montserrat'; ctx.textAlign = 'center'
+      ctx.fillStyle = 'rgba(180,180,255,0.95)'
+      ctx.fillText(`Q:${agent.meridianScore.quality}/5`, x, headY-26)
+    }
+    ctx.restore()
+  }
+
+  ctx.restore()
+  ctx.textAlign = 'left'
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// 11. COMM ANIMATIONS
+// ═══════════════════════════════════════════════════════════════════
+let COMMS = []
+
+function fireComm(fromId, toId, icon = 'envelope') {
+  const fa = GA(fromId), ta = GA(toId)
+  if (!fa || !ta) return
+  COMMS.push({ fromId, toId, icon, x: fa.x, y: fa.y-44, progress: 0, done: false })
+}
+
+function tickAndDrawComms() {
+  COMMS = COMMS.filter(c => !c.done)
+  COMMS.forEach(c => {
+    const fa = GA(c.fromId), ta = GA(c.toId)
+    if (!fa || !ta) { c.done = true; return }
+    const d = Math.hypot(ta.x - fa.x, ta.y - fa.y)
+    c.progress = Math.min(1, c.progress + COMM_SPEED / Math.max(1, d))
+    c.x = lerp(fa.x, ta.x, c.progress)
+    c.y = lerp(fa.y-44, ta.y-44, c.progress)
+    if (c.progress >= 1) { c.done = true; return }
+
+    const alpha = c.progress < 0.1 ? c.progress*10 : c.progress > 0.85 ? (1-c.progress)/0.15 : 1
+    ctx.save(); ctx.globalAlpha = alpha
+    if (c.icon === 'envelope') {
+      ctx.fillStyle = '#E8E8D0'; ctx.fillRect(c.x-7, c.y-5, 14, 10)
+      ctx.strokeStyle = '#AAA880'; ctx.lineWidth = 0.8
+      ctx.beginPath(); ctx.moveTo(c.x-7, c.y-5); ctx.lineTo(c.x, c.y+1); ctx.lineTo(c.x+7, c.y-5); ctx.stroke()
+      ctx.globalAlpha = alpha*0.18; ctx.fillStyle = '#E8E8D0'; ctx.fillRect(c.x-4, c.y-3, 8, 6)
+    } else {
+      ctx.translate(c.x, c.y); ctx.rotate(-0.28)
+      ctx.fillStyle = '#F0F0EA'; ctx.fillRect(-6,-8,12,16)
+      ctx.fillStyle = 'rgba(0,0,0,0.12)'
+      for (let l = 0; l < 3; l++) ctx.fillRect(-4, -4+l*5, 8, 1.5)
+    }
+    ctx.restore()
+  })
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// 12. EVENT SYSTEM
+// ═══════════════════════════════════════════════════════════════════
+const EVENTS = []
+
+function queueEvent(evt, delay = 0) { EVENTS.push({ ...evt, _cd: delay }) }
+
+function tickEvents() {
+  for (let i = EVENTS.length-1; i >= 0; i--) {
+    if (EVENTS[i]._cd-- > 0) continue
+    fireEvent(EVENTS[i]); EVENTS.splice(i, 1)
   }
 }
 
-// ─── Animation ────────────────────────────────────────────
-function moveToBreak(c) {
-  const room = ROOMS.breakroom;
-  const {x,y} = isoXY(room, 1.5 + Math.random()*5, 1.5 + Math.random()*3.5);
-  c.tx = x; c.ty = y;
-  c.state = 'walking';
-  c._nextState = 'break';
+function walkTo(id, path, onDone) {
+  const a = GA(id); if (!a) return
+  a.walkPath = [...path]; a._onArrived = onDone; a.walking = true
 }
 
-function moveToDesk(c) {
-  c.tx = c.deskX; c.ty = c.deskY;
-  c.state = 'walking';
-  c._nextState = 'working';
+function wakeAgent(id) {
+  const a = GA(id); if (!a) return
+  if (a.state === 'sleeping' || a.state === 'idle') { a.state = 'working'; a.idleTimer = 0 }
 }
 
-function update(dt) {
-  CHARS.forEach(c => {
-    c.frame += dt * 0.06;
-    c.walkTimer -= dt;
+function fireEvent(e) {
+  switch (e.type) {
 
-    // Move toward target
-    const dx = c.tx - c.sx, dy = c.ty - c.sy;
-    const dist = Math.sqrt(dx*dx + dy*dy);
-    if (dist > 2) {
-      const speed = 1.8;
-      c.sx += (dx/dist) * speed;
-      c.sy += (dy/dist) * speed;
-    } else if (c._nextState) {
-      c.state = c._nextState;
-      c._nextState = null;
-      c.walkTimer = c.state === 'working' ? 300 + Math.random()*500 : 150 + Math.random()*200;
+    case 'COMM_DELAYED':
+      fireComm(e.fromId, e.toId, e.icon || 'envelope')
+      break
+
+    case 'DESIGN_HANDOFF':
+      ;['cd','ad','copy','qa'].forEach(id => wakeAgent(id))
+      fireComm('cd','ad','envelope')
+      fireComm('cd','copy','paper')
+      queueEvent({ type:'COMM_DELAYED', fromId:'ad',   toId:'qa', icon:'envelope' }, 95)
+      queueEvent({ type:'COMM_DELAYED', fromId:'copy', toId:'qa', icon:'paper'    }, 118)
+      walkTo('cd', [{ x:GA('ad').homeX-18, y:GA('ad').homeY }, { x:GA('copy').homeX, y:GA('copy').homeY+18 }, { x:GA('cd').homeX, y:GA('cd').homeY }],
+        () => { GA('cd').state = 'working' })
+      break
+
+    case 'WEBGROWTH_PIPELINE':
+      ;['wg_em','wg_brand','wg_audit','wg_comp','wg_call','wg_price','wg_prop','wg_proto','wg_design'].forEach(id => wakeAgent(id))
+      ;[['wg_em','wg_brand'],['wg_em','wg_audit'],['wg_brand','wg_call'],['wg_audit','wg_comp'],
+        ['wg_comp','wg_call'],['wg_call','wg_price'],['wg_call','wg_prop'],['wg_price','wg_prop'],
+        ['wg_prop','wg_proto'],['wg_design','wg_proto']
+      ].forEach(([f,t], i) => queueEvent({ type:'COMM_DELAYED', fromId:f, toId:t, icon: i%2===0?'envelope':'paper' }, i*48))
+      queueEvent({ type:'EM_PATROL' }, 40)
+      break
+
+    case 'EM_PATROL':
+      walkTo('wg_em', [{ x:GA('wg_prop').homeX+38, y:GA('wg_prop').homeY-18 }, { x:GA('wg_em').homeX, y:GA('wg_em').homeY }],
+        () => { GA('wg_em').state = 'working' })
+      break
+
+    case 'BOARD_CONVENE': {
+      const wc = ZONES.warroom.x + ZONES.warroom.w/2
+      const wy = ZONES.warroom.y + ZONES.warroom.h/2
+      const seats = [{ x:wc, y:wy-58 }, { x:wc+58, y:wy }, { x:wc, y:wy+58 }, { x:wc-58, y:wy }]
+      ;['marcus','rachel','danny','vivian'].forEach((id, i) => {
+        queueEvent({ type:'BOARD_WALK', agentId:id, seat:seats[i] }, i*14)
+      })
+      queueEvent({ type:'BOARD_RETURN' }, e.holdFrames || 230)
+      break
     }
 
-    // Autonomous behavior
-    if (c.walkTimer <= 0 && !c._nextState) {
-      if (c.state === 'working') {
-        if (Math.random() < 0.7) moveToBreak(c);
-        else c.walkTimer = 100 + Math.random()*200;
-      } else if (c.state === 'break') {
-        moveToDesk(c);
+    case 'BOARD_WALK':
+      walkTo(e.agentId, [e.seat], () => { GA(e.agentId).state = 'working' })
+      break
+
+    case 'BOARD_RETURN':
+      ;['marcus','rachel','danny','vivian'].forEach(id => {
+        const a = GA(id); if (!a) return
+        walkTo(id, [{ x:a.homeX, y:a.homeY }], () => { a.state = 'working' })
+      })
+      break
+
+    case 'MERIDIAN_EVALUATE': {
+      const target = GA(e.targetId), mer = GA('meridian')
+      if (!target || !mer) break
+      wakeAgent(e.targetId)
+      walkTo('meridian', [{ x:target.x, y:target.y-28 }], () => {
+        target.scanning = true; target.scanFrame = 0
+        if (!target.meridianScore) {
+          const right = 3 + Math.floor(Math.random()*3), quality = 3 + Math.floor(Math.random()*3)
+          target.meridianScore = { right, quality, refinement: quality < 4 ? 'Consider more structured output format.' : null }
+        }
+        queueEvent({ type:'MERIDIAN_RETURN' }, SCAN_DUR + 25)
+      })
+      break
+    }
+
+    case 'MERIDIAN_RETURN': {
+      const mer = GA('meridian')
+      if (!mer) break
+      walkTo('meridian', [{ x:mer.homeX, y:mer.homeY }], () => { mer.state = 'working' })
+      break
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// 13. AGENT UPDATE (MOVEMENT + STATE)
+// ═══════════════════════════════════════════════════════════════════
+function updateAgent(a, dt) {
+  a.frame += dt * 0.056
+
+  // Scan tick
+  if (a.scanning) {
+    a.scanFrame++
+    if (a.scanFrame >= SCAN_DUR) { a.scanning = false; a.scanFrame = 0 }
+  }
+
+  // Walk along path
+  if (a.walkPath && a.walkPath.length > 0) {
+    const t = a.walkPath[0]
+    const dx = t.x - a.x, dy = t.y - a.y
+    const d = Math.hypot(dx, dy)
+    if (d < 2.5) {
+      a.x = t.x; a.y = t.y; a.walkPath.shift()
+      if (a.walkPath.length === 0) {
+        a.walking = false
+        if (a._onArrived) { a._onArrived(); a._onArrived = null }
       }
+    } else {
+      const spd = WALK_SPEED * (a.id === 'meridian' ? 1.3 : 1)
+      a.x += (dx/d)*spd; a.y += (dy/d)*spd
+      a.walking = true; a.state = 'patrolling'
     }
-  });
+  } else {
+    a.walking = false
+  }
+
+  // Idle / sleep decay
+  if (a.id === 'meridian') return
+  if ((a.state === 'working' || a.state === 'idle') && !a.walking) {
+    a.idleTimer++
+    if (a.idleTimer > SLEEP_THRESH) a.state = 'sleeping'
+    else if (a.idleTimer > IDLE_THRESH && a.state === 'working') a.state = 'idle'
+  }
 }
 
-// ─── Click Detection ─────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════════
+// 14. DEMO SCHEDULER
+// ═══════════════════════════════════════════════════════════════════
+let demoCycle = 0, demoTimer = 0
+const DEMO_INTERVAL = 540
+
+function tickDemo() {
+  if (++demoTimer < DEMO_INTERVAL) return
+  demoTimer = 0; demoCycle++
+  const pick = demoCycle % 4
+  if (pick === 0) queueEvent({ type:'DESIGN_HANDOFF' })
+  else if (pick === 1) queueEvent({ type:'WEBGROWTH_PIPELINE' })
+  else if (pick === 2) queueEvent({ type:'BOARD_CONVENE', holdFrames:210 })
+  else {
+    const pool = AGENTS.filter(a => a.id !== 'meridian')
+    const target = pool[Math.floor(Math.random()*pool.length)]
+    wakeAgent(target.id)
+    queueEvent({ type:'MERIDIAN_EVALUATE', targetId:target.id })
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// 15. RENDER
+// ═══════════════════════════════════════════════════════════════════
+function render() {
+  ctx.clearRect(0, 0, CW, CH)
+  ctx.fillStyle = '#05060D'; ctx.fillRect(0, 0, CW, CH)
+
+  ZONE_ORDER.forEach(zid => drawFloor(ZONES[zid]))
+  ZONE_ORDER.forEach(zid => drawZoneBorder(ZONES[zid]))
+  ZONE_ORDER.forEach(zid => drawZoneFurniture(zid, ZONES[zid]))
+
+  // Agents sorted by y (painter's algorithm)
+  ;[...AGENTS].sort((a,b) => a.y - b.y).forEach(a => drawAgent(a))
+
+  // Bar counter drawn OVER agents (Drink goes behind bar)
+  drawForeground()
+
+  // Comm animations
+  tickAndDrawComms()
+
+  // Zone labels on top
+  ZONE_ORDER.forEach(zid => drawZoneLabel(ZONES[zid]))
+
+  // Ambient tints last
+  ZONE_ORDER.forEach(zid => {
+    const z = ZONES[zid]
+    if (z.ambient) { ctx.fillStyle = z.ambient; ctx.fillRect(z.x, z.y, z.w, z.h) }
+  })
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// 16. GAME LOOP
+// ═══════════════════════════════════════════════════════════════════
+let lastTime = 0
+function loop(ts) {
+  const dt = Math.min(ts - lastTime, 32); lastTime = ts
+  tickEvents()
+  AGENTS.forEach(a => updateAgent(a, dt))
+  tickDemo()
+  render()
+  requestAnimationFrame(loop)
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// 17. PAN & ZOOM
+// ═══════════════════════════════════════════════════════════════════
+const viewport = document.getElementById('viewport')
+let panX = 0, panY = 0, zoom = 1
+let dragging = false, dragStart = { x:0, y:0 }, panStart = { x:0, y:0 }
+let _dragged = false
+
+function applyTransform() {
+  canvas.style.transform = `translate(${panX}px,${panY}px) scale(${zoom})`
+  canvas.style.transformOrigin = '0 0'
+}
+function initCamera() {
+  panX = Math.min(0, (viewport.clientWidth  - CW) / 2)
+  panY = Math.min(0, (viewport.clientHeight - CH) / 2)
+  applyTransform()
+}
+
+viewport.addEventListener('mousedown', e => {
+  if (e.target !== canvas) return
+  dragging = true; _dragged = false
+  dragStart = { x:e.clientX, y:e.clientY }
+  panStart  = { x:panX, y:panY }
+  viewport.classList.add('dragging')
+})
+window.addEventListener('mousemove', e => {
+  if (!dragging) return
+  const dx = e.clientX - dragStart.x, dy = e.clientY - dragStart.y
+  if (Math.abs(dx)+Math.abs(dy) > 4) _dragged = true
+  panX = panStart.x + dx; panY = panStart.y + dy; applyTransform()
+})
+window.addEventListener('mouseup', () => { dragging = false; viewport.classList.remove('dragging') })
+
+viewport.addEventListener('wheel', e => {
+  e.preventDefault()
+  const rect = viewport.getBoundingClientRect()
+  const mx = e.clientX - rect.left, my = e.clientY - rect.top
+  const dz = e.deltaY > 0 ? -0.08 : 0.08
+  const oldZ = zoom
+  zoom = Math.max(0.42, Math.min(2.4, zoom + dz))
+  panX = mx - (mx - panX)*(zoom/oldZ)
+  panY = my - (my - panY)*(zoom/oldZ)
+  applyTransform()
+}, { passive: false })
+
+// ═══════════════════════════════════════════════════════════════════
+// 18. CLICK & HOVER
+// ═══════════════════════════════════════════════════════════════════
+const tooltip = document.getElementById('tooltip')
+let hoveredAgent = null
+
+function canvasXY(e) {
+  const rect = canvas.getBoundingClientRect()
+  return {
+    x: (e.clientX - rect.left) * (canvas.width  / rect.width),
+    y: (e.clientY - rect.top)  * (canvas.height / rect.height),
+  }
+}
+function hitTest(mx, my) {
+  return AGENTS.find(a => Math.hypot(mx-a.x, my-(a.y-24)) < 24)
+}
+
 canvas.addEventListener('click', e => {
-  const rect = canvas.getBoundingClientRect();
-  const mx = e.clientX - rect.left, my = e.clientY - rect.top;
-  let hit = null;
-  // Characters span from their feet (c.sy) up to ~65px above (head)
-  // Check bounding box first, then precise distance to body center
-  CHARS.forEach(c => {
-    if (Math.abs(c.sx - mx) < 28 && Math.abs(my - (c.sy - 32)) < 42) {
-      const dx = mx - c.sx, dy = my - (c.sy - 32);
-      if (Math.sqrt(dx*dx + dy*dy) < 28) hit = c;
+  if (_dragged) return
+  const { x, y } = canvasXY(e)
+  const hit = hitTest(x, y)
+  AGENTS.forEach(a => a.selected = false)
+  if (hit) { hit.selected = true; showInfoPanel(hit) }
+  else hideInfoPanel()
+})
+
+canvas.addEventListener('mousemove', e => {
+  if (dragging) { tooltip.style.display = 'none'; return }
+  const { x, y } = canvasXY(e)
+  const found = hitTest(x, y)
+  if (found !== hoveredAgent) {
+    hoveredAgent = found
+    if (found) {
+      canvas.style.cursor = 'pointer'
+      tooltip.textContent = found.task || `${found.role} · ${found.state}`
+      tooltip.style.display = 'block'
+    } else {
+      canvas.style.cursor = ''
+      tooltip.style.display = 'none'
     }
-  });
-  CHARS.forEach(c => c.selected = false);
-  if (hit) { hit.selected = true; showPanel(hit); }
-  else hidePanel();
-});
+  }
+  if (found) {
+    tooltip.style.left = (e.clientX + 14) + 'px'
+    tooltip.style.top  = (e.clientY - 28) + 'px'
+  }
+})
+canvas.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; hoveredAgent = null })
 
-// ─── Info Panel ───────────────────────────────────────────
-function showPanel(c) {
-  const team = TEAMS[c.group] || TEAMS['Shared'];
-  const model = MODEL_STYLE[c.model] || MODEL_STYLE.sonnet;
-  document.getElementById('info-dot').style.background = team.color;
-  document.getElementById('info-name').textContent = c.name;
-  document.getElementById('info-group').style.color = team.color;
-  document.getElementById('info-group').textContent = c.group + ' · ' + c.tier;
-  document.getElementById('info-role').textContent = c.label;
-  document.getElementById('info-purpose').textContent = c.purpose;
-  const mb = document.getElementById('info-model-badge');
-  mb.textContent = model.label; mb.style.background = model.bg; mb.style.color = model.color;
-  const sd = document.getElementById('info-status-dot'), st = document.getElementById('info-status-text');
-  sd.style.background = c.state === 'working' ? '#81C784' : c.state === 'break' ? '#C9A264' : '#9E9E9E';
-  st.textContent = c.state === 'working' ? 'At desk' : c.state === 'break' ? 'On break' : c.state === 'walking' ? 'In transit' : 'Offline';
-  document.getElementById('info-state-label').textContent = 'Current activity';
-  document.getElementById('info-state-desc').textContent =
-    c.state === 'working' ? 'Ready to be invoked. Say "Act as the ' + c.name + ' agent."' :
-    c.state === 'break' ? 'Idle. Will return to desk shortly.' :
-    c.state === 'walking' ? 'Moving between sessions.' : 'Not recently active. Invoke to wake.';
-  document.getElementById('info-panel').classList.add('open');
-}
-function hidePanel() { document.getElementById('info-panel').classList.remove('open'); }
-document.getElementById('info-close').addEventListener('click', () => { hidePanel(); CHARS.forEach(c=>c.selected=false); });
+// ═══════════════════════════════════════════════════════════════════
+// 19. INFO PANEL
+// ═══════════════════════════════════════════════════════════════════
+const STATE_COLORS  = { working:'#81C784', idle:'rgba(255,255,255,0.28)', sleeping:'#444', patrolling:'#5B9BD5', communicating:'#A78BFA', break:'#E8956D' }
+const STATE_LABELS  = { working:'Working', idle:'Idle — waiting to be invoked', sleeping:'Sleeping', patrolling:'On the move', communicating:'Passing work', break:'On break' }
+const ZONE_LABELS   = { command:'Command Center', sips:'513 Sips HQ', wg:'WebGrowth Agency', library:'Library', travel:'Travel Suite', warroom:'War Room', breakroom:'Break Room' }
 
-// ─── Main Render ──────────────────────────────────────────
-let lastTime = 0;
-function render(ts) {
-  const dt = Math.min(ts - lastTime, 32);
-  lastTime = ts;
-  update(dt);
+function showInfoPanel(agent) {
+  const mc = MC[agent.model] || MC.sonnet
+  const badge = document.getElementById('info-model-badge')
+  badge.textContent = mc.label
+  badge.style.background = mc.bg; badge.style.color = mc.color
+  badge.style.border = `1px solid ${mc.color}30`
 
-  ctx.clearRect(0, 0, CANVAS_W, CANVAS_H);
+  document.getElementById('info-name').textContent = agent.name
+  document.getElementById('info-role').textContent = agent.role
+  document.getElementById('info-zone-group').textContent = ZONE_LABELS[agent.zone] || agent.zone
+  document.getElementById('info-bio').textContent = agent.bio
 
-  // Draw all rooms
-  Object.entries(ROOMS).forEach(([key, room]) => {
-    drawRoom(room);
-    drawRoomFurniture(key, room);
-  });
+  document.getElementById('info-state-dot').style.background = STATE_COLORS[agent.state] || '#888'
+  document.getElementById('info-state-text').textContent = STATE_LABELS[agent.state] || agent.state
+  document.getElementById('info-task').textContent = agent.task || 'Ready to invoke'
+  document.getElementById('info-last-active').textContent = agent.lastEngagement ? `Last active: ${agent.lastEngagement}` : 'Not yet invoked this session'
 
-  // Sort characters back-to-front (painter's algorithm)
-  const sorted = [...CHARS].sort((a,b) => (a.sx+a.sy) - (b.sx+b.sy));
-  sorted.forEach(c => drawCharacter(c, c.frame));
+  const ms = document.getElementById('info-meridian-section')
+  if (agent.id === 'meridian') {
+    ms.style.display = 'none'
+  } else {
+    ms.style.display = 'block'
+    if (agent.meridianScore) {
+      const s = agent.meridianScore
+      const avg = Math.round((s.right + s.quality) / 2)
+      document.getElementById('info-stars').textContent = '★'.repeat(avg) + '☆'.repeat(5-avg)
+      document.getElementById('info-stars').style.color = avg >= 4 ? '#C9A264' : avg >= 3 ? '#E8956D' : '#FF7070'
+      document.getElementById('info-score-detail').textContent = `Right agent: ${s.right}/5  ·  Quality: ${s.quality}/5`
+      document.getElementById('info-refinement-note').textContent = s.refinement ? `↳ ${s.refinement}` : ''
+    } else {
+      document.getElementById('info-stars').textContent = 'Not yet evaluated'
+      document.getElementById('info-stars').style.color = 'rgba(255,255,255,0.28)'
+      document.getElementById('info-score-detail').textContent = ''
+      document.getElementById('info-refinement-note').textContent = ''
+    }
+  }
 
-  requestAnimationFrame(render);
-}
+  document.getElementById('info-invoke').textContent = agent.id === 'meridian'
+    ? 'Meridian evaluates automatically at session end.'
+    : `Say: "Act as the ${agent.name} agent"`
 
-// ─── Legend ───────────────────────────────────────────────
-function buildLegend() {
-  const el = document.getElementById('legend');
-  Object.values(TEAMS).forEach(t => {
-    el.innerHTML += `<div class="legend-item"><div class="legend-dot" style="background:${t.color}"></div>${t.label}</div>`;
-  });
-  document.getElementById('agent-count').textContent = `${CHARS.length} agents`;
+  document.getElementById('info-panel').classList.add('open')
 }
 
-// ─── Hint fade ────────────────────────────────────────────
-setTimeout(() => document.getElementById('hint').classList.add('fade'), 4000);
+function hideInfoPanel() {
+  document.getElementById('info-panel').classList.remove('open')
+}
 
-// ─── Init ─────────────────────────────────────────────────
-assignDesks();
-buildLegend();
-requestAnimationFrame(render);
+document.getElementById('info-close').addEventListener('click', () => {
+  AGENTS.forEach(a => a.selected = false)
+  hideInfoPanel()
+})
+
+// ═══════════════════════════════════════════════════════════════════
+// 20. INIT
+// ═══════════════════════════════════════════════════════════════════
+initCamera()
+requestAnimationFrame(loop)
+
+// Staggered opening demo events
+setTimeout(() => queueEvent({ type:'DESIGN_HANDOFF' }), 2200)
+setTimeout(() => queueEvent({ type:'WEBGROWTH_PIPELINE' }), 6000)
+setTimeout(() => queueEvent({ type:'BOARD_CONVENE', holdFrames:200 }), 11500)
+setTimeout(() => {
+  const t = AGENTS.filter(a => a.id !== 'meridian')[4]
+  wakeAgent(t.id); queueEvent({ type:'MERIDIAN_EVALUATE', targetId:t.id })
+}, 17000)
 </script>
 </body>
 </html>
