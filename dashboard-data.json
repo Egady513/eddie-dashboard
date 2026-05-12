@@ -20,7 +20,7 @@
       "name": "Chief of Staff",
       "group": "Shared",
       "tier": "Operations",
-      "purpose": "Cross-project ops lead. Owns the master backlog. Syncs all project-level backlogs into Backlog.md and keeps dashboard-data.json current. Single source of operational truth.",
+      "purpose": "Cross-project ops lead. Owns the master backlog AND the agent roster. Syncs project backlogs into Backlog.md, keeps dashboard-data.json current, and flags when agent-floor.html needs a DEFS update after new agents are added to the vault.",
       "status": "ready",
       "currentTask": null
     },
