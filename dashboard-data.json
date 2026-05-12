@@ -1,17 +1,35 @@
 {
   "meta": {
-    "lastUpdated": "2026-04-27",
-    "brainLastUpdated": "2026-04-27",
-    "sessionCount": 7,
+    "lastUpdated": "2026-05-11",
+    "brainLastUpdated": "2026-05-11",
+    "sessionCount": 15,
     "activeProjects": 6
   },
   "agents": [
+    {
+      "id": "meridian",
+      "name": "Meridian",
+      "group": "Shared",
+      "tier": "Evaluator",
+      "purpose": "The Chief. Post-engagement evaluator. Scores right agent used (1-5) + output quality (1-5) after every session. If score < 4, appends refinement note to agent vault file. The floor's constant presence.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "chief-of-staff",
+      "name": "Chief of Staff",
+      "group": "Shared",
+      "tier": "Operations",
+      "purpose": "Cross-project ops lead. Owns the master backlog. Syncs all project-level backlogs into Backlog.md and keeps dashboard-data.json current. Single source of operational truth.",
+      "status": "ready",
+      "currentTask": null
+    },
     {
       "id": "board-513sips",
       "name": "513Sips Board",
       "group": "513Sips",
       "tier": "Strategic",
-      "purpose": "Four-persona strategic review board — CEO, CFO, Hard Sell, Brand Director. Run before major decisions. Pulls in SME agents for deep-dives.",
+      "purpose": "Four-persona strategic review board — CEO (Marcus), CFO (Danny), Hard Sell (Rachel), Brand Director (Vivian). Run before major decisions. Pulls in SME agents for deep-dives.",
       "status": "ready",
       "currentTask": null
     },
@@ -21,6 +39,15 @@
       "group": "513Sips",
       "tier": "SME",
       "purpose": "Tax strategy, complex accounting, multi-year financial planning. Consult for Board reviews and year-end prep.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "bookkeeper",
+      "name": "Bookkeeper",
+      "group": "513Sips",
+      "tier": "SME",
+      "purpose": "Day-to-day accounting: log expenses, reconcile vendor payments, calculate owner reimbursement, check cash flow. Keeps Books clean between finance sessions.",
       "status": "ready",
       "currentTask": null
     },
@@ -115,6 +142,42 @@
       "currentTask": null
     },
     {
+      "id": "creative-director",
+      "name": "Creative Director",
+      "group": "513Sips",
+      "tier": "Design",
+      "purpose": "Design team lead. Translates Marketing briefs into visual direction. Orchestrates Art Director + Copywriter, reviews their work, and is the final gate before anything reaches Eddie.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "art-director",
+      "name": "Art Director",
+      "group": "513Sips",
+      "tier": "Design",
+      "purpose": "Visual composition, photo selection, layout direction, and hierarchy for carousels and reels. Works from Creative Director's brief.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "copywriter",
+      "name": "Copywriter",
+      "group": "513Sips",
+      "tier": "Design",
+      "purpose": "Headlines, body copy, captions, hashtags — all written content on design deliverables. Brand voice custodian.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "design-qa",
+      "name": "Design QA",
+      "group": "513Sips",
+      "tier": "Design",
+      "purpose": "3-lens review on every deliverable: Functional (does it work?), UX (is it clear?), Customer Mindset (would they act?). Nothing reaches Eddie until QA signs off.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
       "id": "tp-pm",
       "name": "Travel Planner PM",
       "group": "Travel Planner",
@@ -129,6 +192,15 @@
       "group": "Travel Planner",
       "tier": "Technical",
       "purpose": "Technical architecture and implementation for the Travel Planner app. React + TypeScript + Vercel stack.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "tp-river-hayes",
+      "name": "River Hayes",
+      "group": "Travel Planner",
+      "tier": "Domain",
+      "purpose": "Overlanding advisor and route intelligence for Charlie's Western Adventure. Dog logistics, dispersed camping, timing windows, crowd strategy. The trip's local guide persona.",
       "status": "ready",
       "currentTask": null
     },
@@ -165,6 +237,51 @@
       "group": "WebGrowth",
       "tier": "Research",
       "purpose": "Identifies 2–3 direct competitors, benchmarks their sites against the prospect's, and produces a gap summary showing where the prospect is losing ground.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "wg-callout-gen",
+      "name": "Callout Generator",
+      "group": "WebGrowth",
+      "tier": "Research",
+      "purpose": "Produces the 'we did our homework' specific observations for first calls — the hook that opens doors. Transforms audit findings into memorable, personalized callouts.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "wg-pricing",
+      "name": "Pricing",
+      "group": "WebGrowth",
+      "tier": "SME",
+      "purpose": "Scopes the project into Refresh / Rebuild / Transform tier + investment estimate from site audit findings. Outputs the investment range Eddie presents on the call.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "wg-proposal-writer",
+      "name": "Proposal Writer",
+      "group": "WebGrowth",
+      "tier": "Strategic",
+      "purpose": "Assembles the full pre-call package — brand intel, audit, competitor gaps, callouts, and investment — into one clean document Eddie hands over or screens.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "wg-prototype",
+      "name": "Prototype",
+      "group": "WebGrowth",
+      "tier": "Technical",
+      "purpose": "Builds lo-fi HTML prototypes tailored to high-value prospects to make the vision tangible before the call. Increases close rate on Rebuild+ engagements.",
+      "status": "ready",
+      "currentTask": null
+    },
+    {
+      "id": "wg-design-inspiration",
+      "name": "Design Inspiration",
+      "group": "WebGrowth",
+      "tier": "Reference",
+      "purpose": "Surfaces current design trends by industry from showcase sites before any prototyping begins. Grounds the prototype in what's working right now.",
       "status": "ready",
       "currentTask": null
     },
@@ -207,6 +324,14 @@
   ],
   "backlog": [
     {
+      "id": "agent-floor-v2",
+      "title": "agent-floor.html v2 — top-down RPG agent visualization",
+      "project": "Dashboard",
+      "priority": "P1",
+      "column": "done",
+      "description": "Complete rewrite. 35 agents, 7 themed zones, event-driven movement, Meridian evaluator. Shipped 2026-05-11."
+    },
+    {
       "id": "dash-1",
       "title": "Create eddie-dashboard GitHub repo",
       "project": "Dashboard",
@@ -219,16 +344,24 @@
       "title": "Build dashboard Phase 1",
       "project": "Dashboard",
       "priority": "P1",
-      "column": "in-progress",
-      "description": "Glass shell, agent fleet, kanban, 513Sips ops panel, automation feed, Claude insights"
+      "column": "done",
+      "description": "Live at egady513.github.io/eddie-dashboard — glass shell, agent fleet, kanban, 513Sips ops panel, automation feed, Claude insights."
     },
     {
       "id": "dash-3",
       "title": "Update save protocol for dashboard-data.json",
       "project": "Dashboard",
       "priority": "P1",
-      "column": "ready",
-      "description": "Claude updates dashboard-data.json at session end as part of save protocol. Vault: 05-Meta/Save-Protocol.md"
+      "column": "done",
+      "description": "Documented in CLAUDE.md — Claude updates dashboard-data.json at session end as part of save protocol."
+    },
+    {
+      "id": "chief-of-staff-create",
+      "title": "Create Chief of Staff agent",
+      "project": "Brain",
+      "priority": "P1",
+      "column": "done",
+      "description": "Vault note created, AGENT-REGISTRY + MOC-Agents updated. Owns backlog sync + dashboard currency. Shipped 2026-05-11."
     },
     {
       "id": "513-blog2",
@@ -236,7 +369,7 @@
       "project": "513Sips Website",
       "priority": "P1",
       "column": "ready",
-      "description": "Add card to blog/index.html and push to main. Was scheduled Apr 23 — overdue."
+      "description": "Add card to blog/index.html and push to main. Overdue — was scheduled Apr 23."
     },
     {
       "id": "513-pricing-update",
@@ -252,7 +385,7 @@
       "project": "513Sips Website",
       "priority": "P1",
       "column": "ready",
-      "description": "Eddie action: go to search.google.com/search-console, add www.513sips.com, verify via TXT record in Squarespace DNS, submit sitemap.xml."
+      "description": "Eddie action: search.google.com/search-console → add www.513sips.com → verify via TXT record in Squarespace DNS → submit sitemap.xml."
     },
     {
       "id": "513-bug3",
@@ -260,7 +393,7 @@
       "project": "513Sips Website",
       "priority": "P1",
       "column": "done",
-      "description": "Shipped 2026-04-26. Footer links now open branded modal overlays. Applied cleanly to main."
+      "description": "Shipped 2026-04-26. Footer links now open branded modal overlays."
     },
     {
       "id": "513-claude-md",
@@ -284,7 +417,15 @@
       "project": "Travel Planner",
       "priority": "P1",
       "column": "done",
-      "description": "Completed 2026-04-26. App is live on Vercel."
+      "description": "Completed 2026-04-26. App live at travel-planner-olive-eight.vercel.app"
+    },
+    {
+      "id": "tp-v10-mobile",
+      "title": "Travel Planner V10 — Mobile UI Sprint",
+      "project": "Travel Planner",
+      "priority": "P1",
+      "column": "done",
+      "description": "Shipped 2026-05-06. Map-first layout, bottom sheet day cards, swipe nav, Apple Glass style, GPS, layer filter, date-only labels. 7 commits pushed to production."
     },
     {
       "id": "brain-handoffs",
@@ -293,6 +434,14 @@
       "priority": "P1",
       "column": "needs-refinement",
       "description": "Import session context from existing Claude sessions into vault."
+    },
+    {
+      "id": "wg-first-prospect",
+      "title": "Identify first WebGrowth prospect",
+      "project": "WebGrowth",
+      "priority": "P1",
+      "column": "needs-refinement",
+      "description": "Business name + website URL. Then run through full 10-agent pipeline to validate end-to-end."
     },
     {
       "id": "513-books-deploy",
@@ -304,11 +453,35 @@
     },
     {
       "id": "513-books-comms",
-      "title": "Implement Communication Log in Books",
+      "title": "Books: Communication Log",
       "project": "513Sips",
       "priority": "P2",
       "column": "needs-refinement",
-      "description": "Track calls/texts/emails per lead. HIGH priority from CEO."
+      "description": "Track calls/texts/emails per lead. Fields: lead_id, date, channel, direction, summary, outcome. HIGH priority from CEO."
+    },
+    {
+      "id": "513-books-cashflow",
+      "title": "Books: Cash Flow Forecast",
+      "project": "513Sips",
+      "priority": "P2",
+      "column": "needs-refinement",
+      "description": "30/60/90 day projection of inflows (deposits/balances due) vs. outflows (bills due). Weekly cash position. Alert on negative weeks."
+    },
+    {
+      "id": "513-books-recurring",
+      "title": "Books: Recurring Expense Templates",
+      "project": "513Sips",
+      "priority": "P2",
+      "column": "needs-refinement",
+      "description": "Schema + auto-create for monthly/annual costs (insurance, Anthropic API, Canva, QuickBooks). Recurring section on Expenses page."
+    },
+    {
+      "id": "513-books-sms",
+      "title": "Books: Telegram/SMS Integration",
+      "project": "513Sips",
+      "priority": "P2",
+      "column": "needs-refinement",
+      "description": "Outbound payment reminders + new lead notifications. Needs Eddie's Telegram bot token or Twilio credentials."
     },
     {
       "id": "513-blog3",
@@ -316,7 +489,7 @@
       "project": "513Sips Website",
       "priority": "P2",
       "column": "ready",
-      "description": "Target: Apr 30. Uncomment card in blog/index.html, push to main."
+      "description": "Overdue — was scheduled Apr 30. Uncomment card in blog/index.html, push to main."
     },
     {
       "id": "513-blog4",
@@ -324,7 +497,7 @@
       "project": "513Sips Website",
       "priority": "P2",
       "column": "ready",
-      "description": "Target: May 7"
+      "description": "Overdue — was scheduled May 7."
     },
     {
       "id": "513-blog5",
@@ -340,7 +513,7 @@
       "project": "513Sips Website",
       "priority": "P2",
       "column": "needs-refinement",
-      "description": "Both pages use hardcoded navs. Converting to shared nav.js means nav changes propagate everywhere."
+      "description": "Both pages use hardcoded navs. nav.js means nav changes propagate everywhere."
     },
     {
       "id": "513-faq-logo",
@@ -364,7 +537,7 @@
       "project": "513Sips Website",
       "priority": "P2",
       "column": "needs-refinement",
-      "description": "Eddie to provide updated copy for specific questions. Applies to both faq.html accordion and index.html mobile FAQ preview."
+      "description": "Eddie to provide updated copy. Applies to both faq.html accordion and index.html mobile FAQ preview."
     },
     {
       "id": "513-p20",
@@ -372,7 +545,7 @@
       "project": "513Sips Website",
       "priority": "P2",
       "column": "needs-refinement",
-      "description": "Videos folder excluded from Cloudinary sync. Needs design decision: autoplay on hover or lightbox playback?"
+      "description": "Videos folder excluded from Cloudinary sync. Needs design decision: autoplay on hover or lightbox?"
     },
     {
       "id": "513-outreach-loop",
@@ -403,8 +576,24 @@
       "title": "Define Travel Planner feature priorities",
       "project": "Travel Planner",
       "priority": "P2",
+      "column": "done",
+      "description": "Completed 2026-05-05. Added to MOC-Travel-Planner."
+    },
+    {
+      "id": "tp-v11-maplibre",
+      "title": "Travel Planner V11 — MapLibre Migration",
+      "project": "Travel Planner",
+      "priority": "P2",
       "column": "needs-refinement",
-      "description": "Add to MOC-Travel-Planner. Test Scout AI + Google Maps on mobile after Vercel deploy."
+      "description": "Eddie researching. Unlocks offline tile caching. Replace current map provider with MapLibre GL JS."
+    },
+    {
+      "id": "tp-vercel-branch",
+      "title": "Set Vercel production branch to master",
+      "project": "Travel Planner",
+      "priority": "P2",
+      "column": "needs-refinement",
+      "description": "So pushes auto-deploy without manual 'Promote to Production' step."
     },
     {
       "id": "dash-phase2",
@@ -428,7 +617,7 @@
       "project": "WebGrowth",
       "priority": "P2",
       "column": "needs-refinement",
-      "description": "Rebuild tiers + monthly maintenance retainer pricing. One-time vs recurring."
+      "description": "Refresh / Rebuild / Transform tiers + monthly maintenance retainer. One-time vs recurring."
     },
     {
       "id": "wg-pitch-deck",
@@ -437,14 +626,6 @@
       "priority": "P2",
       "column": "needs-refinement",
       "description": "Leave-behind after first call. Positions rebuild as solution to audit findings."
-    },
-    {
-      "id": "wg-first-prospect",
-      "title": "Run first prospect through pre-call workflow",
-      "project": "WebGrowth",
-      "priority": "P2",
-      "column": "needs-refinement",
-      "description": "Use Engagement Manager agent end-to-end on first real prospect to validate pipeline."
     }
   ],
   "sips513": {
@@ -467,14 +648,14 @@
         "id": "blog-3",
         "title": "What Does a Mobile Bartender Do?",
         "publishDate": "2026-04-30",
-        "status": "queued",
+        "status": "overdue",
         "url": null
       },
       {
         "id": "blog-4",
         "title": "Open Bar vs Cash Bar vs Consumption Bar — Which Is Right for Your Event?",
         "publishDate": "2026-05-07",
-        "status": "queued",
+        "status": "overdue",
         "url": null
       },
       {
@@ -485,7 +666,20 @@
         "url": null
       }
     ],
-    "openBugs": [],
+    "openBugs": [
+      {
+        "id": "books-bug-1",
+        "title": "LeadsPage status regression — can revert from 'booked'",
+        "severity": "medium",
+        "description": "No guard preventing accidental un-booking of a confirmed lead."
+      },
+      {
+        "id": "books-bug-2",
+        "title": "Phone duplicate check misses +1 prefix",
+        "severity": "low",
+        "description": "+15135551234 vs 5135551234 treated as different entries."
+      }
+    ],
     "board": {
       "lastInvoked": "2026-04-24",
       "lastDecision": "Implement accrual-basis accounting in Books. No double-counting confirmed. Owner reimbursement widget added ($326.92 due to Eddie).",
@@ -495,47 +689,47 @@
   "automationFeed": [],
   "claudeInsights": {
     "usageSnapshot": {
-      "totalAgents": 17,
-      "activeProjects": 4,
-      "sessionsThisMonth": 6,
-      "brainAge": "3d"
+      "totalAgents": 35,
+      "activeProjects": 6,
+      "sessionsThisMonth": 8,
+      "brainAge": "0d"
     },
     "tips": [
       {
         "id": "tip-1",
-        "category": "Board Usage",
-        "current": "You invoke the Board after decisions are made — using it to validate work already done.",
-        "better": "Run it before major sessions. Pre-session alignment means you build the right thing first time instead of course-correcting mid-build."
+        "category": "Chief of Staff",
+        "current": "Your master backlog drifts from project backlogs between sessions — completed work stays open, new items go untracked.",
+        "better": "Open any session with: 'Act as Chief of Staff, run a backlog sync.' Takes 2 minutes and keeps the dashboard honest. Make it a habit before picking your next task."
       },
       {
         "id": "tip-2",
-        "category": "CLAUDE.md Files",
-        "current": "513Sips and Brain have no CLAUDE.md — Claude rebuilds context from scratch at the start of every session.",
-        "better": "Add CLAUDE.md to both. 20 lines covering purpose, paths, and build commands saves 5+ minutes of ramp-up every session — it compounds fast."
+        "category": "Blog Publishing",
+        "current": "Blog posts 2, 3, and 4 are past their scheduled publish dates. Three pieces of finished content sitting unpublished.",
+        "better": "Spend 15 minutes: open 513sips-tools, uncomment the three blog cards in blog/index.html, push to main. Content is already written — this is pure execution."
       },
       {
         "id": "tip-3",
-        "category": "Session Hygiene",
-        "current": "Handoffs capture what was done but not why decisions were made.",
-        "better": "Add a 'decisions + reasoning' field. In 3 months you'll know why you chose accrual-basis accounting — not just that you did."
+        "category": "Books Communication Log",
+        "current": "Leads go cold silently. No record of last contact, no way to know when to follow up.",
+        "better": "Communication Log is the highest-CEO-priority Books feature. Even a simple note field per lead gives you 80% of the value. Start there before building the full schema."
       },
       {
         "id": "tip-4",
-        "category": "Model Selection",
-        "current": "You're likely using one model for everything — builds, strategy, quick lookups.",
-        "better": "Sonnet for builds/saves/drafts. Opus for Board reviews and complex strategy. Haiku for quick lookups and data formatting. Match cost to task depth."
+        "category": "Agent Evaluation",
+        "current": "Meridian is now built into the agent floor — but the post-engagement scoring habit isn't established yet.",
+        "better": "After this session, pause and run Meridian scoring. Right agent (1-5), quality (1-5). If anything scores below 4, note the refinement. It takes 90 seconds and compounds over time."
       },
       {
         "id": "tip-5",
-        "category": "Agent Fleet",
-        "current": "You have 22 agents defined. Several have never been invoked in a real session.",
-        "better": "Archive agents unused in 30+ days. A smaller, sharper fleet is faster to navigate and forces clarity on when each agent actually gets used."
+        "category": "WebGrowth First Prospect",
+        "current": "All 10 agents are built and validated. The pipeline has never run on a real prospect.",
+        "better": "The first real engagement will reveal gaps no amount of planning uncovers. Pick any business you've noticed has a weak site. Run it through Engagement Manager. Outcome matters less than pipeline validation."
       },
       {
         "id": "tip-6",
-        "category": "Automation Pipeline",
-        "current": "Customer Outreach and Social pipelines are in the backlog but not built — intel is manual or missing.",
-        "better": "Build the outreach loop before the social pipeline. Weekly competitive intel from PoppinBar/CincySips feeds content strategy automatically."
+        "category": "Google Business Profile",
+        "current": "Past clients who gave verbal testimonials haven't been redirected to Google Reviews.",
+        "better": "Get the Place ID (5 minutes in Maps), generate the direct review link, then text 3-5 past clients with a short personal ask. Google reviews compound — one ask now is worth 10 later."
       },
       {
         "id": "tip-7",
@@ -546,24 +740,24 @@
     ],
     "bestPractices": [
       {
-        "title": "Opus 4.7 vs Sonnet 4.6",
-        "body": "Opus: Board reviews, pricing strategy, legal review, complex architecture. Sonnet: builds, saves, blog work, routine tasks. Haiku: quick lookups, formatting, data transformation."
+        "title": "Chief of Staff as Session Opener",
+        "body": "Before any work session, spend 2 minutes with Chief of Staff. Read the sync report. Know what's actually P1. Then open your working session with full context — no surprises mid-session."
+      },
+      {
+        "title": "Meridian Scoring Habit",
+        "body": "At session end: Right agent (1-5)? Output quality (1-5)? If either < 4, one sentence on what to improve. Saves to vault. Feeds agent refinement over time. 90 seconds of investment per session."
+      },
+      {
+        "title": "Opus 4 vs Sonnet vs Haiku",
+        "body": "Opus: Board reviews, pricing strategy, legal review, complex architecture. Sonnet: builds, saves, blog work, domain agents, design pipeline. Haiku: quick lookups, formatting, data transformation, routine logging."
       },
       {
         "title": "Agent Prompt Structure",
         "body": "Best agents have: (1) Role + persona, (2) Scope boundaries — what they do AND don't, (3) Output format, (4) 2–3 example invocations. Skip any and outputs get inconsistent."
       },
       {
-        "title": "CLAUDE.md Anatomy",
-        "body": "Every CLAUDE.md needs: project purpose, local folder paths, active branch conventions, key files not to touch, and the build/deploy command. 20 focused lines beats 200 generic ones."
-      },
-      {
         "title": "Session Handoff Value",
         "body": "Write handoffs as if a stranger is picking up tomorrow with no context. What do they absolutely need to know? Everything else is noise. The handoff is the session's entire lasting value."
-      },
-      {
-        "title": "Scheduled Agents",
-        "body": "Scheduled agents are only valuable if you review their output. Build the review habit first (check the Automation Feed weekly), then scale up scheduled agents. Output without review is waste."
       }
     ]
   }
