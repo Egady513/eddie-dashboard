@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-05-11",
+    "lastUpdated": "2026-05-13",
     "brainLastUpdated": "2026-05-11",
     "sessionCount": 15,
     "activeProjects": 6
@@ -688,6 +688,13 @@
   },
   "automationFeed": [
     {
+      "id": "cos-sync-1778705583113",
+      "timestamp": "2026-05-13T20:53:03.113Z",
+      "type": "session-end",
+      "icon": "⚙️",
+      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
+    },
+    {
       "id": "cos-sync-20260513-001",
       "timestamp": "2026-05-13T00:00:00.000Z",
       "type": "session-end",
@@ -714,7 +721,12 @@
       "id": "meridian-20260513-design-team",
       "date": "2026-05-13",
       "sessionTheme": "Design team engagement — 513Sips carousel (dry-hire content pipeline)",
-      "agents": ["creative-director", "art-director", "copywriter", "design-qa"],
+      "agents": [
+        "creative-director",
+        "art-director",
+        "copywriter",
+        "design-qa"
+      ],
       "scores": {
         "rightAgent": 5,
         "quality": 4,
