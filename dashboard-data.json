@@ -686,7 +686,47 @@
       "sessionRef": "2026-04-24-books-financial-logic-board-review"
     }
   },
-  "automationFeed": [],
+  "automationFeed": [
+    {
+      "id": "cos-sync-20260513-001",
+      "timestamp": "2026-05-13T00:00:00.000Z",
+      "type": "session-end",
+      "icon": "⚙️",
+      "message": "Chief of Staff sync — 13 agents added to roster, 7 backlog items corrected, agent-floor v2 shipped"
+    },
+    {
+      "id": "meridian-flag-20260513-001",
+      "timestamp": "2026-05-13T00:00:00.000Z",
+      "type": "meridian-eval",
+      "icon": "◈",
+      "message": "Meridian eval — Design Team — Pipeline: 5/5 · Quality: 4/5 · Brand: pending output review · All scores pass"
+    },
+    {
+      "id": "agent-floor-v2-20260511",
+      "timestamp": "2026-05-11T00:00:00.000Z",
+      "type": "build",
+      "icon": "🏗",
+      "message": "agent-floor.html v2 shipped — 35 agents, 7 zones, event-driven movement, Meridian as evaluator"
+    }
+  ],
+  "meridianLog": [
+    {
+      "id": "meridian-20260513-design-team",
+      "date": "2026-05-13",
+      "sessionTheme": "Design team engagement — 513Sips carousel (dry-hire content pipeline)",
+      "agents": ["creative-director", "art-director", "copywriter", "design-qa"],
+      "scores": {
+        "rightAgent": 5,
+        "quality": 4,
+        "brand": null,
+        "strategy": 5,
+        "pipeline": 5
+      },
+      "overall": "pass",
+      "refinementNote": "Brand score deferred — final carousel output not yet reviewed by Meridian; re-evaluate on delivery.",
+      "refinementWritten": false
+    }
+  ],
   "claudeInsights": {
     "usageSnapshot": {
       "totalAgents": 35,
