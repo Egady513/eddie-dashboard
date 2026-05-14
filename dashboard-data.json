@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-05-13",
+    "lastUpdated": "2026-05-14",
     "brainLastUpdated": "2026-05-11",
     "sessionCount": 15,
     "activeProjects": 6
@@ -687,6 +687,13 @@
     }
   },
   "automationFeed": [
+    {
+      "id": "cos-sync-1778766855105",
+      "timestamp": "2026-05-14T13:54:15.105Z",
+      "type": "session-end",
+      "icon": "⚙️",
+      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
+    },
     {
       "id": "cos-sync-1778705583113",
       "timestamp": "2026-05-13T20:53:03.113Z",
