@@ -776,148 +776,515 @@ function drawStar(cx, cy, ro, ri, pts) {
   ctx.closePath(); ctx.fill()
 }
 
+// ─── HAIR STYLES ─────────────────────────────────────────────────────────────
+
+function drawHairStyle(id, x, hy, color) {
+  ctx.fillStyle = color
+  const LONG  = ['rachel','vivian','copy','wg_brand','librarian','social_mgr','social513']
+  const SWEPT = ['cd','marketing','wg_em','wg_prop','tp_pm','acquisition']
+  const SHORT = ['danny','ops','drink','postmortem','wg_audit','wg_std','bookkeeper','wg_comp']
+  if (LONG.includes(id)) {
+    ctx.beginPath(); ctx.arc(x, hy, 10, Math.PI, 0); ctx.fill()
+    ctx.fillRect(x-11, hy-4, 4, 16); ctx.fillRect(x+7, hy-4, 4, 14)
+  } else if (SWEPT.includes(id)) {
+    ctx.beginPath()
+    ctx.moveTo(x-10, hy); ctx.arc(x, hy, 10, Math.PI, -0.25)
+    ctx.lineTo(x+12, hy-9); ctx.lineTo(x-3, hy-10)
+    ctx.fill()
+  } else if (SHORT.includes(id)) {
+    ctx.beginPath(); ctx.arc(x, hy, 9, Math.PI+0.3, -0.3); ctx.fill()
+  } else {
+    ctx.beginPath(); ctx.arc(x, hy, 10, Math.PI, 0); ctx.fill()
+    ctx.fillRect(x-10, hy-2, 3, 5); ctx.fillRect(x+7, hy-2, 3, 5)
+  }
+}
+
+function drawBoardHair(id, x, hy) {
+  const color = HAIR[id] || '#1A1A1A'
+  ctx.fillStyle = color
+  if (id === 'marcus') {
+    ctx.beginPath(); ctx.arc(x, hy, 11, Math.PI, 0); ctx.fill()
+    ctx.fillStyle = '#808090'
+    ctx.fillRect(x-13, hy-4, 4, 9); ctx.fillRect(x+9, hy-4, 4, 9)
+  } else if (id === 'rachel') {
+    ctx.beginPath()
+    ctx.moveTo(x-12, hy+3); ctx.lineTo(x-12, hy-8); ctx.arc(x, hy, 12, Math.PI, 0)
+    ctx.lineTo(x+12, hy+3); ctx.lineTo(x+5, hy+6); ctx.lineTo(x-5, hy+6)
+    ctx.fill()
+  } else if (id === 'danny') {
+    ctx.beginPath(); ctx.arc(x, hy-1, 10, Math.PI, 0); ctx.fill()
+    ctx.fillRect(x-10, hy-1, 20, 5)
+  } else if (id === 'vivian') {
+    ctx.beginPath(); ctx.arc(x, hy, 11, Math.PI, 0); ctx.fill()
+    ctx.fillRect(x-13, hy-5, 5, 24); ctx.fillRect(x+8, hy-5, 5, 20)
+    ctx.fillStyle = shade(color, 1.65)
+    ctx.fillRect(x-11, hy-3, 2, 18)
+  }
+}
+
+function drawBoardAccessory(id, x, hy, bodyY, frame, mc) {
+  if (id === 'danny') {
+    ctx.save()
+    ctx.strokeStyle = '#999999'; ctx.lineWidth = 1.2
+    ctx.strokeRect(x-7, hy-1, 5, 3); ctx.strokeRect(x+2, hy-1, 5, 3)
+    ctx.beginPath(); ctx.moveTo(x-2, hy+1); ctx.lineTo(x+2, hy+1); ctx.stroke()
+    ctx.restore()
+  } else if (id === 'vivian') {
+    ctx.fillStyle = '#D4AF37'
+    ctx.fillRect(x-5, bodyY+1, 10, 4); ctx.fillRect(x-2, bodyY+5, 4, 8)
+  } else if (id === 'marcus') {
+    ctx.fillStyle = '#D4AF37'
+    ctx.beginPath(); ctx.arc(x+6, bodyY+6, 2, 0, Math.PI*2); ctx.fill()
+    ctx.beginPath(); ctx.arc(x+6, bodyY+6, 3, 0, Math.PI*2)
+    ctx.strokeStyle = 'rgba(212,175,55,0.4)'; ctx.lineWidth = 1; ctx.stroke()
+  }
+}
+
+function drawScanBeam(agent) {
+  if (!agent.scanning) return
+  const { x, y, scanFrame, walking, homeX, homeY } = agent
+  const atDesk = !walking && Math.abs(x - homeX) < 4 && Math.abs(y - homeY) < 4
+  const bodyY = atDesk ? y-32 : y-28
+  const headY = bodyY - 16
+  const sf = scanFrame, prog = sf / SCAN_DUR
+  const maxR = 36
+  const r2 = prog < 0.45 ? maxR*prog/0.45 : maxR*(1-prog)/0.55
+  ctx.save()
+  ctx.globalAlpha = (1-prog)*0.85
+  ctx.strokeStyle = 'rgba(180,180,255,0.95)'; ctx.lineWidth = 1.5
+  ctx.beginPath(); ctx.arc(x, headY, r2, 0, Math.PI*2); ctx.stroke()
+  if (sf > SCAN_DUR*0.38 && agent.meridianScore) {
+    ctx.globalAlpha = Math.min(1, (sf - SCAN_DUR*0.38)/(SCAN_DUR*0.18))
+    ctx.font = '700 8px Montserrat'; ctx.textAlign = 'center'
+    ctx.fillStyle = 'rgba(180,180,255,0.95)'
+    ctx.fillText(`Q:${agent.meridianScore.quality}/5`, x, headY-28)
+  }
+  ctx.restore()
+}
+
+// ─── DRAW DISPATCHER ─────────────────────────────────────────────────────────
+
 function drawAgent(agent) {
-  const { x, y, state, model, frame, selected, name, id, walking, homeX, homeY, scanning, scanFrame } = agent
+  if (agent.id === 'meridian') drawMeridian(agent)
+  else if (['marcus','rachel','danny','vivian'].includes(agent.id)) drawBoardMember(agent)
+  else drawAgentStandard(agent)
+  drawScanBeam(agent)
+}
+
+// ─── OPTION B: STANDARD AGENTS ───────────────────────────────────────────────
+
+function drawAgentStandard(agent) {
+  const { x, y, state, model, frame, selected, name, id, walking, homeX, homeY } = agent
   const mc = MC[model] || MC.sonnet
   const hair = HAIR[id] || '#1A1A1A'
   const atDesk = !walking && Math.abs(x - homeX) < 4 && Math.abs(y - homeY) < 4
+  const isWorking = state === 'working' || state === 'patrolling'
   const isSleeping = state === 'sleeping'
 
   ctx.save()
   if (isSleeping) ctx.globalAlpha = 0.36
 
+  // Working spotlight on floor
+  if (isWorking) {
+    ctx.save()
+    const pulse = 0.5 + Math.sin(frame * 0.05) * 0.5
+    const sg = ctx.createRadialGradient(x, y, 0, x, y, 28)
+    sg.addColorStop(0, mc.bg); sg.addColorStop(1, 'rgba(0,0,0,0)')
+    ctx.globalAlpha = 0.5 + pulse * 0.35
+    ctx.fillStyle = sg; ctx.beginPath(); ctx.ellipse(x, y, 28, 14, 0, 0, Math.PI*2); ctx.fill()
+    ctx.restore()
+  }
+
   // Shadow
-  ctx.beginPath(); ctx.ellipse(x, y+2, 12, 5, 0, 0, Math.PI*2)
+  ctx.beginPath(); ctx.ellipse(x, y+2, 13, 5, 0, 0, Math.PI*2)
   ctx.fillStyle = 'rgba(0,0,0,0.32)'; ctx.fill()
 
-  // Legs (skip when at desk)
+  // Legs
   if (!atDesk) {
     const swing = walking ? Math.sin(frame * 0.14) * 5 : 0
     ctx.fillStyle = shade(mc.body, 0.65)
-    ctx.fillRect(x-7, y-10+swing, 5, 12)
-    ctx.fillRect(x+2,  y-10-swing, 5, 12)
+    ctx.fillRect(x-6, y-12+swing, 5, 14); ctx.fillRect(x+1, y-12-swing, 5, 14)
     ctx.fillStyle = shade(mc.body, 0.5)
-    ctx.fillRect(x-7, y-0+swing, 5, 3)
-    ctx.fillRect(x+2,  y-0-swing, 5, 3)
+    ctx.fillRect(x-6, y+1+swing, 5, 3); ctx.fillRect(x+1, y+1-swing, 5, 3)
   }
 
   // Body
-  const bodyY = atDesk ? y-30 : y-26
+  const bodyY = atDesk ? y-32 : y-28
+  const headTilt = (isWorking && atDesk) ? 2 : 0
   ctx.fillStyle = mc.body; ctx.fillRect(x-9, bodyY, 18, 20)
+  ctx.fillStyle = 'rgba(255,255,255,0.14)'; ctx.fillRect(x-3, bodyY, 6, 5)
+  ctx.fillStyle = 'rgba(0,0,0,0.20)'; ctx.fillRect(x-1, bodyY, 2, 6)
   ctx.fillStyle = 'rgba(0,0,0,0.22)'; ctx.fillRect(x+7, bodyY+2, 2, 18); ctx.fillRect(x-9, bodyY+18, 18, 2)
-  ctx.fillStyle = 'rgba(255,255,255,0.12)'; ctx.fillRect(x-4, bodyY, 8, 5)
-  ctx.fillStyle = 'rgba(0,0,0,0.18)'; ctx.fillRect(x-1, bodyY, 2, 5)
 
   // Arms
   if (!atDesk) {
     const as = walking ? -Math.sin(frame*0.14)*3 : 0
     ctx.fillStyle = shade(mc.body, 0.82)
-    ctx.fillRect(x-14, bodyY+2+as, 5, 14)
-    ctx.fillRect(x+9,  bodyY+2-as, 5, 14)
+    ctx.fillRect(x-14, bodyY+2+as, 5, 14); ctx.fillRect(x+9, bodyY+2-as, 5, 14)
+  } else {
+    ctx.fillStyle = shade(mc.body, 0.82)
+    ctx.fillRect(x-13, bodyY+12, 5, 10); ctx.fillRect(x+8, bodyY+12, 5, 10)
+    if (isWorking) {
+      ctx.save()
+      const lp = 0.4 + Math.sin(frame*0.04)*0.3
+      ctx.globalAlpha = lp; ctx.shadowBlur = 8; ctx.shadowColor = mc.color
+      ctx.fillStyle = mc.color; ctx.fillRect(x-7, bodyY+21, 14, 2)
+      ctx.shadowBlur = 0; ctx.restore()
+    }
   }
 
   // Neck
-  ctx.fillStyle = '#C8956C'; ctx.fillRect(x-3, bodyY-5, 6, 5)
+  ctx.fillStyle = '#C8956C'; ctx.fillRect(x-3+headTilt, bodyY-5, 6, 6)
 
   // Head
-  const headY = bodyY - 14
-  const hg = ctx.createRadialGradient(x-2, headY-4, 2, x, headY, 10)
+  const headY = bodyY - 16
+  const hx = x + headTilt
+  const hg = ctx.createRadialGradient(hx-2, headY-3, 2, hx, headY, 10)
   hg.addColorStop(0, '#EAB89A'); hg.addColorStop(1, '#C07050')
-  ctx.beginPath(); ctx.arc(x, headY, 10, 0, Math.PI*2); ctx.fillStyle = hg; ctx.fill()
+  ctx.beginPath(); ctx.arc(hx, headY, 10, 0, Math.PI*2); ctx.fillStyle = hg; ctx.fill()
 
   // Hair
-  ctx.beginPath(); ctx.arc(x, headY, 10, Math.PI, 0); ctx.fillStyle = hair; ctx.fill()
-  ctx.fillRect(x-10, headY-2, 3, 6); ctx.fillRect(x+7, headY-2, 3, 6)
+  drawHairStyle(id, hx, headY, hair)
 
   // Eyes
   if (!isSleeping) {
     const blink = ((frame*0.013 + id.length*0.4) % 1) > 0.96
     const eyeH = blink ? 1 : 2
     ctx.fillStyle = '#0F0F18'
-    ctx.fillRect(x-5, headY-2, 3, eyeH)
-    ctx.fillRect(x+2, headY-2, 3, eyeH)
+    ctx.fillRect(hx-5, headY-2, 3, eyeH); ctx.fillRect(hx+2, headY-2, 3, eyeH)
     ctx.fillStyle = 'rgba(255,255,255,0.55)'
-    ctx.fillRect(x-4, headY-3, 1, 1); ctx.fillRect(x+3, headY-3, 1, 1)
+    ctx.fillRect(hx-4, headY-3, 1, 1); ctx.fillRect(hx+3, headY-3, 1, 1)
   }
 
   // State icon
   const iconY = headY - 22
   if (!isSleeping) {
     ctx.save()
-    if (state === 'working' || state === 'patrolling') {
+    if (isWorking) {
       const pulse = 0.5 + Math.sin(frame*0.05)*0.5
-      ctx.globalAlpha = 0.45 + pulse*0.55
-      ctx.fillStyle = mc.color
-      drawStar(x, iconY, 5, 2.5, 4)
+      ctx.globalAlpha = 0.55 + pulse*0.45
+      ctx.shadowBlur = 10; ctx.shadowColor = mc.color; ctx.fillStyle = mc.color
+      ctx.beginPath()
+      ctx.moveTo(hx, iconY-7); ctx.lineTo(hx+5, iconY)
+      ctx.lineTo(hx, iconY+7); ctx.lineTo(hx-5, iconY)
+      ctx.closePath(); ctx.fill()
+      ctx.shadowBlur = 0
     } else if (state === 'idle') {
-      ctx.globalAlpha = 0.35
-      ctx.fillStyle = 'rgba(255,255,255,0.5)'
-      ctx.fillRect(x-4, iconY-1, 8, 2)
+      ctx.globalAlpha = 0.35; ctx.fillStyle = 'rgba(255,255,255,0.5)'
+      ctx.fillRect(hx-4, iconY-1, 8, 2)
     } else if (state === 'break') {
       ctx.globalAlpha = 0.9; ctx.fillStyle = '#C8A060'
-      ctx.fillRect(x-5, iconY-4, 10, 8)
-      ctx.fillRect(x+5, iconY-2, 4, 4)
-      ctx.fillStyle = 'rgba(255,255,255,0.1)'; ctx.fillRect(x-4, iconY-3, 8, 3)
+      ctx.fillRect(hx-5, iconY-4, 10, 8); ctx.fillRect(hx+5, iconY-2, 4, 4)
+      ctx.fillStyle = 'rgba(255,255,255,0.1)'; ctx.fillRect(hx-4, iconY-3, 8, 3)
     }
     ctx.restore()
   }
 
   // Sleeping zzz
   if (isSleeping) {
+    ctx.save()
     ;['z','zz','zzz'].forEach((z2, i) => {
       const t = ((frame*0.018 + i*1.5) % 1)
       const alpha = t < 0.5 ? t*2 : (1-t)*2
       ctx.globalAlpha = 0.35 * alpha
-      ctx.font = 'italic 700 9px Montserrat'
-      ctx.fillStyle = '#9898CC'; ctx.textAlign = 'center'
+      ctx.font = 'italic 700 9px Montserrat'; ctx.fillStyle = '#9898CC'; ctx.textAlign = 'center'
       ctx.fillText(z2, x+10+i*4, headY-18-t*26)
     })
-    ctx.globalAlpha = 0.36
+    ctx.restore()
   }
 
-  // Name tag
+  // Name tag + current task
   if (!isSleeping) {
-    ctx.globalAlpha = 1
-    ctx.font = '500 7.5px Montserrat'; ctx.textAlign = 'center'
-    ctx.fillStyle = selected ? mc.color : 'rgba(255,255,255,0.72)'
+    ctx.save()
+    ctx.font = '600 7.5px Montserrat'; ctx.textAlign = 'center'
+    ctx.fillStyle = (selected || isWorking) ? mc.color : 'rgba(255,255,255,0.72)'
     ctx.fillText(name.split(' ')[0], x, y+17)
+    if (isWorking && agent.currentTask) {
+      ctx.globalAlpha = 0.65; ctx.font = '500 6.5px Montserrat'; ctx.fillStyle = mc.color
+      const tStr = agent.currentTask.length > 20 ? agent.currentTask.slice(0,19)+'…' : agent.currentTask
+      ctx.fillText(tStr, x, y+26)
+    }
+    ctx.restore()
   }
 
   // Selection ring
   if (selected) {
-    ctx.globalAlpha = 1
-    ctx.beginPath(); ctx.ellipse(x, y+2, 18, 7, 0, 0, Math.PI*2)
+    ctx.save()
+    ctx.beginPath(); ctx.ellipse(x, y+2, 19, 8, 0, 0, Math.PI*2)
     ctx.strokeStyle = mc.color; ctx.lineWidth = 1.5
     ctx.setLineDash([4,4]); ctx.lineDashOffset = -frame*0.08
     ctx.stroke(); ctx.setLineDash([])
-  }
-
-  // Meridian glow
-  if (id === 'meridian') {
-    const mp = 0.5 + Math.sin(frame*0.04)*0.5
-    ctx.save()
-    ctx.globalAlpha = 0.28 + mp*0.22
-    ctx.shadowColor = 'rgba(180,180,255,0.9)'; ctx.shadowBlur = 20
-    ctx.beginPath(); ctx.arc(x, headY, 13, 0, Math.PI*2)
-    ctx.strokeStyle = 'rgba(180,180,255,0.55)'; ctx.lineWidth = 1.5; ctx.stroke()
     ctx.restore()
   }
 
-  // Meridian scan beam on target
-  if (scanning) {
-    const sf = scanFrame, prog = sf / SCAN_DUR
-    const maxR = 36
-    const r2 = prog < 0.45 ? maxR*prog/0.45 : maxR*(1-prog)/0.55
+  ctx.restore()
+  ctx.textAlign = 'left'
+}
+
+// ─── OPTION C: MERIDIAN ──────────────────────────────────────────────────────
+
+function drawMeridian(agent) {
+  const { x, y, state, frame, selected, walking, homeX, homeY } = agent
+  const mc = MC.meridian
+  const atDesk = !walking && Math.abs(x - homeX) < 4 && Math.abs(y - homeY) < 4
+  const isWorking = state === 'working' || state === 'patrolling'
+
+  ctx.save()
+
+  // Breathing aura — always active
+  const breathe = 0.5 + Math.sin(frame * 0.03) * 0.5
+  ctx.save()
+  const auraG = ctx.createRadialGradient(x, y-18, 5, x, y-8, 42)
+  auraG.addColorStop(0, `rgba(180,180,255,${(0.10 + breathe*0.09).toFixed(3)})`)
+  auraG.addColorStop(1, 'rgba(0,0,0,0)')
+  ctx.globalAlpha = 1; ctx.fillStyle = auraG
+  ctx.beginPath(); ctx.ellipse(x, y-8, 42, 50, 0, 0, Math.PI*2); ctx.fill()
+  ctx.restore()
+
+  // Shadow with soft glow
+  ctx.save()
+  ctx.shadowBlur = 14; ctx.shadowColor = 'rgba(180,180,255,0.45)'
+  ctx.beginPath(); ctx.ellipse(x, y+2, 15, 6, 0, 0, Math.PI*2)
+  ctx.fillStyle = 'rgba(0,0,0,0.35)'; ctx.fill()
+  ctx.shadowBlur = 0; ctx.restore()
+
+  // Legs
+  if (!atDesk) {
+    const swing = walking ? Math.sin(frame * 0.14) * 5 : 0
+    ctx.fillStyle = shade(mc.body, 0.7)
+    ctx.fillRect(x-7, y-12+swing, 5, 14); ctx.fillRect(x+2, y-12-swing, 5, 14)
+    ctx.fillStyle = shade(mc.body, 0.55)
+    ctx.fillRect(x-7, y+1+swing, 5, 3); ctx.fillRect(x+2, y+1-swing, 5, 3)
+  }
+
+  const bodyY = atDesk ? y-34 : y-30
+
+  // Coat tails
+  ctx.fillStyle = shade(mc.body, 0.75)
+  ctx.beginPath()
+  ctx.moveTo(x-11, bodyY+18); ctx.lineTo(x-5, bodyY+18)
+  ctx.lineTo(x-4, bodyY+32); ctx.lineTo(x-13, bodyY+30); ctx.closePath(); ctx.fill()
+  ctx.beginPath()
+  ctx.moveTo(x+5, bodyY+18); ctx.lineTo(x+11, bodyY+18)
+  ctx.lineTo(x+13, bodyY+30); ctx.lineTo(x+4, bodyY+32); ctx.closePath(); ctx.fill()
+
+  // Body — 22px wide silver coat
+  ctx.fillStyle = mc.body; ctx.fillRect(x-11, bodyY, 22, 22)
+  ctx.fillStyle = 'rgba(220,220,255,0.18)'; ctx.fillRect(x-4, bodyY, 8, 10)
+  ctx.fillStyle = mc.trim; ctx.fillRect(x-11, bodyY, 2, 22); ctx.fillRect(x+9, bodyY, 2, 22)
+  ctx.fillStyle = 'rgba(0,0,0,0.2)'; ctx.fillRect(x+9, bodyY+2, 2, 20); ctx.fillRect(x-11, bodyY+20, 22, 2)
+  ctx.fillStyle = '#D4AF37'
+  ;[5, 10, 15].forEach(oy => { ctx.beginPath(); ctx.arc(x, bodyY+oy, 1.5, 0, Math.PI*2); ctx.fill() })
+
+  // Arms
+  if (!atDesk) {
+    const as = walking ? -Math.sin(frame*0.14)*3 : 0
+    ctx.fillStyle = shade(mc.body, 0.85)
+    ctx.fillRect(x-16, bodyY+2+as, 5, 15); ctx.fillRect(x+11, bodyY+2-as, 5, 15)
+    ctx.fillStyle = mc.trim
+    ctx.fillRect(x-16, bodyY+15+as, 5, 2); ctx.fillRect(x+11, bodyY+15-as, 5, 2)
+  }
+
+  // Neck
+  ctx.fillStyle = '#C8956C'; ctx.fillRect(x-3, bodyY-5, 6, 6)
+
+  // Head
+  const headY = bodyY - 16
+  const hg = ctx.createRadialGradient(x-2, headY-3, 2, x, headY, 11)
+  hg.addColorStop(0, '#EAB89A'); hg.addColorStop(1, '#C07050')
+  ctx.beginPath(); ctx.arc(x, headY, 11, 0, Math.PI*2); ctx.fillStyle = hg; ctx.fill()
+
+  // Silver hair — wide wings
+  ctx.fillStyle = HAIR.meridian
+  ctx.beginPath(); ctx.arc(x, headY, 11, Math.PI, 0); ctx.fill()
+  ctx.fillRect(x-14, headY-3, 4, 11); ctx.fillRect(x+10, headY-3, 4, 11)
+
+  // Glowing eyes
+  ctx.save()
+  ctx.shadowBlur = 7; ctx.shadowColor = mc.color; ctx.fillStyle = mc.color
+  ctx.fillRect(x-5, headY-2, 3, 2); ctx.fillRect(x+2, headY-2, 3, 2)
+  ctx.shadowBlur = 0; ctx.restore()
+
+  // Pulsing body rings
+  const pulse = 0.5 + Math.sin(frame*0.04)*0.5
+  ctx.save()
+  ctx.globalAlpha = 0.16 + pulse*0.18; ctx.strokeStyle = mc.color; ctx.lineWidth = 1
+  ctx.beginPath(); ctx.ellipse(x, bodyY+11, 19, 27, 0, 0, Math.PI*2); ctx.stroke()
+  ctx.globalAlpha = 0.07 + pulse*0.08
+  ctx.beginPath(); ctx.ellipse(x, bodyY+11, 24, 32, 0, 0, Math.PI*2); ctx.stroke()
+  ctx.restore()
+
+  // State icon
+  const iconY = headY - 26
+  ctx.save()
+  if (isWorking) {
+    const p2 = 0.5 + Math.sin(frame*0.05)*0.5
+    ctx.globalAlpha = 0.75 + p2*0.25
+    ctx.shadowBlur = 14; ctx.shadowColor = mc.color; ctx.fillStyle = mc.color
+    drawStar(x, iconY, 7, 3, 5); ctx.shadowBlur = 0
+  } else if (state === 'idle') {
+    ctx.globalAlpha = 0.5; ctx.fillStyle = mc.color; ctx.fillRect(x-5, iconY-1, 10, 2)
+  }
+  ctx.restore()
+
+  // Name tag
+  ctx.save()
+  ctx.shadowBlur = 8; ctx.shadowColor = mc.color
+  ctx.font = '700 8.5px Montserrat'; ctx.textAlign = 'center'; ctx.fillStyle = mc.color
+  ctx.fillText('Meridian', x, y+19); ctx.shadowBlur = 0
+  ctx.globalAlpha = 0.65; ctx.font = '500 6.5px Montserrat'
+  ctx.fillStyle = 'rgba(180,180,255,0.85)'; ctx.fillText('The Chief', x, y+28)
+  ctx.restore()
+
+  // Selection ring
+  if (selected) {
     ctx.save()
-    ctx.globalAlpha = (1-prog)*0.85
-    ctx.strokeStyle = 'rgba(180,180,255,0.95)'; ctx.lineWidth = 1.5
-    ctx.beginPath(); ctx.arc(x, headY, r2, 0, Math.PI*2); ctx.stroke()
-    if (sf > SCAN_DUR*0.38 && agent.meridianScore) {
-      ctx.globalAlpha = Math.min(1, (sf - SCAN_DUR*0.38)/(SCAN_DUR*0.18))
-      ctx.font = '700 8px Montserrat'; ctx.textAlign = 'center'
-      ctx.fillStyle = 'rgba(180,180,255,0.95)'
-      ctx.fillText(`Q:${agent.meridianScore.quality}/5`, x, headY-26)
+    ctx.beginPath(); ctx.ellipse(x, y+2, 22, 9, 0, 0, Math.PI*2)
+    ctx.strokeStyle = mc.color; ctx.lineWidth = 2
+    ctx.setLineDash([4,4]); ctx.lineDashOffset = -frame*0.08
+    ctx.stroke(); ctx.setLineDash([])
+    ctx.restore()
+  }
+
+  ctx.restore()
+  ctx.textAlign = 'left'
+}
+
+// ─── OPTION C: BOARD MEMBERS ─────────────────────────────────────────────────
+
+function drawBoardMember(agent) {
+  const { x, y, state, model, frame, selected, name, id, walking, homeX, homeY } = agent
+  const mc = MC[model] || MC.opus
+  const atDesk = !walking && Math.abs(x - homeX) < 4 && Math.abs(y - homeY) < 4
+  const isWorking = state === 'working' || state === 'patrolling'
+  const isSleeping = state === 'sleeping'
+  const ROLES = { marcus:'Chairman', rachel:'Strategy', danny:'Finance', vivian:'Brand' }
+
+  ctx.save()
+  if (isSleeping) ctx.globalAlpha = 0.36
+
+  // Working floor glow
+  if (isWorking) {
+    ctx.save()
+    const pulse = 0.5 + Math.sin(frame * 0.05) * 0.5
+    const sg = ctx.createRadialGradient(x, y, 0, x, y, 30)
+    sg.addColorStop(0, 'rgba(201,162,100,0.22)'); sg.addColorStop(1, 'rgba(0,0,0,0)')
+    ctx.globalAlpha = 0.5 + pulse*0.38
+    ctx.fillStyle = sg; ctx.beginPath(); ctx.ellipse(x, y, 30, 15, 0, 0, Math.PI*2); ctx.fill()
+    ctx.restore()
+  }
+
+  // Shadow
+  ctx.beginPath(); ctx.ellipse(x, y+2, 14, 6, 0, 0, Math.PI*2)
+  ctx.fillStyle = 'rgba(0,0,0,0.32)'; ctx.fill()
+
+  // Legs
+  if (!atDesk) {
+    const swing = walking ? Math.sin(frame * 0.14) * 5 : 0
+    ctx.fillStyle = shade(mc.body, 0.6)
+    ctx.fillRect(x-7, y-12+swing, 5, 14); ctx.fillRect(x+2, y-12-swing, 5, 14)
+    ctx.fillStyle = shade(mc.body, 0.45)
+    ctx.fillRect(x-7, y+1+swing, 5, 3); ctx.fillRect(x+2, y+1-swing, 5, 3)
+  }
+
+  const bodyY = atDesk ? y-33 : y-29
+
+  // Body — 22px wide suit
+  ctx.fillStyle = mc.body; ctx.fillRect(x-11, bodyY, 22, 22)
+  // Lapels
+  ctx.fillStyle = shade(mc.body, 0.75)
+  ctx.beginPath(); ctx.moveTo(x-11, bodyY); ctx.lineTo(x-2, bodyY+8); ctx.lineTo(x-2, bodyY); ctx.closePath(); ctx.fill()
+  ctx.beginPath(); ctx.moveTo(x+11, bodyY); ctx.lineTo(x+2, bodyY+8); ctx.lineTo(x+2, bodyY); ctx.closePath(); ctx.fill()
+  // Shirt + tie
+  ctx.fillStyle = 'rgba(255,255,255,0.22)'; ctx.fillRect(x-2, bodyY, 4, 18)
+  ctx.fillStyle = '#D4AF37'
+  ctx.beginPath()
+  ctx.moveTo(x-1, bodyY+2); ctx.lineTo(x+1, bodyY+2); ctx.lineTo(x+2, bodyY+15)
+  ctx.lineTo(x, bodyY+19); ctx.lineTo(x-2, bodyY+15); ctx.closePath(); ctx.fill()
+  // Pocket square
+  ctx.fillStyle = 'rgba(212,175,55,0.7)'; ctx.fillRect(x-10, bodyY+3, 4, 3)
+  ctx.fillStyle = 'rgba(0,0,0,0.22)'; ctx.fillRect(x+9, bodyY+2, 2, 20); ctx.fillRect(x-11, bodyY+20, 22, 2)
+
+  // Arms
+  if (!atDesk) {
+    const as = walking ? -Math.sin(frame*0.14)*3 : 0
+    ctx.fillStyle = shade(mc.body, 0.82)
+    ctx.fillRect(x-16, bodyY+2+as, 5, 14); ctx.fillRect(x+11, bodyY+2-as, 5, 14)
+    ctx.fillStyle = 'rgba(255,255,255,0.22)'
+    ctx.fillRect(x-16, bodyY+14+as, 5, 2); ctx.fillRect(x+11, bodyY+14-as, 5, 2)
+  }
+
+  // Neck
+  ctx.fillStyle = '#C8956C'; ctx.fillRect(x-3, bodyY-5, 6, 6)
+
+  // Head
+  const headY = bodyY - 16
+  const hg = ctx.createRadialGradient(x-2, headY-3, 2, x, headY, 11)
+  hg.addColorStop(0, '#EAB89A'); hg.addColorStop(1, '#C07050')
+  ctx.beginPath(); ctx.arc(x, headY, 11, 0, Math.PI*2); ctx.fillStyle = hg; ctx.fill()
+
+  drawBoardHair(id, x, headY)
+
+  // Eyes
+  if (!isSleeping) {
+    const blink = ((frame*0.013 + id.length*0.4) % 1) > 0.96
+    const eyeH = blink ? 1 : 2
+    ctx.fillStyle = '#0F0F18'
+    ctx.fillRect(x-5, headY-2, 3, eyeH); ctx.fillRect(x+2, headY-2, 3, eyeH)
+    ctx.fillStyle = 'rgba(255,255,255,0.55)'
+    ctx.fillRect(x-4, headY-3, 1, 1); ctx.fillRect(x+3, headY-3, 1, 1)
+  }
+
+  drawBoardAccessory(id, x, headY, bodyY, frame, mc)
+
+  // State icon
+  const iconY = headY - 25
+  if (!isSleeping) {
+    ctx.save()
+    if (isWorking) {
+      const pulse = 0.5 + Math.sin(frame*0.05)*0.5
+      ctx.globalAlpha = 0.65 + pulse*0.35
+      ctx.shadowBlur = 12; ctx.shadowColor = mc.color; ctx.fillStyle = mc.color
+      drawStar(x, iconY, 6, 3, 5); ctx.shadowBlur = 0
+    } else if (state === 'idle') {
+      ctx.globalAlpha = 0.35; ctx.fillStyle = 'rgba(255,255,255,0.5)'
+      ctx.fillRect(x-4, iconY-1, 8, 2)
     }
+    ctx.restore()
+  }
+
+  // Sleeping zzz
+  if (isSleeping) {
+    ctx.save()
+    ;['z','zz','zzz'].forEach((z2, i) => {
+      const t = ((frame*0.018 + i*1.5) % 1)
+      const alpha = t < 0.5 ? t*2 : (1-t)*2
+      ctx.globalAlpha = 0.35 * alpha
+      ctx.font = 'italic 700 9px Montserrat'; ctx.fillStyle = '#9898CC'; ctx.textAlign = 'center'
+      ctx.fillText(z2, x+10+i*4, headY-18-t*26)
+    })
+    ctx.restore()
+  }
+
+  // Name tag + role subtitle
+  if (!isSleeping) {
+    ctx.save()
+    ctx.font = '600 8px Montserrat'; ctx.textAlign = 'center'
+    ctx.fillStyle = (selected || isWorking) ? mc.color : 'rgba(255,255,255,0.82)'
+    ctx.fillText(name.split(' ')[0], x, y+19)
+    ctx.globalAlpha = 0.65; ctx.font = '500 6.5px Montserrat'
+    ctx.fillStyle = 'rgba(201,162,100,0.85)'
+    ctx.fillText(ROLES[id] || '', x, y+28)
+    ctx.restore()
+  }
+
+  // Selection ring
+  if (selected) {
+    ctx.save()
+    ctx.beginPath(); ctx.ellipse(x, y+2, 21, 9, 0, 0, Math.PI*2)
+    ctx.strokeStyle = mc.color; ctx.lineWidth = 1.5
+    ctx.setLineDash([4,4]); ctx.lineDashOffset = -frame*0.08
+    ctx.stroke(); ctx.setLineDash([])
     ctx.restore()
   }
 
