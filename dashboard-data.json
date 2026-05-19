@@ -688,6 +688,13 @@
   },
   "automationFeed": [
     {
+      "id": "cos-sync-1779194020565",
+      "timestamp": "2026-05-19T12:33:40.565Z",
+      "type": "session-end",
+      "icon": "⚙️",
+      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
+    },
+    {
       "id": "cos-sync-1779193456365",
       "timestamp": "2026-05-19T12:24:16.365Z",
       "type": "session-end",
