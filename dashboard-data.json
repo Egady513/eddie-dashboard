@@ -688,6 +688,13 @@
   },
   "automationFeed": [
     {
+      "id": "cos-sync-1779305559282",
+      "timestamp": "2026-05-20T19:32:39.282Z",
+      "type": "session-end",
+      "icon": "⚙️",
+      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
+    },
+    {
       "id": "cos-sync-1779305510609",
       "timestamp": "2026-05-20T19:31:50.609Z",
       "type": "session-end",
@@ -889,13 +896,6 @@
       "type": "meridian-eval",
       "icon": "◈",
       "message": "Meridian eval — Design Team — Pipeline: 5/5 · Quality: 4/5 · Brand: pending output review · All scores pass"
-    },
-    {
-      "id": "agent-floor-v2-20260511",
-      "timestamp": "2026-05-11T00:00:00.000Z",
-      "type": "build",
-      "icon": "🏗",
-      "message": "agent-floor.html v2 shipped — 35 agents, 7 zones, event-driven movement, Meridian as evaluator"
     }
   ],
   "meridianLog": [
