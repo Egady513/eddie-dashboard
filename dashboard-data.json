@@ -688,6 +688,13 @@
   },
   "automationFeed": [
     {
+      "id": "cos-sync-1779366029288",
+      "timestamp": "2026-05-21T12:20:29.288Z",
+      "type": "session-end",
+      "icon": "⚙️",
+      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
+    },
+    {
       "id": "cos-sync-1779365348622",
       "timestamp": "2026-05-21T12:09:08.622Z",
       "type": "session-end",
@@ -889,13 +896,6 @@
       "type": "session-end",
       "icon": "⚙️",
       "message": "Chief of Staff auto-sync — session ended, dashboard updated"
-    },
-    {
-      "id": "cos-sync-20260513-001",
-      "timestamp": "2026-05-13T00:00:00.000Z",
-      "type": "session-end",
-      "icon": "⚙️",
-      "message": "Chief of Staff sync — 13 agents added to roster, 7 backlog items corrected, agent-floor v2 shipped"
     }
   ],
   "meridianLog": [
