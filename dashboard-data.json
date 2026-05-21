@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-05-20",
+    "lastUpdated": "2026-05-21",
     "brainLastUpdated": "2026-05-11",
     "sessionCount": 15,
     "activeProjects": 6
@@ -688,6 +688,13 @@
   },
   "automationFeed": [
     {
+      "id": "cos-sync-1779365348622",
+      "timestamp": "2026-05-21T12:09:08.622Z",
+      "type": "session-end",
+      "icon": "⚙️",
+      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
+    },
+    {
       "id": "cos-sync-1779305559282",
       "timestamp": "2026-05-20T19:32:39.282Z",
       "type": "session-end",
@@ -889,13 +896,6 @@
       "type": "session-end",
       "icon": "⚙️",
       "message": "Chief of Staff sync — 13 agents added to roster, 7 backlog items corrected, agent-floor v2 shipped"
-    },
-    {
-      "id": "meridian-flag-20260513-001",
-      "timestamp": "2026-05-13T00:00:00.000Z",
-      "type": "meridian-eval",
-      "icon": "◈",
-      "message": "Meridian eval — Design Team — Pipeline: 5/5 · Quality: 4/5 · Brand: pending output review · All scores pass"
     }
   ],
   "meridianLog": [
