@@ -1,8 +1,8 @@
 {
   "meta": {
     "lastUpdated": "2026-06-29",
-    "brainLastUpdated": "2026-05-11",
-    "sessionCount": 15,
+    "brainLastUpdated": "2026-06-29",
+    "sessionCount": 16,
     "activeProjects": 6
   },
   "agents": [
@@ -323,6 +323,22 @@
     }
   ],
   "backlog": [
+    {
+      "id": "psu-golf-launch",
+      "title": "Golf Outing App — launch (Drive Out Hunger)",
+      "project": "Penn State",
+      "priority": "P1",
+      "column": "testing",
+      "description": "Code DONE + deployed (penn-state-topaz.vercel.app). 2026-06-29 fix pass shipped: PIN security, revenue single-source, greens-fee auto-expense, entry chip, check-in OWES + upsell + combined challenge, hole-sponsor for singles, Last Mile copy. Remaining is NOT code: Eddie to run 6 Supabase migrations (revenue, team-pairing, allow-multiple, test-data wipe, hole-sponsorship items, prelaunch cleanup), switch Stripe to LIVE + new live webhook at /api/stripe/webhook, then smoke-test."
+    },
+    {
+      "id": "psu-admin-auth",
+      "title": "Golf App — admin auth (B5, post-launch)",
+      "project": "Penn State",
+      "priority": "P1",
+      "column": "needs-refinement",
+      "description": "Admin is currently OPEN (mock login). Must be the very next thing after launch — real PII lands the moment people register. Fix: signInWithPassword + middleware on /admin/:path*, restrict anon grants to authenticated."
+    },
     {
       "id": "agent-floor-v2",
       "title": "agent-floor.html v2 — top-down RPG agent visualization",
@@ -687,6 +703,13 @@
     }
   },
   "automationFeed": [
+    {
+      "id": "cos-sync-20260629-psu-golf",
+      "timestamp": "2026-06-29T18:00:00.000Z",
+      "type": "session-end",
+      "icon": "⛳",
+      "message": "Penn State golf app — pre-launch fix pass shipped; app code done, awaiting Supabase migrations + Stripe live cutover"
+    },
     {
       "id": "cos-sync-1782738058730",
       "timestamp": "2026-06-29T13:00:58.730Z",
