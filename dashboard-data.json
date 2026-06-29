@@ -712,6 +712,13 @@
   },
   "automationFeed": [
     {
+      "id": "cos-sync-1782763203056",
+      "timestamp": "2026-06-29T20:00:03.056Z",
+      "type": "session-end",
+      "icon": "⚙️",
+      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
+    },
+    {
       "id": "cos-sync-20260629-psu-live",
       "timestamp": "2026-06-29T22:30:00.000Z",
       "type": "milestone",
@@ -910,20 +917,6 @@
     {
       "id": "cos-sync-1782593073357",
       "timestamp": "2026-06-27T20:44:33.357Z",
-      "type": "session-end",
-      "icon": "⚙️",
-      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
-    },
-    {
-      "id": "cos-sync-1782593001926",
-      "timestamp": "2026-06-27T20:43:21.925Z",
-      "type": "session-end",
-      "icon": "⚙️",
-      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
-    },
-    {
-      "id": "cos-sync-1782592385163",
-      "timestamp": "2026-06-27T20:33:05.163Z",
       "type": "session-end",
       "icon": "⚙️",
       "message": "Chief of Staff auto-sync — session ended, dashboard updated"
