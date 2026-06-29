@@ -325,19 +325,27 @@
   "backlog": [
     {
       "id": "psu-golf-launch",
-      "title": "Golf Outing App — launch (Drive Out Hunger)",
+      "title": "Golf Outing App — LIVE (Drive Out Hunger)",
       "project": "Penn State",
       "priority": "P1",
-      "column": "testing",
-      "description": "Code DONE + deployed (penn-state-topaz.vercel.app). 2026-06-29 fix pass shipped: PIN security, revenue single-source, greens-fee auto-expense, entry chip, check-in OWES + upsell + combined challenge, hole-sponsor for singles, Last Mile copy. Remaining is NOT code: Eddie to run 6 Supabase migrations (revenue, team-pairing, allow-multiple, test-data wipe, hole-sponsorship items, prelaunch cleanup), switch Stripe to LIVE + new live webhook at /api/stripe/webhook, then smoke-test."
+      "column": "done",
+      "description": "LIVE 2026-06-29 — Stripe in live mode, real $300 registration verified end-to-end (webhook 200, paid, email, greens-fee expense). Pre-launch fix pass shipped (PIN security, revenue single-source, greens-fee auto-expense, entry chip, check-in OWES + upsell + combined challenge, hole-sponsor for singles). Post-launch features shipped: foursome pairing request, optional CC-fee coverage (excluded from total_raised), admin Resend-confirmation button."
     },
     {
       "id": "psu-admin-auth",
-      "title": "Golf App — admin auth (B5, post-launch)",
+      "title": "Golf App — admin auth (B5) — NOW #1",
       "project": "Penn State",
       "priority": "P1",
-      "column": "needs-refinement",
-      "description": "Admin is currently OPEN (mock login). Must be the very next thing after launch — real PII lands the moment people register. Fix: signInWithPassword + middleware on /admin/:path*, restrict anon grants to authenticated."
+      "column": "ready",
+      "description": "App is LIVE and PII is landing — admin is still OPEN (mock login). Top priority. Fix: signInWithPassword + middleware on /admin/:path*, restrict anon grants to authenticated. Bundle the What's-included editable list."
+    },
+    {
+      "id": "psu-stripe-nonprofit",
+      "title": "Apply for Stripe nonprofit discount",
+      "project": "Penn State",
+      "priority": "P1",
+      "column": "ready",
+      "description": "501(c)(3) EIN 31-1100175 qualifies for 2.2% + $0.30 (vs 2.9% + $0.30). Submit determination letter via support.stripe.com/contact; applies account-wide once approved."
     },
     {
       "id": "agent-floor-v2",
@@ -703,6 +711,13 @@
     }
   },
   "automationFeed": [
+    {
+      "id": "cos-sync-20260629-psu-live",
+      "timestamp": "2026-06-29T22:30:00.000Z",
+      "type": "milestone",
+      "icon": "🟢",
+      "message": "Penn State golf app is LIVE — Stripe live, $300 test registration verified end-to-end; foursome pairing + CC-fee coverage + resend-confirmation shipped post-launch"
+    },
     {
       "id": "cos-sync-1782762610915",
       "timestamp": "2026-06-29T19:50:10.914Z",
