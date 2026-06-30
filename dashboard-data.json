@@ -712,6 +712,13 @@
   },
   "automationFeed": [
     {
+      "id": "cos-sync-1782851730459",
+      "timestamp": "2026-06-30T20:35:30.459Z",
+      "type": "session-end",
+      "icon": "⚙️",
+      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
+    },
+    {
       "id": "cos-sync-1782849719611",
       "timestamp": "2026-06-30T20:01:59.611Z",
       "type": "session-end",
@@ -913,13 +920,6 @@
       "type": "session-end",
       "icon": "⚙️",
       "message": "Chief of Staff auto-sync — session ended, dashboard updated"
-    },
-    {
-      "id": "cos-sync-20260629-psu-golf",
-      "timestamp": "2026-06-29T18:00:00.000Z",
-      "type": "session-end",
-      "icon": "⛳",
-      "message": "Penn State golf app — pre-launch fix pass shipped; app code done, awaiting Supabase migrations + Stripe live cutover"
     }
   ],
   "meridianLog": [
