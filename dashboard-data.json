@@ -720,6 +720,13 @@
   },
   "automationFeed": [
     {
+      "id": "cos-sync-1782913795020",
+      "timestamp": "2026-07-01T13:49:55.019Z",
+      "type": "session-end",
+      "icon": "⚙️",
+      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
+    },
+    {
       "id": "cos-sync-20260701-psu-flyer",
       "timestamp": "2026-07-01T16:00:00.000Z",
       "type": "milestone",
@@ -918,20 +925,6 @@
     {
       "id": "cos-sync-1782763203056",
       "timestamp": "2026-06-29T20:00:03.056Z",
-      "type": "session-end",
-      "icon": "⚙️",
-      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
-    },
-    {
-      "id": "cos-sync-20260629-psu-live",
-      "timestamp": "2026-06-29T22:30:00.000Z",
-      "type": "milestone",
-      "icon": "🟢",
-      "message": "Penn State golf app is LIVE — Stripe live, $300 test registration verified end-to-end; foursome pairing + CC-fee coverage + resend-confirmation shipped post-launch"
-    },
-    {
-      "id": "cos-sync-1782762610915",
-      "timestamp": "2026-06-29T19:50:10.914Z",
       "type": "session-end",
       "icon": "⚙️",
       "message": "Chief of Staff auto-sync — session ended, dashboard updated"
