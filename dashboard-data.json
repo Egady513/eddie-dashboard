@@ -348,6 +348,14 @@
       "description": "501(c)(3) EIN 31-1100175 qualifies for 2.2% + $0.30 (vs 2.9% + $0.30). Submit determination letter via support.stripe.com/contact; applies account-wide once approved."
     },
     {
+      "id": "psu-flyer",
+      "title": "Golf App — auto-updating social flyer (/flyer)",
+      "project": "Penn State",
+      "priority": "P2",
+      "column": "done",
+      "description": "LIVE 2026-07-01 — private /flyer page exports IG Post (4:5) / Story (9:16) PNG. Sponsors pull live from the admin sponsor table (adaptive grid); raffle-prize value pulls live from the donor table ($1,000+, floored). Reuses the registration hero Last Mile image + glow orb. Charity-accuracy copy (100% of proceeds). Open: confirm phone number (513-708-0874 vs 513-322-2645); test PNG export with real cross-origin logos."
+    },
+    {
       "id": "agent-floor-v2",
       "title": "agent-floor.html v2 — top-down RPG agent visualization",
       "project": "Dashboard",
@@ -711,6 +719,13 @@
     }
   },
   "automationFeed": [
+    {
+      "id": "cos-sync-20260701-psu-flyer",
+      "timestamp": "2026-07-01T16:00:00.000Z",
+      "type": "milestone",
+      "icon": "🎟",
+      "message": "Penn State golf flyer shipped — auto-updating /flyer with live sponsor logos + live raffle value, IG-sized PNG export"
+    },
     {
       "id": "cos-sync-1782872023857",
       "timestamp": "2026-07-01T02:13:43.857Z",
