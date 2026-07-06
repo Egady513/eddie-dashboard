@@ -720,6 +720,13 @@
   },
   "automationFeed": [
     {
+      "id": "cos-sync-1783350113412",
+      "timestamp": "2026-07-06T15:01:53.410Z",
+      "type": "session-end",
+      "icon": "⚙️",
+      "message": "Session closed — board active on 513Sips"
+    },
+    {
       "id": "cos-sync-1783349530646",
       "timestamp": "2026-07-06T14:52:10.646Z",
       "type": "session-end",
@@ -921,16 +928,20 @@
       "type": "session-end",
       "icon": "⚙️",
       "message": "Chief of Staff auto-sync — session ended, dashboard updated"
-    },
-    {
-      "id": "cos-sync-1782822744316",
-      "timestamp": "2026-06-30T12:32:24.316Z",
-      "type": "session-end",
-      "icon": "⚙️",
-      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
     }
   ],
   "meridianLog": [
+    {
+      "date": "2026-07-06",
+      "scores": {
+        "rightAgent": 5,
+        "outputQuality": 4,
+        "brandAlignment": 5,
+        "strategicFit": 5,
+        "pipelineIntegrity": null
+      },
+      "note": "Board correctly invoked for cash-flow/process strategy; pre-flight surfaced existing locked pricing decisions before deliberating. Recommendation actionable with clear next steps (Contract SME handoff pending)."
+    },
     {
       "id": "meridian-20260513-design-team",
       "date": "2026-05-13",
