@@ -720,6 +720,13 @@
   },
   "automationFeed": [
     {
+      "id": "cos-sync-1783523685500",
+      "timestamp": "2026-07-08T15:14:45.499Z",
+      "type": "session-end",
+      "icon": "⚙️",
+      "message": "Session closed — board active on 513Sips"
+    },
+    {
       "id": "cos-sync-1783515094426",
       "timestamp": "2026-07-08T12:51:34.426Z",
       "type": "session-end",
@@ -921,16 +928,20 @@
       "type": "session-end",
       "icon": "⚙️",
       "message": "Chief of Staff auto-sync — session ended, dashboard updated"
-    },
-    {
-      "id": "cos-sync-1782868862424",
-      "timestamp": "2026-07-01T01:21:02.424Z",
-      "type": "session-end",
-      "icon": "⚙️",
-      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
     }
   ],
   "meridianLog": [
+    {
+      "date": "2026-07-08",
+      "scores": {
+        "rightAgent": 5,
+        "outputQuality": 5,
+        "brandAlignment": 5,
+        "strategicFit": 5,
+        "pipelineIntegrity": 5
+      },
+      "note": "Board pre-flight surfaced locked pricing before deliberating; brand→QA→deploy pipeline run in full sequence; staging/prod index.html verified identical before merge; deploy done via local squash-merge since gh CLI unavailable."
+    },
     {
       "date": "2026-07-06",
       "scores": {
