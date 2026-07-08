@@ -720,6 +720,13 @@
   },
   "automationFeed": [
     {
+      "id": "cos-sync-1783542036322",
+      "timestamp": "2026-07-08T20:20:36.321Z",
+      "type": "session-end",
+      "icon": "⚙️",
+      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
+    },
+    {
       "id": "cos-sync-1783540572931",
       "timestamp": "2026-07-08T19:56:12.931Z",
       "type": "session-end",
@@ -921,13 +928,6 @@
       "type": "milestone",
       "icon": "🎟",
       "message": "Penn State golf flyer shipped — auto-updating /flyer with live sponsor logos + live raffle value, IG-sized PNG export"
-    },
-    {
-      "id": "cos-sync-1782872023857",
-      "timestamp": "2026-07-01T02:13:43.857Z",
-      "type": "session-end",
-      "icon": "⚙️",
-      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
     }
   ],
   "meridianLog": [
