@@ -720,6 +720,13 @@
   },
   "automationFeed": [
     {
+      "id": "cos-sync-1783539338450",
+      "timestamp": "2026-07-08T19:35:38.449Z",
+      "type": "session-end",
+      "icon": "⚙️",
+      "message": "Session closed — board active on 513Sips"
+    },
+    {
       "id": "cos-sync-1783538771156",
       "timestamp": "2026-07-08T19:26:11.156Z",
       "type": "session-end",
@@ -921,16 +928,20 @@
       "type": "session-end",
       "icon": "⚙️",
       "message": "Chief of Staff auto-sync — session ended, dashboard updated"
-    },
-    {
-      "id": "cos-sync-1782871145153",
-      "timestamp": "2026-07-01T01:59:05.153Z",
-      "type": "session-end",
-      "icon": "⚙️",
-      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
     }
   ],
   "meridianLog": [
+    {
+      "date": "2026-07-08",
+      "scores": {
+        "rightAgent": 5,
+        "outputQuality": 5,
+        "brandAlignment": 5,
+        "strategicFit": 5,
+        "pipelineIntegrity": 5
+      },
+      "note": "Board pre-flight surfaced locked pricing; brand→QA→deploy pipeline run in full each deploy; caught + fixed a self-introduced corrupted anon-key char before it shipped; diagnosed the real Books blocker (undeployed edge function) via curl probes instead of guessing."
+    },
     {
       "date": "2026-07-08",
       "scores": {
