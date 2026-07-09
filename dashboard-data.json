@@ -720,6 +720,13 @@
   },
   "automationFeed": [
     {
+      "id": "cos-sync-1783561764924",
+      "timestamp": "2026-07-09T01:49:24.924Z",
+      "type": "session-end",
+      "icon": "⚙️",
+      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
+    },
+    {
       "id": "cos-sync-1783559558659",
       "timestamp": "2026-07-09T01:12:38.659Z",
       "type": "session-end",
@@ -921,13 +928,6 @@
       "type": "session-end",
       "icon": "⚙️",
       "message": "Session closed — board active on 513Sips"
-    },
-    {
-      "id": "cos-sync-1783349530646",
-      "timestamp": "2026-07-06T14:52:10.646Z",
-      "type": "session-end",
-      "icon": "⚙️",
-      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
     }
   ],
   "meridianLog": [
