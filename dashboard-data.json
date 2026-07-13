@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-07-09",
+    "lastUpdated": "2026-07-13",
     "brainLastUpdated": "2026-06-29",
     "sessionCount": 16,
     "activeProjects": 6
@@ -720,6 +720,13 @@
   },
   "automationFeed": [
     {
+      "id": "cos-sync-1783950986279",
+      "timestamp": "2026-07-13T13:56:26.279Z",
+      "type": "session-end",
+      "icon": "⚙️",
+      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
+    },
+    {
       "id": "cos-sync-1783615439715",
       "timestamp": "2026-07-09T16:43:59.715Z",
       "type": "session-end",
@@ -921,13 +928,6 @@
       "type": "session-end",
       "icon": "⚙️",
       "message": "Session closed — board active on 513Sips"
-    },
-    {
-      "id": "cos-sync-1783515094426",
-      "timestamp": "2026-07-08T12:51:34.426Z",
-      "type": "session-end",
-      "icon": "⚙️",
-      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
     }
   ],
   "meridianLog": [
