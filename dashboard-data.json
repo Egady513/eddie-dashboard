@@ -720,6 +720,13 @@
   },
   "automationFeed": [
     {
+      "id": "cos-sync-1785811283701",
+      "timestamp": "2026-08-04T02:41:23.701Z",
+      "type": "session-end",
+      "icon": "⚙️",
+      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
+    },
+    {
       "id": "cos-sync-1785810970587",
       "timestamp": "2026-08-04T02:36:10.587Z",
       "type": "session-end",
@@ -918,13 +925,6 @@
     {
       "id": "cos-sync-1785674105014",
       "timestamp": "2026-08-02T12:35:05.014Z",
-      "type": "session-end",
-      "icon": "⚙️",
-      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
-    },
-    {
-      "id": "cos-sync-1785673555326",
-      "timestamp": "2026-08-02T12:25:55.326Z",
       "type": "session-end",
       "icon": "⚙️",
       "message": "Chief of Staff auto-sync — session ended, dashboard updated"
