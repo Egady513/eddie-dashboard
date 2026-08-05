@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-08-04",
+    "lastUpdated": "2026-08-05",
     "brainLastUpdated": "2026-06-29",
     "sessionCount": 16,
     "activeProjects": 6
@@ -21,8 +21,9 @@
       "group": "Shared",
       "tier": "Operations",
       "purpose": "Cross-project ops lead. Owns the master backlog AND the agent roster. Syncs project backlogs into Backlog.md, keeps dashboard-data.json current, and flags when agent-floor.html needs a DEFS update after new agents are added to the vault.",
-      "status": "ready",
-      "currentTask": null
+      "status": "idle",
+      "currentTask": "Affordability check added to pre-adjourn checklist",
+      "lastActive": "2026-08-05"
     },
     {
       "id": "board-513sips",
@@ -129,8 +130,9 @@
       "group": "513Sips",
       "tier": "Domain",
       "purpose": "Lead channels, venue scouting, Google reviews management, outreach templates. Drives new business pipeline.",
-      "status": "ready",
-      "currentTask": null
+      "status": "idle",
+      "currentTask": "September corporate list handoff",
+      "lastActive": "2026-08-05"
     },
     {
       "id": "social-media-513",
@@ -720,6 +722,13 @@
   },
   "automationFeed": [
     {
+      "id": "cos-sync-1785890265020",
+      "timestamp": "2026-08-05T00:37:45.017Z",
+      "type": "session-end",
+      "icon": "⚙️",
+      "message": "Session closed — board, chief-of-staff, customer-acquisition, social-media, pricing, contract active on 513Sips"
+    },
+    {
       "id": "cos-sync-1785882952365",
       "timestamp": "2026-08-04T22:35:52.365Z",
       "type": "session-end",
@@ -921,16 +930,28 @@
       "type": "session-end",
       "icon": "⚙️",
       "message": "Chief of Staff auto-sync — session ended, dashboard updated"
-    },
-    {
-      "id": "cos-sync-1785803376240",
-      "timestamp": "2026-08-04T00:29:36.240Z",
-      "type": "session-end",
-      "icon": "⚙️",
-      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
     }
   ],
   "meridianLog": [
+    {
+      "date": "2026-08-04",
+      "subject": "513Sips Board",
+      "scores": {
+        "rightAgent": 5,
+        "outputQuality": 2,
+        "brandAlignment": 4,
+        "strategicFit": 2,
+        "pipelineIntegrity": null
+      },
+      "flagged": true,
+      "note": "Board unanimously approved a $500 giveaway against a booking carrying $30 of margin. Rachel accepted Vivian's 'labor, not product' framing without pricing Eddie's hours — violating the Board's own written rule that the CFO always runs total engagement hours. Worst case was -$195 cash (vendor-backed picks) or 6-8 unpaid hours (labor-backed picks). Eddie caught it in one read and was rightly angry. Correct agent and correct framing (upgrade beats discount); indefensible sizing.",
+      "correctiveActions": [
+        "Added 'The Giveaway Rule' to Board shared operational DNA — every prize/discount/trade must state cash-out-by-vendor and Eddie's hours at $75/hr against actual booking margin before a vote",
+        "Added affordability as item 7 of the Chief of Staff pre-adjourn checklist — 'buildable' is not 'affordable'",
+        "Refinement notes written for Rachel (primary miss), Vivian (framing), Danny (never valued what was given away), and Chief of Staff (executability != affordability)"
+      ],
+      "resolution": "Prize resized to $150 stated value — 513Sips home cocktail kit (~$25 cash, delivered unconditionally) plus a custom signature cocktail named for the winner ($125 stated, $0 cash, ~3 hrs prep, redeemable only on a booking of $650+). Hard rule adopted: nothing requiring a vendor payment may ever be giveaway currency."
+    },
     {
       "date": "2026-07-08",
       "scores": {
