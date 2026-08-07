@@ -1,6 +1,6 @@
 {
   "meta": {
-    "lastUpdated": "2026-08-06",
+    "lastUpdated": "2026-08-07",
     "brainLastUpdated": "2026-06-29",
     "sessionCount": 16,
     "activeProjects": 6
@@ -722,6 +722,13 @@
   },
   "automationFeed": [
     {
+      "id": "cos-sync-1786120435653",
+      "timestamp": "2026-08-07T16:33:55.652Z",
+      "type": "session-end",
+      "icon": "⚙️",
+      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
+    },
+    {
       "id": "cos-sync-1786048134851",
       "timestamp": "2026-08-06T20:28:54.851Z",
       "type": "session-end",
@@ -920,13 +927,6 @@
     {
       "id": "cos-sync-1785851864212",
       "timestamp": "2026-08-04T13:57:44.212Z",
-      "type": "session-end",
-      "icon": "⚙️",
-      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
-    },
-    {
-      "id": "cos-sync-1785851776713",
-      "timestamp": "2026-08-04T13:56:16.712Z",
       "type": "session-end",
       "icon": "⚙️",
       "message": "Chief of Staff auto-sync — session ended, dashboard updated"
