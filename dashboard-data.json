@@ -722,6 +722,13 @@
   },
   "automationFeed": [
     {
+      "id": "cos-sync-1786205330276",
+      "timestamp": "2026-08-08T16:08:50.276Z",
+      "type": "session-end",
+      "icon": "⚙️",
+      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
+    },
+    {
       "id": "cos-sync-1786204515423",
       "timestamp": "2026-08-08T15:55:15.423Z",
       "type": "session-end",
@@ -923,13 +930,6 @@
       "type": "session-end",
       "icon": "⚙️",
       "message": "Session closed — board, chief-of-staff, customer-acquisition, social-media, pricing, contract active on 513Sips"
-    },
-    {
-      "id": "cos-sync-1785882952365",
-      "timestamp": "2026-08-04T22:35:52.365Z",
-      "type": "session-end",
-      "icon": "⚙️",
-      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
     }
   ],
   "meridianLog": [
