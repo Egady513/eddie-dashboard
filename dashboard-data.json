@@ -131,8 +131,8 @@
       "tier": "Domain",
       "purpose": "Lead channels, venue scouting, Google reviews management, outreach templates. Drives new business pipeline.",
       "status": "idle",
-      "currentTask": "September corporate list handoff",
-      "lastActive": "2026-08-05"
+      "currentTask": "Venue scouting criteria rewritten: a liquor license is not a bartending staff",
+      "lastActive": "2026-08-09"
     },
     {
       "id": "social-media-513",
@@ -167,8 +167,9 @@
       "group": "513Sips",
       "tier": "Design",
       "purpose": "Headlines, body copy, captions, hashtags — all written content on design deliverables. Brand voice custodian.",
-      "status": "ready",
-      "currentTask": null
+      "status": "idle",
+      "currentTask": "Flagged by Meridian. Craft gate added after 5 rejected bio drafts",
+      "lastActive": "2026-08-09"
     },
     {
       "id": "design-qa",
@@ -722,6 +723,13 @@
   },
   "automationFeed": [
     {
+      "id": "cos-sync-1786298493282",
+      "timestamp": "2026-08-09T18:01:33.278Z",
+      "type": "session-end",
+      "icon": "⚙️",
+      "message": "Session closed — marketing, customer-acquisition, board, operations-manager, sme-panel, creative-director, art-director, copywriter, design-qa active on 513Sips"
+    },
+    {
       "id": "cos-sync-1786298313583",
       "timestamp": "2026-08-09T17:58:33.583Z",
       "type": "session-end",
@@ -923,16 +931,47 @@
       "type": "session-end",
       "icon": "⚙️",
       "message": "Chief of Staff auto-sync — session ended, dashboard updated"
-    },
-    {
-      "id": "cos-sync-1786218892419",
-      "timestamp": "2026-08-08T19:54:52.419Z",
-      "type": "session-end",
-      "icon": "⚙️",
-      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
     }
   ],
   "meridianLog": [
+    [
+      {
+        "agent": "copywriter",
+        "right": 5,
+        "quality": 2,
+        "brand": 3,
+        "strategy": 4,
+        "pipeline": null,
+        "note": "Five rejected drafts of one bio before Eddie wrote a better version himself in ChatGPT. Root cause: transcribing his bullet facts into comma-lists instead of finding an idea that reorganizes them. Durable fix: craft gate added to the agent's self-check, plus 8 binding craft rules and a study of the lines of Eddie's that beat every agency draft."
+      },
+      {
+        "agent": "sme-panel",
+        "right": 4,
+        "quality": 3,
+        "brand": null,
+        "strategy": 4,
+        "pipeline": null,
+        "note": "Useful for finding blind spots (no photos, no capacity answer, caterers had no home on the page). But twice recommended adding content that already existed elsewhere on the same page, because it was handed a section with no page context. Rule added: review the whole page or the finding is invalid."
+      },
+      {
+        "agent": "board",
+        "right": 5,
+        "quality": 5,
+        "brand": 5,
+        "strategy": 5,
+        "pipeline": null,
+        "note": "Caught three unsupported promises that would have shipped to the audience most likely to hold Eddie to them. Operations surfaced the Hope's Way contradiction nobody else did. The Giveaway Rule generalized correctly from money to capacity."
+      },
+      {
+        "agent": "design-qa",
+        "right": 5,
+        "quality": 1,
+        "brand": 3,
+        "strategy": 3,
+        "pipeline": 2,
+        "note": "Ran Functional only on the first one-pager and reported a pass. Skipped the UX and Customer Mindset lenses entirely, so an overloaded hero and a 531-word flyer shipped to Eddie, who called it trash. All three lenses are mandatory, and Functional alone is never a pass."
+      }
+    ],
     {
       "date": "2026-08-04",
       "subject": "513Sips Board",
