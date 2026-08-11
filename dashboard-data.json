@@ -723,6 +723,13 @@
   },
   "automationFeed": [
     {
+      "id": "cos-sync-1786461884384",
+      "timestamp": "2026-08-11T15:24:44.384Z",
+      "type": "session-end",
+      "icon": "⚙️",
+      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
+    },
+    {
       "id": "cos-sync-1786460759343",
       "timestamp": "2026-08-11T15:05:59.343Z",
       "type": "session-end",
@@ -924,13 +931,6 @@
       "type": "session-end",
       "icon": "⚙️",
       "message": "Chief of Staff auto-sync — session ended, dashboard updated"
-    },
-    {
-      "id": "cos-sync-1786298493282",
-      "timestamp": "2026-08-09T18:01:33.278Z",
-      "type": "session-end",
-      "icon": "⚙️",
-      "message": "Session closed — marketing, customer-acquisition, board, operations-manager, sme-panel, creative-director, art-director, copywriter, design-qa active on 513Sips"
     }
   ],
   "meridianLog": [
