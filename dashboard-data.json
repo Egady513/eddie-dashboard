@@ -16,21 +16,31 @@
       "currentTask": null
     },
     {
-      "id": "chief-of-staff",
-      "name": "Chief of Staff",
+      "id": "avery",
+      "name": "Avery",
       "group": "Shared",
       "tier": "Operations",
-      "purpose": "Cross-project ops lead. Owns the master backlog AND the agent roster. Syncs project backlogs into Backlog.md, keeps dashboard-data.json current, and flags when agent-floor.html needs a DEFS update after new agents are added to the vault.",
+      "purpose": "Project Manager. Owns the master backlog AND the agent roster. Syncs project backlogs into Backlog.md, keeps dashboard-data.json current, and flags when agent-floor.html needs a DEFS update after new agents are added to the vault. Renamed from 'Chief of Staff' on 2026-08-12 — that title belongs to Hollis, the Board's referee. Avery reconciles files; it never argues.",
       "status": "idle",
-      "currentTask": "Affordability check added to pre-adjourn checklist",
-      "lastActive": "2026-08-05"
+      "currentTask": "Renamed from Chief of Staff; registry + MOC + dashboard reconciled",
+      "lastActive": "2026-08-12"
+    },
+    {
+      "id": "hollis",
+      "name": "Hollis",
+      "group": "513Sips",
+      "tier": "Governance",
+      "purpose": "Chief of Staff — the Board's fifth seat and referee. Runs pre-flight, enforces the Evidence Rule, and will not let the room adjourn on unchecked facts, uncited sources, or manufactured consensus. No opinion about the business, only about whether the room did its job. Convene via the 513sips-board skill — never by roleplaying the Board.",
+      "status": "idle",
+      "currentTask": "Evidence Rule added after three faked Board passes (2026-08-12)",
+      "lastActive": "2026-08-12"
     },
     {
       "id": "board-513sips",
       "name": "513Sips Board",
       "group": "513Sips",
       "tier": "Strategic",
-      "purpose": "Four-persona strategic review board — CEO (Marcus), CFO (Danny), Hard Sell (Rachel), Brand Director (Vivian). Run before major decisions. Pulls in SME agents for deep-dives.",
+      "purpose": "Four-persona strategic review board — CEO (Marcus), CFO (Rachel), Hard Sell (Danny), Brand Director (Vivian), refereed by Hollis. Run before major decisions. Pulls in SME agents for deep-dives. Convene via the 513sips-board skill, which spawns each member as an independent agent — never by roleplaying the personas in one pass.",
       "status": "ready",
       "currentTask": null
     },
@@ -723,6 +733,13 @@
   },
   "automationFeed": [
     {
+      "id": "cos-sync-1786565996186",
+      "timestamp": "2026-08-12T20:19:56.185Z",
+      "type": "session-end",
+      "icon": "⚙️",
+      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
+    },
+    {
       "id": "cos-sync-1786565352770",
       "timestamp": "2026-08-12T20:09:12.770Z",
       "type": "session-end",
@@ -924,13 +941,6 @@
       "type": "session-end",
       "icon": "⚙️",
       "message": "Chief of Staff auto-sync — session ended, dashboard updated"
-    },
-    {
-      "id": "cos-sync-1786379946321",
-      "timestamp": "2026-08-10T16:39:06.321Z",
-      "type": "session-end",
-      "icon": "⚙️",
-      "message": "Chief of Staff auto-sync — session ended, dashboard updated"
     }
   ],
   "meridianLog": [
@@ -1048,7 +1058,7 @@
   ],
   "claudeInsights": {
     "usageSnapshot": {
-      "totalAgents": 35,
+      "totalAgents": 36,
       "activeProjects": 6,
       "sessionsThisMonth": 8,
       "brainAge": "0d"
