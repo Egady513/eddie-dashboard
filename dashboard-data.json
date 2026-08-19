@@ -12,8 +12,9 @@
       "group": "Shared",
       "tier": "Evaluator",
       "purpose": "The Chief. Post-engagement evaluator. Scores right agent used (1-5) + output quality (1-5) after every session. If score < 4, appends refinement note to agent vault file. The floor's constant presence.",
-      "status": "ready",
-      "currentTask": null
+      "status": "idle",
+      "currentTask": "Docked Hollis for a real pre-flight miss, 2026-08-19",
+      "lastActive": "2026-08-19"
     },
     {
       "id": "avery",
@@ -32,8 +33,8 @@
       "tier": "Governance",
       "purpose": "Chief of Staff — the Board's fifth seat and referee. Runs pre-flight, enforces the Evidence Rule, and will not let the room adjourn on unchecked facts, uncited sources, or manufactured consensus. No opinion about the business, only about whether the room did its job. Convene via the 513sips-board skill — never by roleplaying the Board.",
       "status": "idle",
-      "currentTask": "Evidence Rule added after three faked Board passes (2026-08-12)",
-      "lastActive": "2026-08-12"
+      "currentTask": "Docked by Meridian 2026-08-19 — misrouted a Board question past an in-hand disambiguating signal from Remy",
+      "lastActive": "2026-08-19"
     },
     {
       "id": "board-513sips",
@@ -41,8 +42,9 @@
       "group": "513Sips",
       "tier": "Strategic",
       "purpose": "Four-persona strategic review board — CEO (Marcus), CFO (Rachel), Hard Sell (Danny), Brand Director (Vivian), refereed by Hollis. Run before major decisions. Pulls in SME agents for deep-dives. Convene via the 513sips-board skill, which spawns each member as an independent agent — never by roleplaying the personas in one pass.",
-      "status": "ready",
-      "currentTask": null
+      "status": "idle",
+      "currentTask": "Three sessions 2026-08-19: business health check, growth phases/tuktuk/pipeline, Classic-tier + on-request-drink pricing",
+      "lastActive": "2026-08-19"
     },
     {
       "id": "finance-tax",
@@ -122,8 +124,9 @@
       "group": "513Sips",
       "tier": "Domain",
       "purpose": "Mixology brain: drink recommendations, quantities, batch prep, event drink logs.",
-      "status": "ready",
-      "currentTask": null
+      "status": "idle",
+      "currentTask": "No live skill yet (vault persona only) — missed Eddie's actual Old Fashioned recipe (homemade orange simple + raw sugar) until told directly; 513sips-drink skill build queued",
+      "lastActive": "2026-08-19"
     },
     {
       "id": "event-postmortem",
@@ -333,6 +336,16 @@
       "purpose": "Cross-project social media principles. Project-specific agents (513Sips) handle execution.",
       "status": "ready",
       "currentTask": null
+    },
+    {
+      "id": "sales-513sips",
+      "name": "Sales (Casey)",
+      "group": "513Sips",
+      "tier": "Domain",
+      "purpose": "Pipeline pressure: real web-search prospecting (venues, planners, catering co-sells) + drafted outreach emails in Eddie's voice via the 513sips-sales skill. Draft-only, never sends. Job 2 of the 2026-08-12 Sales agent backlog item; call coaching (Job 1) not yet built.",
+      "status": "ready",
+      "currentTask": null,
+      "lastActive": "2026-08-19"
     }
   ],
   "backlog": [
@@ -1054,6 +1067,25 @@
       "overall": "pass",
       "refinementNote": "Brand score deferred — final carousel output not yet reviewed by Meridian; re-evaluate on delivery.",
       "refinementWritten": false
+    },
+    {
+      "id": "meridian-20260819-hollis-martini-miss",
+      "date": "2026-08-19",
+      "sessionTheme": "Hollis routed the Board to the wrong drink (espresso martini reclassification) instead of Eddie's actual question (vodka martini open-bar vs. signature)",
+      "agents": [
+        "hollis",
+        "board-513sips"
+      ],
+      "scores": {
+        "rightAgent": 2,
+        "quality": 2,
+        "brand": null,
+        "strategy": 2,
+        "pipeline": null
+      },
+      "overall": "flag",
+      "refinementNote": "Before locking the Board's question, cross-check it against any same-turn output from a producer/SME agent for a contradiction, not only the vault and Decision-Log. Remy's own output in the same turn had already surfaced the exact ambiguity Hollis then walked past.",
+      "refinementWritten": true
     }
   ],
   "claudeInsights": {
