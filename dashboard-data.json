@@ -1,8 +1,8 @@
 {
   "meta": {
     "lastUpdated": "2026-08-22",
-    "brainLastUpdated": "2026-06-29",
-    "sessionCount": 16,
+    "brainLastUpdated": "2026-08-22",
+    "sessionCount": 17,
     "activeProjects": 6
   },
   "agents": [
@@ -349,6 +349,30 @@
     }
   ],
   "backlog": [
+    {
+      "id": "psu-gameday-todo",
+      "title": "Golf App — game-day TODO before 8/30",
+      "project": "Penn State",
+      "priority": "P1",
+      "column": "ready",
+      "description": "Set contest holes + custom challenge labels on Admin > Course (all still 'none'): CTP, Long Drive, Bucket Golf (6), Power Wipes (5), Beat the Pro (13). Re-run consolidate_auto_expenses.sql (10 stray rows). Fix sponsor records (Power Wipes hole 5, BackSwing missing entirely). Send game-day email 2-3 days out via template 2."
+    },
+    {
+      "id": "psu-course-admin",
+      "title": "Golf App — Course page made real (contests + custom challenges)",
+      "project": "Penn State",
+      "priority": "P1",
+      "column": "done",
+      "description": "Was 100% mock with a dead Save button. Now per-hole contest dropdown + free-text custom challenge label (no cost attached) driving the play app; shows hole sponsor read-only; auto-saves. Hole-sponsor hole picker added to registration."
+    },
+    {
+      "id": "psu-broadcast-email",
+      "title": "Golf App — broadcast email tool (email SENT)",
+      "project": "Penn State",
+      "priority": "P1",
+      "column": "done",
+      "description": "LIVE 2026-08-22 — /admin/broadcast sends to every golfer on a paid team, one email per address. Two templates w/ picker, markdown-lite body, localStorage draft persistence, 'Send test to myself'. Pre-event email SENT to all 65 golfers (56 addresses, 33 paid teams)."
+    },
     {
       "id": "psu-golf-launch",
       "title": "Golf Outing App — LIVE (Drive Out Hunger)",
@@ -745,6 +769,13 @@
     }
   },
   "automationFeed": [
+    {
+      "id": "cos-sync-20260822-psu-email",
+      "timestamp": "2026-08-22T20:00:00.000Z",
+      "type": "milestone",
+      "icon": "📣",
+      "message": "Penn State golf — pre-event email SENT to all 65 golfers via new in-app broadcast tool; Course admin page made real; expense rows consolidated"
+    },
     {
       "id": "cos-sync-1787429465289",
       "timestamp": "2026-08-22T20:11:05.289Z",
